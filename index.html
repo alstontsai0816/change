@@ -288,6 +288,38 @@
       margin-bottom: 4px;
     }
 
+    .banned-notice-box {
+      background: #ffebee;
+      border-left: 4px solid #d32f2f;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+    }
+
+    .banned-notice-box h4 {
+      color: #c62828;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .banned-notice-box p {
+      font-size: 13px;
+      color: #b71c1c;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .contact-support-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     /* 時間軸 (小換大成長履歷) */
     .timeline-section {
       margin-top: 20px;
@@ -350,7 +382,7 @@
       color: #888;
     }
 
-    /* 表單與登入頁面 */
+    /* 表單頁面與卡片 */
     .form-card {
       background: white;
       max-width: 500px;
@@ -405,8 +437,8 @@
       margin-bottom: 16px;
     }
 
-    /* 管理員表格樣式 */
-    .admin-table {
+    /* 表格通用樣式 */
+    .custom-table {
       width: 100%;
       border-collapse: collapse;
       background: white;
@@ -415,14 +447,14 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .admin-table th, .admin-table td {
+    .custom-table th, .custom-table td {
       padding: 12px 16px;
       text-align: left;
       border-bottom: 1px solid #eee;
       font-size: 14px;
     }
 
-    .admin-table th {
+    .custom-table th {
       background: #f5f5f5;
       font-weight: bold;
     }
@@ -439,6 +471,16 @@
 
     .btn-delete:hover {
       background: #9a0007;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      background: #e3f2fd;
+      color: #1976d2;
     }
 
     /* 對話框 (Modal) */
@@ -464,12 +506,12 @@
       padding: 24px;
       border-radius: 12px;
       width: 90%;
-      max-width: 400px;
-      text-align: center;
+      max-width: 450px;
     }
 
     .modal h3 {
       margin-bottom: 12px;
+      text-align: center;
     }
 
     .modal p {
@@ -481,6 +523,7 @@
     .modal-btns {
       display: flex;
       gap: 10px;
+      margin-top: 16px;
     }
 
     .modal-btns button {
@@ -498,9 +541,10 @@
       </div>
       <div class="nav-buttons">
         <span class="user-tag" id="user-display">未登入</span>
+        <button class="nav-btn nav-btn-outline" id="btn-user-profile" onclick="switchView('profile')" style="display:none;">📋 我的申請紀錄</button>
         <button class="nav-btn nav-btn-outline" id="btn-login-nav" onclick="switchView('login')">會員登入</button>
         <button class="nav-btn nav-btn-admin" id="btn-admin-nav" onclick="switchView('admin')" style="display:none;">管理後台</button>
-        <button class="nav-btn nav-btn-primary" onclick="switchView('upload')">＋ 刊登物品</button>
+        <button class="nav-btn nav-btn-primary" onclick="handleProtectedAction('upload')">＋ 刊登物品</button>
       </div>
     </div>
   </header>
@@ -515,17 +559,13 @@
         <p>歡迎來到小換大實驗室！看看大家如何把小貼紙一步步換成高單價好物。</p>
       </div>
 
-      <div class="grid-container" id="items-grid">
-        <!-- JS 動態繪製卡片 -->
-      </div>
+      <div class="grid-container" id="items-grid"></div>
     </section>
 
     <!-- 2. 物品詳細頁面 -->
     <section id="view-detail" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <div class="detail-card" id="detail-content">
-        <!-- JS 動態繪製詳細資訊 -->
-      </div>
+      <div class="detail-card" id="detail-content"></div>
     </section>
 
     <!-- 3. 會員/管理員登入頁面 -->
@@ -552,13 +592,33 @@
       </div>
     </section>
 
-    <!-- 4. 管理員後台頁面 -->
+    <!-- 4. 會員個人中心（查看我的申請與交換紀錄） -->
+    <section id="view-profile" class="view-section">
+      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
+      <h2 style="margin-bottom: 16px;">👤 我的個人會員專區</h2>
+      <p style="margin-bottom: 20px; color: #666; font-size: 14px;">您可以在這裡查看您提出的交換申請進度與狀況。</p>
+
+      <h3 style="margin-bottom: 12px; color: #2e7d32;">📤 我提出的交換申請</h3>
+      <table class="custom-table" style="margin-bottom: 30px;">
+        <thead>
+          <tr>
+            <th>申請日期</th>
+            <th>目標物品</th>
+            <th>目標持有人</th>
+            <th>我拿來交換的物品</th>
+            <th>審核進度</th>
+          </tr>
+        </thead>
+        <tbody id="user-applications-list"></tbody>
+      </table>
+    </section>
+
+    <!-- 5. 管理員後台頁面 -->
     <section id="view-admin" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       <h2 style="margin-bottom: 16px;">⚙️ 管理員控制台</h2>
-      <p style="margin-bottom: 20px; color: #666; font-size: 14px;">您可以管理與審核平台上所有刊登的物品，進行下架或違規處理。</p>
 
-      <table class="admin-table">
+      <table class="custom-table">
         <thead>
           <tr>
             <th>物品圖片</th>
@@ -569,13 +629,11 @@
             <th>管理操作</th>
           </tr>
         </thead>
-        <tbody id="admin-items-list">
-          <!-- JS 動態繪製管理列表 -->
-        </tbody>
+        <tbody id="admin-items-list"></tbody>
       </table>
     </section>
 
-    <!-- 5. 刊登新物品頁面 -->
+    <!-- 6. 刊登新物品頁面 -->
     <section id="view-upload" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
       <div class="form-card">
@@ -586,15 +644,11 @@
             <input type="text" id="input-title" placeholder="例如：7成新藍牙音響" required>
           </div>
           <div class="form-group">
-            <label>持有人暱稱</label>
-            <input type="text" id="input-owner" placeholder="例如：Alex" required>
-          </div>
-          <div class="form-group">
             <label>最想換到的物品 (許願池)</label>
             <input type="text" id="input-wish" placeholder="例如：二手折疊腳踏車或咖啡機" required>
           </div>
           <div class="form-group">
-            <label>圖片網址 (可直接使用預設圖片)</label>
+            <label>圖片網址 (可使用預設網址)</label>
             <input type="url" id="input-img" placeholder="https://..." value="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500">
           </div>
           <div class="form-group">
@@ -615,11 +669,26 @@
       <p id="modal-text">您確定要用您的物品發起交換嗎？此操作將發送通知給對方。</p>
       <div class="form-group" style="text-align: left;">
         <label>您想拿來交換的物品名稱</label>
-        <input type="text" id="offer-item-name" placeholder="例如：九成新耳機">
+        <input type="text" id="offer-item-name" placeholder="例如：九成新耳機" required>
       </div>
       <div class="modal-btns">
-        <button class="nav-btn nav-btn-outline" onclick="closeModal()">取消</button>
-        <button class="nav-btn nav-btn-primary" onclick="confirmTrade()">確認發送</button>
+        <button class="nav-btn nav-btn-outline" onclick="closeModal('trade-modal')">取消</button>
+        <button class="nav-btn nav-btn-primary" onclick="confirmTrade()">確認發送申請</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理員下架對話框 (Modal) -->
+  <div class="modal-overlay" id="ban-reason-modal">
+    <div class="modal">
+      <h3 style="color:#d32f2f;">🚫 下架物品</h3>
+      <div class="form-group" style="text-align: left;">
+        <label>詳細下架原因說明：</label>
+        <textarea id="ban-reason-text" placeholder="請填寫下架原因..."></textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="nav-btn nav-btn-outline" onclick="closeModal('ban-reason-modal')">取消</button>
+        <button class="nav-btn nav-btn-admin" onclick="confirmBanItem()">確認執行下架</button>
       </div>
     </div>
   </div>
@@ -633,6 +702,7 @@
         owner: "小明",
         wish: "二手折疊腳踏車 / 空拍機",
         imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500",
+        status: "active",
         history: [
           { name: "手作造型貼紙", date: "2026-07-01" },
           { name: "精裝陶瓷馬克杯", date: "2026-07-12" },
@@ -645,34 +715,35 @@
         owner: "Emma",
         wish: "露營用摺疊椅 / 復古底片機",
         imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500",
+        status: "active",
         history: [
           { name: "電影優待券一張", date: "2026-07-10" },
           { name: "入門級羽球拍套組", date: "2026-07-20" }
         ]
-      },
-      {
-        id: "item-3",
-        title: "經典復古底片相機",
-        owner: "阿豪",
-        wish: "iPad平板 (可補些微差額) / 膠囊咖啡機",
-        imageUrl: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
-        history: [
-          { name: "舊款手錶", date: "2026-06-15" },
-          { name: "桌上型小螢幕", date: "2026-06-28" },
-          { name: "無線耳機", date: "2026-07-15" },
-          { name: "經典復古底片相機", date: "2026-07-29" }
-        ]
       }
     ];
 
-    let currentUser = null; // 當前使用者 State: null, { name: 'user', role: 'user' }, { name: 'admin', role: 'admin' }
-    let currentSelectedItem = null;
+    // 使用者提出過的交換申請紀錄
+    let userApplications = [
+      {
+        id: "app-101",
+        applicant: "測試會員",
+        targetTitle: "八成新藍牙音響",
+        targetOwner: "小明",
+        myOffer: "微波爐",
+        date: "2026-07-28",
+        status: "等待持有人回應"
+      }
+    ];
 
-    // 頁面初始化
+    let currentUser = null; 
+    let currentSelectedItem = null;
+    let itemPendingBanId = null;
+
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
 
-      // 登入表單處理
+      // 登入表單
       document.getElementById("login-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const userVal = document.getElementById("login-username").value.trim();
@@ -683,9 +754,9 @@
           alert("登入成功！歡迎回來，管理員。");
         } else if (userVal === "user" && passVal === "1234") {
           currentUser = { name: "測試會員", role: "user" };
-          alert("登入成功！歡迎回來，測試會員。");
+          alert("登入成功！歡迎回到小換大社群。");
         } else {
-          alert("❌ 帳號或密碼錯誤！\n請使用提示的測試帳號嘗試。");
+          alert("❌ 帳號或密碼錯誤！");
           return;
         }
 
@@ -694,12 +765,11 @@
         e.target.reset();
       });
 
-      // 刊登表單送出監聽
+      // 刊登表單
       document.getElementById("upload-form").addEventListener("submit", (e) => {
         e.preventDefault();
         
         const title = document.getElementById("input-title").value;
-        const owner = document.getElementById("input-owner").value;
         const wish = document.getElementById("input-wish").value;
         const imageUrl = document.getElementById("input-img").value || "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500";
         const origin = document.getElementById("input-origin").value;
@@ -707,9 +777,10 @@
         const newItem = {
           id: "item-" + (itemsData.length + 1),
           title: title,
-          owner: owner,
+          owner: currentUser ? currentUser.name : "匿名",
           wish: wish,
           imageUrl: imageUrl,
+          status: "active",
           history: [
             { name: origin, date: new Date().toISOString().split('T')[0] },
             { name: title, date: new Date().toISOString().split('T')[0] }
@@ -724,43 +795,64 @@
       });
     });
 
-    // 更新導覽列使用者狀態
+    // 檢查受保護操作（登入驗證關卡）
+    function handleProtectedAction(actionType) {
+      if (!currentUser) {
+        alert("🔒 本功能需要登入會員！請先登入或註冊帳號。");
+        switchView("login");
+        return;
+      }
+
+      if (actionType === 'upload') {
+        switchView("upload");
+      } else if (actionType === 'trade') {
+        openModal('trade-modal');
+      }
+    }
+
+    // 更新導覽列狀態
     function updateNavUser() {
       const displaySpan = document.getElementById("user-display");
       const loginBtn = document.getElementById("btn-login-nav");
       const adminBtn = document.getElementById("btn-admin-nav");
+      const profileBtn = document.getElementById("btn-user-profile");
 
       if (currentUser) {
-        displaySpan.textContent = `👤 ${currentUser.name} (${currentUser.role === 'admin' ? '管理員' : '會員'})`;
+        displaySpan.textContent = `👤 ${currentUser.name}`;
         loginBtn.textContent = "登出";
         loginBtn.onclick = logout;
         
         if (currentUser.role === "admin") {
           adminBtn.style.display = "inline-block";
+          profileBtn.style.display = "none";
         } else {
           adminBtn.style.display = "none";
+          profileBtn.style.display = "inline-block";
         }
       } else {
         displaySpan.textContent = "未登入";
         loginBtn.textContent = "會員登入";
         loginBtn.onclick = () => switchView('login');
         adminBtn.style.display = "none";
+        profileBtn.style.display = "none";
       }
     }
 
     function logout() {
       currentUser = null;
       updateNavUser();
-      alert("已成功登出！");
+      alert("已安全登出！");
       switchView("home");
     }
 
-    // 頁面切換控制
+    // 切換頁面
     function switchView(viewName) {
       document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
       document.getElementById(`view-${viewName}`).classList.add("active");
 
-      if (viewName === 'admin') {
+      if (viewName === 'profile') {
+        renderUserApplications();
+      } else if (viewName === 'admin') {
         renderAdminList();
       }
 
@@ -770,7 +862,9 @@
     // 繪製大廳卡片
     function renderGrid() {
       const grid = document.getElementById("items-grid");
-      grid.innerHTML = itemsData.map(item => `
+      const activeItems = itemsData.filter(i => i.status === 'active');
+      
+      grid.innerHTML = activeItems.map(item => `
         <div class="card" onclick="openDetail('${item.id}')">
           <div class="card-img-wrapper">
             <img src="${item.imageUrl}" class="card-img" alt="${item.title}">
@@ -788,34 +882,28 @@
       `).join("");
     }
 
-    // 繪製管理員列表
-    function renderAdminList() {
-      const adminList = document.getElementById("admin-items-list");
-      adminList.innerHTML = itemsData.map(item => `
+    // 繪製使用者個人申請紀錄
+    function renderUserApplications() {
+      const list = document.getElementById("user-applications-list");
+      const myApps = userApplications.filter(a => a.applicant === (currentUser ? currentUser.name : ''));
+
+      if (myApps.length === 0) {
+        list.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">尚未有任何提出過的交換申請紀錄。</td></tr>`;
+        return;
+      }
+
+      list.innerHTML = myApps.map(app => `
         <tr>
-          <td><img src="${item.imageUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-          <td><b>${item.title}</b></td>
-          <td>${item.owner}</td>
-          <td>${item.wish}</td>
-          <td>${item.history.length - 1} 次轉手</td>
-          <td>
-            <button class="btn-delete" onclick="deleteItem('${item.id}')">下架物品</button>
-          </td>
+          <td>${app.date}</td>
+          <td><b>${app.targetTitle}</b></td>
+          <td>${app.targetOwner}</td>
+          <td>${app.myOffer}</td>
+          <td><span class="status-badge">${app.status}</span></td>
         </tr>
       `).join("");
     }
 
-    // 管理員刪除/下架物品
-    function deleteItem(id) {
-      if (confirm("確定要下架此物品嗎？此操作無法撤銷。")) {
-        itemsData = itemsData.filter(i => i.id !== id);
-        renderAdminList();
-        renderGrid();
-        alert("物品已成功下架！");
-      }
-    }
-
-    // 開啟物品詳細頁面
+    // 開啟詳細頁
     function openDetail(id) {
       const item = itemsData.find(i => i.id === id);
       if (!item) return;
@@ -823,7 +911,6 @@
 
       const detailContainer = document.getElementById("detail-content");
 
-      // 產生成長歷程時間軸
       const timelineHtml = item.history.map((h, index) => {
         const isCurrent = index === item.history.length - 1;
         return `
@@ -850,17 +937,14 @@
           <div class="detail-info">
             <h2>${item.title}</h2>
             <span class="owner-badge">👤 持有人：${item.owner}</span>
-            
             <div class="detail-wish-box">
               <h4>🎯 持有人的交換願望：</h4>
               <p>${item.wish}</p>
             </div>
-
-            <p style="font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6;">
-              這件物品目前正在參與「小換大」計畫！您可以拿出符合對方願望或等值的物品來進行交換，體驗小物品變大驚喜的樂趣。
+            <p style="font-size: 14px; color: #666; margin-bottom: 24px;">
+              拿出符合對方願望的物品提出申請，開啟小換大的驚喜旅程！
             </p>
-
-            <button class="submit-btn" onclick="openModal()">🤝 我要提出交換申請</button>
+            <button class="submit-btn" onclick="handleProtectedAction('trade')">🤝 我要提出交換申請</button>
           </div>
         </div>
       `;
@@ -868,26 +952,67 @@
       switchView("detail");
     }
 
-    // 對話框控制
-    function openModal() {
-      document.getElementById("trade-modal").classList.add("active");
-    }
-
-    function closeModal() {
-      document.getElementById("trade-modal").classList.remove("active");
-    }
-
+    // 確認發送交換申請
     function confirmTrade() {
-      const offerInput = document.getElementById("offer-item-name").value;
-      if (!offerInput.trim()) {
-        alert("請輸入您想拿來交換的物品！");
+      const offerInput = document.getElementById("offer-item-name").value.trim();
+      if (!offerInput) {
+        alert("請填寫您打算拿來交換的物品！");
         return;
       }
 
-      alert(`✅ 交換申請已送出！\n已通知 ${currentSelectedItem.owner} 您想用「${offerInput}」交換「${currentSelectedItem.title}」。`);
+      // 紀錄到會員申請列表
+      userApplications.unshift({
+        id: "app-" + (userApplications.length + 100),
+        applicant: currentUser.name,
+        targetTitle: currentSelectedItem.title,
+        targetOwner: currentSelectedItem.owner,
+        myOffer: offerInput,
+        date: new Date().toISOString().split('T')[0],
+        status: "等待持有人回應"
+      });
+
+      alert(`✅ 交換申請成功送出！\n您可以用「${offerInput}」交換「${currentSelectedItem.title}」。\n您隨時可以在「我的申請紀錄」中查看狀態。`);
       document.getElementById("offer-item-name").value = "";
-      closeModal();
+      closeModal('trade-modal');
     }
+
+    // 管理員相關邏輯
+    function renderAdminList() {
+      const activeList = document.getElementById("admin-items-list");
+      const activeItems = itemsData.filter(i => i.status === 'active');
+      activeList.innerHTML = activeItems.map(item => `
+        <tr>
+          <td><img src="${item.imageUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+          <td><b>${item.title}</b></td>
+          <td>${item.owner}</td>
+          <td>${item.wish}</td>
+          <td>${item.history.length - 1} 次轉手</td>
+          <td><button class="btn-delete" onclick="openBanModal('${item.id}')">下架物品</button></td>
+        </tr>
+      `).join("");
+    }
+
+    function openBanModal(id) {
+      itemPendingBanId = id;
+      openModal('ban-reason-modal');
+    }
+
+    function confirmBanItem() {
+      const reason = document.getElementById("ban-reason-text").value.trim();
+      if (!reason) {
+        alert("請輸入下架原因！");
+        return;
+      }
+      const item = itemsData.find(i => i.id === itemPendingBanId);
+      if (item) item.status = 'banned';
+      closeModal('ban-reason-modal');
+      renderAdminList();
+      renderGrid();
+      alert("✅ 物品已被下架。");
+    }
+
+    function openModal(modalId) { document.getElementById(modalId).classList.add("active"); }
+    function closeModal(modalId) { document.getElementById(modalId).classList.remove("active"); }
   </script>
 </body>
 </html>
