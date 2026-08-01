@@ -92,13 +92,11 @@
     .chat-input-area { display: flex; gap: 8px; }
     .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
     .chat-input-area button { background: #2e7d32; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; }
-
     .banned-box { background: #ffebee; border-left: 4px solid #d32f2f; padding: 16px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
   </style>
 </head>
 <body>
 
-  <!-- 頂部導覽列 -->
   <header>
     <div class="nav-container">
       <div class="logo" onclick="switchView('home')">🔄 TradeUp 小換大</div>
@@ -113,7 +111,6 @@
   </header>
 
   <main>
-    <!-- 1. 首頁 (物品大廳) -->
     <section id="view-home" class="view-section active">
       <div class="hero-banner">
         <h1>用手邊的小東西，換到大驚喜！</h1>
@@ -122,13 +119,12 @@
       <div class="grid-container" id="items-grid"></div>
     </section>
 
-    <!-- 2. 物品詳細頁面 -->
     <section id="view-detail" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       <div class="detail-card" id="detail-content"></div>
     </section>
 
-    <!-- 3. 登入 / 註冊頁面 -->
+    <!-- 登入 / 註冊 / 忘記密碼 區塊 -->
     <section id="view-login" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       
@@ -142,11 +138,16 @@
         </div>
         <form id="login-form">
           <div class="form-group"><label>帳號</label><input type="text" id="login-username" required></div>
-          <div class="form-group"><label>密碼</label><input type="password" id="login-password" required></div>
+          <div class="form-group">
+            <label style="display: flex; justify-content: space-between;">密碼
+              <a href="javascript:void(0)" onclick="toggleAuthMode('forgot')" style="color: #1976d2; font-weight: normal; font-size: 12px;">忘記密碼？</a>
+            </label>
+            <input type="password" id="login-password" required>
+          </div>
           <button type="submit" class="submit-btn">立即登入</button>
         </form>
         <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          還沒有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color: #2e7d32; font-weight: bold;">點此註冊</a>
+          還沒有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color: #2e7d32; font-weight: bold;">點此免費註冊</a>
         </p>
       </div>
 
@@ -154,18 +155,33 @@
       <div class="form-card" id="register-card" style="display: none;">
         <h2 style="margin-bottom: 16px; text-align: center;">註冊新帳號</h2>
         <form id="register-form">
-          <div class="form-group"><label>設定帳號</label><input type="text" id="reg-username" required></div>
-          <div class="form-group"><label>設定您的暱稱</label><input type="text" id="reg-nickname" required></div>
-          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" required></div>
+          <div class="form-group"><label>設定帳號 (需唯一，不可重複)</label><input type="text" id="reg-username" placeholder="登入用的帳號" required></div>
+          <div class="form-group"><label>設定您的暱稱</label><input type="text" id="reg-nickname" placeholder="大家在網站上會看到的稱呼" required></div>
+          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" placeholder="請設定密碼" required></div>
           <button type="submit" class="submit-btn">立即註冊</button>
         </form>
         <p style="text-align: center; margin-top: 16px; font-size: 14px;">
           已有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: #2e7d32; font-weight: bold;">點此登入</a>
         </p>
       </div>
+
+      <!-- 忘記密碼卡片 -->
+      <div class="form-card" id="forgot-card" style="display: none;">
+        <h2 style="margin-bottom: 8px; text-align: center; color: #1976d2;">重設密碼</h2>
+        <p style="text-align: center; font-size: 13px; color: #666; margin-bottom: 16px;">為了保護帳號安全，請輸入您的「帳號」與註冊時設定的「暱稱」以驗證身分。</p>
+        <form id="forgot-form">
+          <div class="form-group"><label>您的帳號</label><input type="text" id="forgot-username" required></div>
+          <div class="form-group"><label>您註冊時的暱稱</label><input type="text" id="forgot-nickname" required></div>
+          <div class="form-group"><label>設定新密碼</label><input type="password" id="forgot-password" required></div>
+          <button type="submit" class="submit-btn" style="background:#1976d2;">確認重設</button>
+        </form>
+        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
+          記起密碼了？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: #2e7d32; font-weight: bold;">返回登入</a>
+        </p>
+      </div>
     </section>
 
-    <!-- 4. 會員個人中心 -->
+    <!-- 個人後台 -->
     <section id="view-profile" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       <h2 style="margin-bottom: 16px;">👤 我的個人會員專區</h2>
@@ -173,14 +189,12 @@
         <button class="tab-btn active" id="tab-my-apps" onclick="switchProfileTab('apps')">📤 我提出的申請</button>
         <button class="tab-btn" id="tab-my-items" onclick="switchProfileTab('items')">📦 我刊登的物品</button>
       </div>
-
       <div id="profile-sec-apps">
         <table class="custom-table">
           <thead><tr><th>日期</th><th>目標物品</th><th>我拿來交換的</th><th>狀態</th><th>聯絡對方</th></tr></thead>
           <tbody id="user-applications-list"></tbody>
         </table>
       </div>
-
       <div id="profile-sec-items" style="display:none;">
         <table class="custom-table">
           <thead><tr><th>物品名稱</th><th>狀態</th><th>收到申請數</th><th>管理</th></tr></thead>
@@ -189,19 +203,17 @@
       </div>
     </section>
 
-    <!-- 5. 系統管理員後台 -->
+    <!-- 管理員後台 -->
     <section id="view-admin" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       <h2 style="margin-bottom: 16px;">⚙️ 管理員控制台</h2>
       <table class="custom-table">
-        <thead>
-          <tr><th>物品圖片</th><th>物品名稱</th><th>持有人</th><th>目前狀態</th><th>管理操作</th></tr>
-        </thead>
+        <thead><tr><th>物品圖片</th><th>物品名稱</th><th>持有人</th><th>目前狀態</th><th>管理操作</th></tr></thead>
         <tbody id="admin-items-list"></tbody>
       </table>
     </section>
 
-    <!-- 6. 刊登新物品 -->
+    <!-- 刊登物品 -->
     <section id="view-upload" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
       <div class="form-card">
@@ -217,8 +229,7 @@
     </section>
   </main>
 
-  <!-- 模態框區塊 -->
-  <!-- 提出交換 -->
+  <!-- 模態框們 -->
   <div class="modal-overlay" id="trade-modal">
     <div class="modal">
       <h3>🤝 提出交換申請</h3>
@@ -227,7 +238,6 @@
     </div>
   </div>
 
-  <!-- 管理員下架 (含選單與自訂輸入) -->
   <div class="modal-overlay" id="ban-reason-modal">
     <div class="modal">
       <h3 style="color:#d32f2f;">🚫 確認下架物品</h3>
@@ -242,18 +252,11 @@
           <option value="custom">其他（自行輸入）</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>詳細下架說明：</label>
-        <textarea id="ban-reason-text" style="height:60px;"></textarea>
-      </div>
-      <div style="display:flex; gap:10px;">
-        <button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('ban-reason-modal')">取消</button>
-        <button class="nav-btn nav-btn-admin" style="flex:1;" onclick="confirmBanItem()">下架</button>
-      </div>
+      <div class="form-group"><label>詳細下架說明：</label><textarea id="ban-reason-text" style="height:60px;"></textarea></div>
+      <div style="display:flex; gap:10px;"><button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('ban-reason-modal')">取消</button><button class="nav-btn nav-btn-admin" style="flex:1;" onclick="confirmBanItem()">下架</button></div>
     </div>
   </div>
 
-  <!-- 審核申請名單 -->
   <div class="modal-overlay" id="applicants-modal">
     <div class="modal" style="max-width: 600px;">
       <h3 style="margin-bottom: 16px;">📋 審核申請名單</h3>
@@ -265,15 +268,11 @@
     </div>
   </div>
 
-  <!-- 私訊聊天室 -->
   <div class="modal-overlay" id="chat-modal">
     <div class="modal">
       <h3 style="margin-bottom: 12px;">💬 雙方私訊</h3>
       <div class="chat-box" id="chat-history"></div>
-      <div class="chat-input-area">
-        <input type="text" id="chat-input-text" placeholder="輸入訊息...">
-        <button onclick="sendChatMessage()">傳送</button>
-      </div>
+      <div class="chat-input-area"><input type="text" id="chat-input-text" placeholder="輸入訊息..."><button onclick="sendChatMessage()">傳送</button></div>
       <button class="nav-btn nav-btn-outline" style="width:100%; margin-top: 12px;" onclick="closeModal('chat-modal')">關閉</button>
     </div>
   </div>
@@ -286,7 +285,7 @@
     ];
 
     let usersDB = [
-      { username: 'admin', password: 'admin', name: '系統管理員', role: 'admin' }, // 管理員強勢回歸！
+      { username: 'admin', password: 'admin', name: '系統管理員', role: 'admin' },
       { username: 'user', password: '1234', name: '測試會員', role: 'user' }
     ];
 
@@ -308,26 +307,32 @@
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
 
-      // 切換註冊/登入卡片
+      // UI 切換：登入 / 註冊 / 忘記密碼
       window.toggleAuthMode = function(mode) {
         document.getElementById('login-card').style.display = mode === 'login' ? 'block' : 'none';
         document.getElementById('register-card').style.display = mode === 'register' ? 'block' : 'none';
+        document.getElementById('forgot-card').style.display = mode === 'forgot' ? 'block' : 'none';
       };
 
-      // 註冊
+      // 註冊邏輯
       document.getElementById("register-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("reg-username").value.trim();
         const n = document.getElementById("reg-nickname").value.trim();
         const p = document.getElementById("reg-password").value.trim();
-        if (usersDB.find(user => user.username === u)) return alert("帳號已被使用！");
+        
+        // 偵測帳號是否重複
+        if (usersDB.find(user => user.username === u)) {
+          return alert("⚠️ 註冊失敗：這個帳號已被使用！請更換一個帳號。");
+        }
+        
         usersDB.push({ username: u, password: p, name: n, role: 'user' });
-        alert("🎉 註冊成功！請登入。");
+        alert("🎉 註冊成功！請使用剛註冊的帳號登入。");
         toggleAuthMode('login');
         e.target.reset();
       });
 
-      // 登入
+      // 登入邏輯
       document.getElementById("login-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("login-username").value.trim();
@@ -335,13 +340,43 @@
         const found = usersDB.find(user => user.username === u && user.password === p);
         if (found) {
           currentUser = found;
-          alert(`登入成功！歡迎，${currentUser.name}。`);
+          alert(`登入成功！歡迎回來，${currentUser.name}。`);
           updateNavUser();
           switchView("home");
         } else { alert("❌ 帳號或密碼錯誤！"); }
+        e.target.reset();
       });
 
-      // 刊登
+      // 忘記密碼重設邏輯
+      document.getElementById("forgot-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const u = document.getElementById("forgot-username").value.trim();
+        const n = document.getElementById("forgot-nickname").value.trim();
+        const p = document.getElementById("forgot-password").value.trim();
+
+        // 尋找帳號
+        const userIndex = usersDB.findIndex(user => user.username === u);
+        if (userIndex === -1) {
+          return alert("❌ 找不到此帳號！請確認您輸入的帳號是否正確。");
+        }
+
+        // 驗證身分 (使用暱稱)
+        if (usersDB[userIndex].name !== n) {
+          return alert("❌ 身分驗證失敗！您輸入的暱稱與該帳號註冊紀錄不符。");
+        }
+
+        if (usersDB[userIndex].password === p) {
+          return alert("⚠️ 新密碼不能與舊密碼相同！");
+        }
+
+        // 重設密碼
+        usersDB[userIndex].password = p;
+        alert("✅ 密碼重設成功！請使用您的新密碼重新登入。");
+        toggleAuthMode('login');
+        e.target.reset();
+      });
+
+      // 刊登物品邏輯
       document.getElementById("upload-form").addEventListener("submit", (e) => {
         e.preventDefault();
         itemsData.unshift({
@@ -358,7 +393,7 @@
       });
     });
 
-    // 路由與權限
+    // 路由控制與防護
     function handleProtectedAction(type) {
       if (!currentUser) { alert("🔒 請先登入會員。"); switchView("login"); return; }
       if (type === 'upload') switchView("upload");
@@ -385,7 +420,7 @@
       window.scrollTo(0, 0);
     }
 
-    // 首頁與詳細頁
+    // 大廳渲染
     function renderGrid() {
       document.getElementById("items-grid").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
         <div class="card" onclick="openDetail('${item.id}')">
@@ -413,7 +448,7 @@
       switchView("detail");
     }
 
-    // 會員專區 (Tab 與表格)
+    // 個人中心
     function switchProfileTab(tab) {
       document.getElementById('tab-my-apps').classList.toggle('active', tab === 'apps');
       document.getElementById('tab-my-items').classList.toggle('active', tab === 'items');
@@ -446,7 +481,7 @@
       alert("✅ 申請成功！"); closeModal('trade-modal');
     }
 
-    // 審核與私訊
+    // 審核名單與私訊
     function openApplicantsModal(itemId) {
       const item = itemsData.find(i => i.id === itemId);
       document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
