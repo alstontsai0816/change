@@ -4,298 +4,590 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TradeUp 小換大 - 以物易物平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-blue: #4A90E2;
-      --primary-blue-hover: #357ABD;
-      --milktea-dark: #A67B5B;
-      --milktea-light: #E8DCC4;
-      --bg-color: #F4F6F8;
-      --text-main: #333333;
-      --text-muted: #666666;
-      --danger-color: #D32F2F;
-      --success-color: #2E7D32;
+      --primary-blue: #3b82f6;      /* Sky Blue */
+      --primary-blue-hover: #2563eb;
+      --milktea-dark: #bcaaa4;      /* Deeper Milk Tea */
+      --milktea-light: #f5f5f5;
+      --bg-color: #fafafa;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --danger-color: #ef4444;
+      --success-color: #10b981;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+    }
+
+    /* 隱藏原生滾動條，使用更滑順的體驗 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-gradient:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-gradient:active {
+      transform: translateY(1px);
+    }
+
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* 確保所有 view section 預設隱藏，帶有 active class 才顯示 */
+    .view-section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .view-section.active {
+      display: block;
+      opacity: 1;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modal 樣式 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      transform: scale(0.95);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+
+    /* Custom Input Styles */
+    .input-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+      outline: none;
+      background: #f8fafc;
+    }
+    .input-field:focus {
+      background: white;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--milktea-dark);
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--milktea-dark);
+    }
     
-    header { background: #ffffff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
-    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; flex-wrap: wrap; gap: 10px; }
-    .logo { font-size: 20px; font-weight: 800; color: var(--primary-blue); display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .nav-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;}
+    .timeline-dot.current {
+      background-color: var(--primary-blue);
+      box-shadow: 0 0 0 2px var(--primary-blue);
+    }
+
+    .sidebar-item {
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover {
+      background-color: #f1f5f9;
+    }
+    .sidebar-item.active {
+      background-color: #eff6ff;
+      border-left-color: var(--primary-blue);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .menu-section {
+      display: none;
+    }
+    .menu-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
     
-    .nav-btn { border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-    .nav-btn-outline { background: transparent; color: var(--primary-blue); border: 1.5px solid var(--primary-blue); }
-    .nav-btn-outline:hover { background: #F0F7FF; }
-    .nav-btn-primary { background: var(--primary-blue); color: white; }
-    .nav-btn-primary:hover { background: var(--primary-blue-hover); }
-    .nav-btn-admin { background: var(--danger-color); color: white; }
-    .nav-btn-admin:hover { background: #9a0007; }
-    .user-tag { font-size: 13px; color: var(--text-muted); font-weight: bold; }
-
-    main { max-width: 1100px; margin: 20px auto; padding: 0 20px; flex: 1; width: 100%; }
-    .view-section { display: none; }
-    .view-section.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .hero-banner { background: linear-gradient(135deg, var(--milktea-dark) 0%, #C4A484 100%); color: white; padding: 30px 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 10px rgba(166, 123, 91, 0.3); }
-    .hero-banner h1 { font-size: clamp(20px, 5vw, 26px); margin-bottom: 8px; }
-    .hero-banner p { font-size: clamp(12px, 3vw, 14px); opacity: 0.9; }
-    
-    .category-filters { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
-    .filter-btn { padding: 6px 16px; background: white; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: 0.2s; }
-    .filter-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
-    .filter-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
-
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; border: 1px solid #eee;}
-    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-    .card-img-wrapper { position: relative; width: 100%; height: 180px; background: #eee; }
-    .card-img { width: 100%; height: 100%; object-fit: cover; }
-    .card-tag { position: absolute; top: 10px; right: 10px; background: rgba(74, 144, 226, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-    .card-tag.trading { background: rgba(245, 124, 0, 0.9); }
-    .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
-    .card-category { font-size: 12px; color: var(--milktea-dark); font-weight: 700; margin-bottom: 4px; }
-    .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #222; }
-    .card-wish { font-size: 13px; color: #8C6A43; background: var(--milktea-light); padding: 6px 10px; border-radius: 6px; margin-bottom: 12px; font-weight: 500;}
-
-    .detail-card { background: white; border-radius: 12px; padding: clamp(16px, 4vw, 24px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .back-btn { background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; margin-bottom: 16px; font-weight: bold;}
-    .back-btn:hover { color: var(--primary-blue); }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
-    .detail-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; }
-    .timeline-section { margin-top: 20px; background: #fafafa; padding: 16px; border-radius: 8px; border: 1px solid #eee; }
-    .timeline { padding-left: 20px; border-left: 2px solid var(--milktea-dark); margin-top:12px; }
-    .timeline-item { position: relative; margin-bottom: 12px; font-size: 13px; }
-    .timeline-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 8px; height: 8px; background: var(--milktea-dark); border-radius: 50%; }
-    .timeline-item.current::before { background: var(--primary-blue); width: 12px; height: 12px; left: -27px; top: 2px; }
-    .banned-box { background: #ffebee; border-left: 4px solid var(--danger-color); padding: 16px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
-    .report-link { color: var(--danger-color); font-size: 13px; text-decoration: underline; cursor: pointer; display: inline-block; margin-top: 16px; font-weight: 500;}
-
-    .form-card { background: white; max-width: 500px; margin: 20px auto; padding: clamp(16px, 4vw, 24px); border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;}
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 6px; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; transition: 0.2s;}
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); }
-    .submit-btn { width: 100%; background: var(--primary-blue); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s;}
-    .submit-btn:hover { background: var(--primary-blue-hover); }
-    .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
-
-    .profile-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch;}
-    .tab-btn { background: none; border: none; font-size: 15px; font-weight: bold; color: #888; cursor: pointer; padding: 8px 12px; border-radius: 6px; white-space: nowrap;}
-    .tab-btn.active { background: #F0F7FF; color: var(--primary-blue); }
-    
-    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-    .custom-table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
-    .custom-table th, .custom-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-    .custom-table th { background: #f9f9f9; font-weight: bold; color: var(--text-muted);}
-    
-    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; background: #e3f2fd; color: #1976d2; white-space: nowrap; }
-    .status-badge.trading { background: #fff3e0; color: #e65100; }
-    .status-badge.rejected { background: #ffebee; color: #c62828; }
-    .btn-action { background: var(--primary-blue); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap; }
-    .btn-action:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-success { background: var(--success-color); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;}
-    .btn-danger { background: var(--danger-color); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap; }
-
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 200; backdrop-filter: blur(2px); padding: 20px;}
-    .modal-overlay.active { display: flex; animation: fadeInModal 0.2s ease-out;}
-    @keyframes fadeInModal { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    .modal { background: white; padding: clamp(16px, 4vw, 24px); border-radius: 12px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2);}
-    .chat-box { background: #f9f9f9; border-radius: 8px; height: 250px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; border: 1px solid #ddd; }
-    .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.4; position: relative; word-break: break-word; }
-    .chat-msg.me { background: var(--primary-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .chat-msg.other { background: white; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #eee; }
-    .chat-sender { font-size: 11px; color: #888; margin-bottom: 4px; }
-    .chat-input-area { display: flex; gap: 8px; }
-    .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
-    .chat-input-area button { background: var(--primary-blue); color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-    
-    .notification-item { padding: 12px; border-bottom: 1px solid #eee; background: #fff; border-radius: 8px; }
-    .notification-item.unread { background: #F0F7FF; border-left: 3px solid var(--primary-blue); border-radius: 0 8px 8px 0; }
-    .notification-date { font-size: 11px; color: #888; margin-bottom: 4px; }
-    .notification-text { font-size: 14px; }
+    .chat-bubble-me {
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 16px 16px 4px 16px;
+    }
+    .chat-bubble-other {
+      background: #f1f5f9;
+      color: #334155;
+      border-radius: 16px 16px 16px 4px;
+    }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-  <header>
-    <div class="nav-container">
-      <div class="logo" onclick="switchView('home')">🔄 TradeUp 小換大</div>
-      <div class="nav-buttons">
-        <span class="user-tag" id="user-display">未登入</span>
-        <button class="nav-btn nav-btn-outline" id="btn-user-profile" onclick="switchView('profile')" style="display:none;">📋 我的個人後台 <span id="nav-notify-badge" style="color:red; display:none;">(新)</span></button>
-        <button class="nav-btn nav-btn-outline" id="btn-login-nav" onclick="switchView('login')">會員登入 / 註冊</button>
-        <button class="nav-btn nav-btn-admin" id="btn-admin-nav" onclick="switchView('admin')" style="display:none;">管理後台 <span id="admin-report-badge" style="background:white; color:red; border-radius:50%; padding:2px 6px; font-size:10px; display:none;">0</span></button>
-        <button class="nav-btn nav-btn-primary" onclick="handleProtectedAction('upload')">＋ 刊登物品</button>
+  <header class="glass-nav sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('home')">
+        <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+        <span class="text-xl font-extrabold tracking-tight text-gray-900">TradeUp</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="user-display" class="hidden sm:inline-block text-sm font-medium text-gray-500 mr-2"></span>
+        
+        <button id="btn-login-nav" onclick="switchView('login')" class="text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 rounded-md hover:bg-gray-100">
+          登入
+        </button>
+        
+        <button id="btn-user-profile" onclick="switchView('profile')" class="hidden text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-2 rounded-md hover:bg-gray-100 relative">
+          個人專區
+          <span id="nav-notify-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+        </button>
+        
+        <button id="btn-admin-nav" onclick="switchView('admin')" class="hidden text-sm font-semibold text-red-600 hover:text-red-700 transition-colors px-3 py-2 rounded-md hover:bg-red-50 relative">
+          管理後台
+          <span id="admin-report-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
+        </button>
+
+        <button onclick="handleProtectedAction('upload')" class="btn-gradient text-white text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1 shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span class="hidden sm:inline">刊登</span>
+        </button>
       </div>
     </div>
   </header>
 
-  <main>
-    <!-- 1. 首頁 (物品大廳) -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    
+    <!-- ==================== View: Home ==================== -->
     <section id="view-home" class="view-section active">
-      <div class="hero-banner">
-        <h1>用手邊的小東西，換到大驚喜！</h1>
-        <p>歡迎來到小換大實驗室！看看大家如何把小貼紙一步步換成高單價好物。</p>
+      <!-- Hero Banner -->
+      <div class="relative rounded-2xl overflow-hidden mb-8 shadow-sm">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 opacity-90"></div>
+        <div class="relative p-8 sm:p-12 text-center text-white">
+          <h1 class="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">把不需要的小東西，換成大驚喜！</h1>
+          <p class="text-blue-100 max-w-2xl mx-auto text-sm sm:text-base">分享、贈送、交換閒置的物品。看看大家如何把小貼紙一步步換成高單價好物，不花一毛錢，也能體驗升級的樂趣。</p>
+        </div>
       </div>
-      <!-- 物品分類過濾器 -->
-      <div class="category-filters">
-        <button class="filter-btn active" onclick="filterItems('all', this)">全部</button>
-        <button class="filter-btn" onclick="filterItems('3C家電', this)">3C家電</button>
-        <button class="filter-btn" onclick="filterItems('居家生活', this)">居家生活</button>
-        <button class="filter-btn" onclick="filterItems('美妝保養', this)">美妝保養</button>
-        <button class="filter-btn" onclick="filterItems('服飾配件', this)">服飾配件</button>
-        <button class="filter-btn" onclick="filterItems('其他', this)">其他</button>
+
+      <!-- Categories -->
+      <div class="flex gap-2 overflow-x-auto pb-4 mb-6 hide-scrollbar">
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-900 text-white whitespace-nowrap transition-colors" onclick="filterItems('all', this)">全部</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 whitespace-nowrap transition-colors" onclick="filterItems('3C家電', this)">3C家電</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 whitespace-nowrap transition-colors" onclick="filterItems('居家生活', this)">居家生活</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 whitespace-nowrap transition-colors" onclick="filterItems('美妝保養', this)">美妝保養</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 whitespace-nowrap transition-colors" onclick="filterItems('服飾配件', this)">服飾配件</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 whitespace-nowrap transition-colors" onclick="filterItems('其他', this)">其他</button>
       </div>
-      <div class="grid-container" id="items-grid"></div>
+
+      <!-- Item Grid -->
+      <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Rendered by JS -->
+      </div>
     </section>
 
-    <!-- 2. 物品詳細頁面 -->
+    <!-- ==================== View: Detail ==================== -->
     <section id="view-detail" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <div class="detail-card" id="detail-content"></div>
+      <button onclick="switchView('home')" class="mb-6 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        返回大廳
+      </button>
+
+      <div id="detail-content" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+        <!-- Rendered by JS -->
+      </div>
     </section>
 
-    <!-- 3. 登入 / 註冊 / 忘記密碼 區塊 -->
+    <!-- ==================== View: Auth (Login/Register/Forgot) ==================== -->
     <section id="view-login" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      
-      <!-- 登入卡片 -->
-      <div class="form-card" id="login-card">
-        <h2 style="margin-bottom: 16px; text-align: center; color: var(--primary-blue);">會員登入</h2>
-        <div style="background: #eefbe7; border: 1px solid #c5e1a5; padding: 10px; border-radius: 6px; font-size: 12px; color: #33691e; margin-bottom: 16px;">
-          💡 <b>測試帳號提示：</b><br>
-          一般會員：帳號 `user` / 密碼 `1234`<br>
-          系統管理員：帳號 `admin` / 密碼 `admin`
-        </div>
-        <form id="login-form">
-          <div class="form-group"><label>帳號</label><input type="text" id="login-username" required></div>
-          <div class="form-group">
-            <label style="display: flex; justify-content: space-between;">密碼
-              <a href="javascript:void(0)" onclick="toggleAuthMode('forgot')" style="color: var(--primary-blue); font-weight: normal; font-size: 12px;">忘記密碼？</a>
-            </label>
-            <input type="password" id="login-password" required>
+      <div class="max-w-md mx-auto">
+        <button onclick="switchView('home')" class="mb-6 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>返回大廳
+        </button>
+
+        <!-- Login Card -->
+        <div id="login-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">歡迎回來</h2>
+            <p class="text-sm text-gray-500 mt-2">登入以繼續您的換物旅程</p>
           </div>
-          <button type="submit" class="submit-btn">立即登入</button>
-        </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          還沒有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color: var(--primary-blue); font-weight: bold;">點此免費註冊</a>
-        </p>
-      </div>
 
-      <!-- 註冊卡片 -->
-      <div class="form-card" id="register-card" style="display: none;">
-        <h2 style="margin-bottom: 16px; text-align: center; color: var(--primary-blue);">註冊新帳號</h2>
-        <form id="register-form">
-          <div class="form-group"><label>設定帳號 (需唯一)</label><input type="text" id="reg-username" required></div>
-          <div class="form-group"><label>設定您的暱稱</label><input type="text" id="reg-nickname" required></div>
-          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" required></div>
-          <button type="submit" class="submit-btn">立即註冊</button>
-        </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          已有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: var(--primary-blue); font-weight: bold;">點此登入</a>
-        </p>
-      </div>
+          <div class="bg-blue-50 border border-blue-100 text-blue-800 text-xs p-3 rounded-lg mb-6">
+            💡 <b>測試帳號：</b><br>
+            一般會員：帳號 <code class="bg-white px-1 rounded text-blue-600">user</code> / 密碼 <code class="bg-white px-1 rounded text-blue-600">1234</code><br>
+            管理員：帳號 <code class="bg-white px-1 rounded text-blue-600">admin</code> / 密碼 <code class="bg-white px-1 rounded text-blue-600">admin</code>
+          </div>
 
-      <!-- 忘記密碼卡片 -->
-      <div class="form-card" id="forgot-card" style="display: none;">
-        <h2 style="margin-bottom: 8px; text-align: center; color: var(--primary-blue);">重設密碼</h2>
-        <p style="text-align: center; font-size: 13px; color: #666; margin-bottom: 16px;">輸入您的「帳號」與註冊時設定的「暱稱」以驗證身分。</p>
-        <form id="forgot-form">
-          <div class="form-group"><label>您的帳號</label><input type="text" id="forgot-username" required></div>
-          <div class="form-group"><label>您註冊時的暱稱</label><input type="text" id="forgot-nickname" required></div>
-          <div class="form-group"><label>設定新密碼</label><input type="password" id="forgot-password" required></div>
-          <button type="submit" class="submit-btn">確認重設</button>
-        </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          記起密碼了？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: var(--primary-blue); font-weight: bold;">返回登入</a>
-        </p>
+          <form id="login-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">帳號</label>
+              <input type="text" id="login-username" class="input-field" required>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-sm font-medium text-gray-700">密碼</label>
+                <a href="#" onclick="toggleAuthMode('forgot')" class="text-xs font-medium text-blue-600 hover:text-blue-500">忘記密碼？</a>
+              </div>
+              <input type="password" id="login-password" class="input-field" required>
+            </div>
+            <button type="submit" class="w-full btn-gradient text-white font-semibold py-3 rounded-xl mt-4">
+              登入
+            </button>
+          </form>
+
+          <p class="text-center text-sm text-gray-600 mt-6">
+            還沒有帳號？ <a href="#" onclick="toggleAuthMode('register')" class="font-semibold text-blue-600 hover:text-blue-500">免費註冊</a>
+          </p>
+        </div>
+
+        <!-- Register Card -->
+        <div id="register-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hidden">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">建立帳號</h2>
+            <p class="text-sm text-gray-500 mt-2">加入 TradeUp 開始換物</p>
+          </div>
+
+          <form id="register-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">帳號 (需唯一)</label>
+              <input type="text" id="reg-username" class="input-field" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">暱稱</label>
+              <input type="text" id="reg-nickname" class="input-field" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">密碼</label>
+              <input type="password" id="reg-password" class="input-field" required>
+            </div>
+            <button type="submit" class="w-full btn-gradient text-white font-semibold py-3 rounded-xl mt-4">
+              註冊
+            </button>
+          </form>
+
+          <p class="text-center text-sm text-gray-600 mt-6">
+            已有帳號？ <a href="#" onclick="toggleAuthMode('login')" class="font-semibold text-blue-600 hover:text-blue-500">返回登入</a>
+          </p>
+        </div>
+
+        <!-- Forgot Password Card -->
+        <div id="forgot-card" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hidden">
+           <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">重設密碼</h2>
+            <p class="text-sm text-gray-500 mt-2">輸入帳號與暱稱驗證身分</p>
+          </div>
+          <form id="forgot-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">帳號</label>
+              <input type="text" id="forgot-username" class="input-field" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">註冊時的暱稱</label>
+              <input type="text" id="forgot-nickname" class="input-field" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">新密碼</label>
+              <input type="password" id="forgot-password" class="input-field" required>
+            </div>
+            <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-xl mt-4 transition-colors">
+              確認重設
+            </button>
+          </form>
+          <p class="text-center text-sm text-gray-600 mt-6">
+            記起密碼了？ <a href="#" onclick="toggleAuthMode('login')" class="font-semibold text-blue-600 hover:text-blue-500">返回登入</a>
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- 4. 會員個人中心 -->
+    <!-- ==================== View: Profile (Dashboard) ==================== -->
     <section id="view-profile" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <h2 style="margin-bottom: 16px;">👤 我的個人會員專區</h2>
-      <div class="profile-tabs">
-        <button class="tab-btn active" id="tab-my-apps" onclick="switchProfileTab('apps')">📤 我提出的申請</button>
-        <button class="tab-btn" id="tab-my-items" onclick="switchProfileTab('items')">📦 我刊登的物品</button>
-        <button class="tab-btn" id="tab-my-notifications" onclick="switchProfileTab('notifications')">🔔 系統通知 <span id="unread-count" style="color:red; font-size:12px;"></span></button>
-      </div>
+      <div class="flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 shrink-0">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sticky top-20 flex flex-row md:flex-col gap-1 overflow-x-auto hide-scrollbar">
+             <div class="px-4 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider hidden md:block">選單</div>
+             <button class="sidebar-item active w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap" onclick="switchProfileMenu('wallet', this)">
+               👛 我的錢包
+             </button>
+             <button class="sidebar-item w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap" onclick="switchProfileMenu('level', this)">
+               ⭐ 貢獻值與等級
+             </button>
+             <button class="sidebar-item w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap" onclick="switchProfileMenu('settings', this)">
+               ⚙️ 個人設定
+             </button>
+             <button class="sidebar-item w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap flex justify-between items-center" onclick="switchProfileMenu('notifications', this)">
+               <span>🔔 通知中心</span>
+               <span id="unread-count" class="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
+             </button>
+             <div class="my-2 border-t border-gray-100 hidden md:block"></div>
+             <button class="sidebar-item w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap" onclick="switchProfileMenu('contact', this)">
+               ✉️ 聯絡創作者
+             </button>
+             <button class="sidebar-item w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-gray-600 whitespace-nowrap" onclick="switchProfileMenu('coop', this)">
+               🤝 企業合作
+             </button>
+          </div>
+        </aside>
 
-      <!-- 我提出的申請 -->
-      <div id="profile-sec-apps">
-        <div class="table-responsive">
-          <table class="custom-table">
-            <thead><tr><th>日期</th><th>目標物品</th><th>我拿來交換的</th><th>狀態</th><th>聯絡對方</th></tr></thead>
-            <tbody id="user-applications-list"></tbody>
-          </table>
+        <!-- Content Area -->
+        <div class="flex-1 min-w-0">
+          
+          <!-- Menu: Wallet -->
+          <div id="menu-wallet" class="menu-section active">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">我的錢包</h2>
+              <p class="text-sm text-gray-500 mt-1">管理你分享、申請與領取的所有票券與物品。</p>
+            </div>
+
+            <div class="flex gap-2 border-b border-gray-200 mb-6">
+               <button id="tab-my-records" class="px-4 py-3 text-sm font-medium border-b-2 border-blue-500 text-blue-600 transition-colors" onclick="switchWalletTab('records')">交易紀錄</button>
+               <button id="tab-my-items" class="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors" onclick="switchWalletTab('items')">我上架的</button>
+               <button id="tab-my-apps" class="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors" onclick="switchWalletTab('apps')">我申請的</button>
+            </div>
+
+            <!-- Wallet Sec: Records -->
+            <div id="wallet-sec-records" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+               <div class="overflow-x-auto">
+                 <table class="w-full text-sm text-left">
+                   <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+                     <tr><th class="px-6 py-4">成交日期</th><th class="px-6 py-4">物品名稱</th><th class="px-6 py-4">交換對象</th><th class="px-6 py-4">交換物</th><th class="px-6 py-4">狀態</th></tr>
+                   </thead>
+                   <tbody id="user-records-list" class="divide-y divide-gray-100"></tbody>
+                 </table>
+               </div>
+            </div>
+
+            <!-- Wallet Sec: Items -->
+            <div id="wallet-sec-items" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hidden">
+               <div class="overflow-x-auto">
+                 <table class="w-full text-sm text-left">
+                   <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+                     <tr><th class="px-6 py-4">物品名稱</th><th class="px-6 py-4">狀態</th><th class="px-6 py-4">收到申請數</th><th class="px-6 py-4 text-right">管理</th></tr>
+                   </thead>
+                   <tbody id="user-posted-list" class="divide-y divide-gray-100"></tbody>
+                 </table>
+               </div>
+            </div>
+
+            <!-- Wallet Sec: Apps -->
+            <div id="wallet-sec-apps" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hidden">
+               <div class="overflow-x-auto">
+                 <table class="w-full text-sm text-left">
+                   <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+                     <tr><th class="px-6 py-4">日期</th><th class="px-6 py-4">目標物品</th><th class="px-6 py-4">我拿來交換的</th><th class="px-6 py-4">狀態</th><th class="px-6 py-4 text-right">聯絡</th></tr>
+                   </thead>
+                   <tbody id="user-applications-list" class="divide-y divide-gray-100"></tbody>
+                 </table>
+               </div>
+            </div>
+          </div>
+
+          <!-- Menu: Level -->
+          <div id="menu-level" class="menu-section">
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">貢獻值與等級</h2>
+              <p class="text-sm text-gray-500 mt-1">你的社群影響力</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+              <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-blue-100">
+                <span class="text-3xl">🌱</span>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900">Level 1：換物新手</h3>
+              <p class="text-blue-600 font-medium mt-2">目前貢獻值：150 CP</p>
+              <div class="w-full max-w-xs mx-auto bg-gray-100 rounded-full h-2.5 mt-6 mb-2 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2.5 rounded-full" style="width: 45%"></div>
+              </div>
+              <p class="text-xs text-gray-500">距離下一級還差 150 CP</p>
+              <div class="mt-8 text-left bg-gray-50 p-4 rounded-xl text-sm text-gray-600">
+                <p class="font-semibold mb-2">如何獲得貢獻值？</p>
+                <ul class="list-disc list-inside space-y-1 ml-2">
+                  <li>成功上架一件物品：+10 CP</li>
+                  <li>完成一次成功交換：+50 CP</li>
+                  <li>收到優良評價：+20 CP</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu: Settings -->
+          <div id="menu-settings" class="menu-section">
+             <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">個人設定</h2>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+              <div class="space-y-4 max-w-md">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">顯示暱稱</label>
+                  <input type="text" class="input-field" value="測試會員" id="setting-nickname">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">聯絡信箱</label>
+                  <input type="email" class="input-field" value="user@example.com">
+                </div>
+                <button class="btn-gradient text-white font-semibold py-2.5 px-6 rounded-xl mt-4" onclick="customAlert('設定已儲存！')">儲存變更</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu: Notifications -->
+          <div id="menu-notifications" class="menu-section">
+            <div class="mb-6 flex justify-between items-end">
+              <h2 class="text-2xl font-bold text-gray-900">通知中心</h2>
+            </div>
+            <div id="notifications-list" class="space-y-3">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Menu: Contact -->
+          <div id="menu-contact" class="menu-section">
+             <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">聯絡創作者</h2>
+              <p class="text-sm text-gray-500 mt-1">有任何平台使用上的問題，歡迎隨時聯繫我們！</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+              <div class="space-y-4 max-w-md">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">主旨</label>
+                  <input type="text" class="input-field" placeholder="請輸入主旨">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">內容</label>
+                  <textarea class="input-field h-32 resize-none" placeholder="想告訴我們什麼？"></textarea>
+                </div>
+                <button class="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2.5 px-6 rounded-xl mt-4 transition-colors" onclick="customAlert('訊息已成功送出，我們會盡快回覆您！')">送出訊息</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu: Coop -->
+          <div id="menu-coop" class="menu-section">
+             <div class="mb-6">
+              <h2 class="text-2xl font-bold text-gray-900">企業合作</h2>
+              <p class="text-sm text-gray-500 mt-1">歡迎品牌商、企業洽談專屬票券發放或異業合作。</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 flex flex-col items-center text-center">
+               <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 text-blue-600">
+                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+               </div>
+               <h3 class="text-lg font-bold text-gray-900 mb-2">建立您的品牌生態圈</h3>
+               <p class="text-sm text-gray-600 mb-6 max-w-sm">透過 TradeUp 平台，讓您的閒置資源、公關品發揮最大效益，同時提升品牌 ESG 形象。</p>
+               <button class="btn-gradient text-white font-semibold py-2.5 px-6 rounded-xl" onclick="customAlert('感謝您的興趣！請將企劃書寄至 partner@tradeup.com')">索取合作方案</button>
+            </div>
+          </div>
+
         </div>
-      </div>
-
-      <!-- 我刊登的物品 -->
-      <div id="profile-sec-items" style="display:none;">
-        <div class="table-responsive">
-          <table class="custom-table">
-            <thead><tr><th>物品名稱</th><th>狀態</th><th>收到申請數</th><th>管理</th></tr></thead>
-            <tbody id="user-posted-list"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- 系統通知 -->
-      <div id="profile-sec-notifications" style="display:none; background:transparent;">
-        <div id="notifications-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
       </div>
     </section>
 
-    <!-- 5. 系統管理員後台 -->
+    <!-- ==================== View: Admin ==================== -->
     <section id="view-admin" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <h2 style="margin-bottom: 16px;">⚙️ 管理員控制台</h2>
+      <div class="mb-8">
+        <button onclick="switchView('home')" class="mb-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>返回大廳
+        </button>
+        <h2 class="text-2xl font-bold text-gray-900">管理員控制台</h2>
+      </div>
       
-      <div class="profile-tabs">
-        <button class="tab-btn active" id="tab-admin-items" onclick="switchAdminTab('items')">📦 物品管理</button>
-        <button class="tab-btn" id="tab-admin-reports" onclick="switchAdminTab('reports')">🚨 檢舉審核 <span id="admin-tab-report-badge" style="color:red; font-size:12px;"></span></button>
+      <div class="flex gap-2 border-b border-gray-200 mb-6">
+        <button id="tab-admin-items" class="px-4 py-3 text-sm font-medium border-b-2 border-red-500 text-red-600 transition-colors" onclick="switchAdminTab('items')">📦 物品管理</button>
+        <button id="tab-admin-reports" class="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors relative" onclick="switchAdminTab('reports')">
+          🚨 檢舉審核
+          <span id="admin-tab-report-badge" class="ml-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+        </button>
       </div>
 
-      <!-- 物品管理 -->
-      <div id="admin-sec-items">
-        <div class="table-responsive">
-          <table class="custom-table">
-            <thead>
-              <tr><th>物品圖片</th><th>物品名稱</th><th>分類</th><th>持有人</th><th>目前狀態</th><th>管理操作</th></tr>
+      <!-- Admin Sec: Items -->
+      <div id="admin-sec-items" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+              <tr><th class="px-6 py-4">圖片</th><th class="px-6 py-4">名稱</th><th class="px-6 py-4">分類</th><th class="px-6 py-4">持有人</th><th class="px-6 py-4">狀態</th><th class="px-6 py-4 text-right">操作</th></tr>
             </thead>
-            <tbody id="admin-items-list"></tbody>
+            <tbody id="admin-items-list" class="divide-y divide-gray-100"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- 檢舉審核 -->
-      <div id="admin-sec-reports" style="display:none;">
-        <div class="table-responsive">
-          <table class="custom-table">
-            <thead>
-              <tr><th>日期</th><th>檢舉人</th><th>被檢舉物品</th><th>原因</th><th>狀態</th><th>操作</th></tr>
+      <!-- Admin Sec: Reports -->
+      <div id="admin-sec-reports" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-100">
+              <tr><th class="px-6 py-4">日期</th><th class="px-6 py-4">檢舉人</th><th class="px-6 py-4">目標</th><th class="px-6 py-4">原因</th><th class="px-6 py-4">狀態</th><th class="px-6 py-4 text-right">操作</th></tr>
             </thead>
-            <tbody id="admin-reports-list"></tbody>
+            <tbody id="admin-reports-list" class="divide-y divide-gray-100"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 6. 刊登新物品 -->
+    <!-- ==================== View: Upload ==================== -->
     <section id="view-upload" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
-      <div class="form-card">
-        <h2 style="margin-bottom: 16px;">刊登想要交換的物品</h2>
-        <form id="upload-form">
-          <div class="form-group">
-            <label>物品分類</label>
-            <select id="input-category" required>
+      <button onclick="switchView('home')" class="mb-6 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>取消刊登
+      </button>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-900">刊登物品</h2>
+          <p class="text-sm text-gray-500 mt-2">分享您的閒置物品，開啟小換大之旅</p>
+        </div>
+        <form id="upload-form" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">物品分類</label>
+            <select id="input-category" class="input-field appearance-none bg-no-repeat bg-right pr-8" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-size: 1.25rem; background-position: calc(100% - 0.75rem) center;" required>
               <option value="3C家電">3C家電</option>
               <option value="居家生活">居家生活</option>
               <option value="美妝保養">美妝保養</option>
@@ -303,126 +595,192 @@
               <option value="其他">其他</option>
             </select>
           </div>
-          <div class="form-group"><label>物品名稱</label><input type="text" id="input-title" required></div>
-          <div class="form-group"><label>最想換到的物品</label><input type="text" id="input-wish" required></div>
-          <div class="form-group"><label>圖片網址 (可留空)</label><input type="url" id="input-img" placeholder="https://..."></div>
-          <div class="form-group"><label>這件物品最初是用什麼小東西換來的？</label><input type="text" id="input-origin" required></div>
-          <button type="submit" class="submit-btn">立即刊登並開始交換</button>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">物品名稱</label>
+            <input type="text" id="input-title" class="input-field" placeholder="例如：7成新藍牙音響" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">最想換到的物品 (願望)</label>
+            <input type="text" id="input-wish" class="input-field" placeholder="例如：二手折疊腳踏車" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">圖片網址 (選填)</label>
+            <input type="url" id="input-img" class="input-field" placeholder="https://...">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">這件物品最初是用什麼小東西換來的？(起點)</label>
+            <input type="text" id="input-origin" class="input-field" placeholder="例如：造型貼紙 (若是第1手可填自身物品)" required>
+          </div>
+          <button type="submit" class="w-full btn-gradient text-white font-semibold py-3 rounded-xl mt-4">
+            立即刊登
+          </button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- ================= 模態框區塊 (Modals) ================= -->
+  <!-- ==================== Modals ==================== -->
   
-  <!-- 自訂 Alert (警告框) -->
+  <!-- Custom Alert -->
   <div class="modal-overlay" id="custom-alert" style="z-index: 9999;">
-    <div class="modal" style="max-width: 350px; text-align:center;">
-      <p id="custom-alert-msg" style="font-size: 16px; margin-bottom: 24px; color: var(--text-main); line-height: 1.5; white-space: pre-line;"></p>
-      <button class="submit-btn" onclick="closeAlert()">確定</button>
+    <div class="modal-content bg-white p-6 rounded-2xl max-w-sm w-full mx-4 shadow-xl border border-gray-100 text-center">
+      <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      </div>
+      <p id="custom-alert-msg" class="text-gray-800 text-[15px] font-medium mb-6 whitespace-pre-line leading-relaxed"></p>
+      <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2.5 rounded-xl transition-colors" onclick="closeAlert()">確定</button>
     </div>
   </div>
 
-  <!-- 提出交換 -->
+  <!-- Trade Offer Modal -->
   <div class="modal-overlay" id="trade-modal">
-    <div class="modal">
-      <h3>🤝 提出交換申請</h3>
-      <div class="form-group"><label>您想拿來交換的物品名稱</label><input type="text" id="offer-item-name" required></div>
-      <div style="display:flex; gap:10px;"><button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('trade-modal')">取消</button><button class="nav-btn nav-btn-primary" style="flex:1;" onclick="confirmTrade()">確認發送</button></div>
+    <div class="modal-content bg-white p-6 sm:p-8 rounded-2xl max-w-md w-full mx-4 shadow-xl border border-gray-100">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">🤝</div>
+        <h3 class="text-xl font-bold text-gray-900">提出交換申請</h3>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">您想拿來交換的物品名稱</label>
+        <input type="text" id="offer-item-name" class="input-field" placeholder="描述您提供的物品..." required>
+      </div>
+      <div class="flex gap-3">
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors" onclick="closeModal('trade-modal')">取消</button>
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-white btn-gradient" onclick="confirmTrade()">確認發送</button>
+      </div>
     </div>
   </div>
 
-  <!-- 檢舉對話框 -->
+  <!-- Report Modal -->
   <div class="modal-overlay" id="report-modal">
-    <div class="modal">
-      <h3 style="color: var(--danger-color);">🚨 檢舉這個交換</h3>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; text-align:left;">檢舉會送平台人工複核。請據實檢舉，不要用來報復或干擾他人。</p>
+    <div class="modal-content bg-white p-6 sm:p-8 rounded-2xl max-w-md w-full mx-4 shadow-xl border border-gray-100">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center text-red-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">檢舉此交換</h3>
+      </div>
+      <p class="text-xs text-gray-500 mb-6 bg-gray-50 p-3 rounded-lg">檢舉會送平台人工複核。請據實檢舉，不要用來報復或干擾他人。</p>
       
-      <div class="form-group" style="text-align: left;">
-        <label>檢舉原因 *</label>
-        <select id="report-reason-select" required>
-          <option value="">請選擇原因...</option>
-          <option value="無效券 / 無法使用">無效物品 / 無法使用</option>
-          <option value="已過期 / 損壞">已過期 / 損壞</option>
-          <option value="已被使用 / 已轉售">已被使用 / 已轉售</option>
-          <option value="不合理的交換要求">不合理的交換要求</option>
-          <option value="持有者無回應 / 放鳥">持有者無回應 / 放鳥</option>
-          <option value="不當訊息 / 騷擾">不當訊息 / 騷擾</option>
-          <option value="詐騙">詐騙</option>
-          <option value="其他">其他</option>
-        </select>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">檢舉原因 <span class="text-red-500">*</span></label>
+          <select id="report-reason-select" class="input-field appearance-none bg-no-repeat bg-right pr-8" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22%3E%3Cpath stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/%3E%3C/svg%3E'); background-size: 1.25rem; background-position: calc(100% - 0.75rem) center;">
+            <option value="">請選擇原因...</option>
+            <option value="無效券 / 無法使用">無效物品 / 無法使用</option>
+            <option value="已過期 / 損壞">已過期 / 損壞</option>
+            <option value="已被使用 / 已轉售">已被使用 / 已轉售</option>
+            <option value="不合理的交換要求">不合理的交換要求</option>
+            <option value="持有者無回應 / 放鳥">持有者無回應 / 放鳥</option>
+            <option value="不當訊息 / 騷擾">不當訊息 / 騷擾</option>
+            <option value="詐騙">詐騙</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">補充說明</label>
+          <textarea id="report-reason-text" class="input-field h-20 resize-none" placeholder="請描述詳細情況..."></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">證據截圖 <span class="text-gray-400 font-normal">(選填)</span></label>
+          <input type="file" id="report-file" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors">
+        </div>
+        
+        <label class="flex items-start gap-2 cursor-pointer mt-4 group">
+          <input type="checkbox" id="report-confirm-check" class="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+          <span class="text-xs text-gray-600 group-hover:text-gray-900 transition-colors leading-relaxed">我確認以上內容屬實、願意為這次檢舉負責。我了解惡意或不實的檢舉一經查證，累積 3 次帳號將被停權。</span>
+        </label>
       </div>
-      <div class="form-group" style="text-align: left;">
-        <label>補充說明</label>
-        <textarea id="report-reason-text" placeholder="請描述詳細情況..."></textarea>
-      </div>
-      <div class="form-group" style="text-align: left;">
-        <label>證據截圖（必附）</label>
-        <input type="file" id="report-file" accept="image/*">
-        <p style="font-size: 11px; color: #888; margin-top: 4px;">上傳截圖（例如：到店顯示已使用、對話紀錄）</p>
-      </div>
-      
-      <label style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; cursor:pointer; text-align:left;">
-        <input type="checkbox" id="report-confirm-check" style="margin-top:2px;">
-        <span>我確認以上內容屬實、願意為這次檢舉負責。我了解惡意或不實的檢舉一經查證，累積 3 次帳號將被停權。</span>
-      </label>
 
-      <div style="display:flex; gap:10px;">
-        <button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('report-modal')">取消</button>
-        <button class="nav-btn nav-btn-admin" style="flex:1;" onclick="submitReport()">送出檢舉</button>
+      <div class="flex gap-3 mt-8">
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors" onclick="closeModal('report-modal')">取消</button>
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm" onclick="submitReport()">送出檢舉</button>
       </div>
     </div>
   </div>
 
-  <!-- 管理員審核檢舉對話框 -->
+  <!-- Admin Review Report Modal -->
   <div class="modal-overlay" id="admin-report-review-modal">
-    <div class="modal">
-      <h3 style="color: var(--danger-color);">🚨 審核檢舉</h3>
-      <div style="text-align: left; margin-bottom: 16px; background: #f9f9f9; padding: 12px; border-radius: 8px;">
-        <p><strong>被檢舉物品：</strong> <span id="review-item-title"></span></p>
-        <p><strong>被檢舉人：</strong> <span id="review-item-owner"></span></p>
-        <p><strong>檢舉人：</strong> <span id="review-reporter"></span></p>
-        <p><strong>檢舉原因：</strong> <span id="review-reason"></span></p>
-        <p><strong>補充說明：</strong> <span id="review-desc"></span></p>
+    <div class="modal-content bg-white p-6 sm:p-8 rounded-2xl max-w-lg w-full mx-4 shadow-xl border border-gray-100">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center text-red-600">🚨</div>
+        <h3 class="text-xl font-bold text-gray-900">審核檢舉</h3>
       </div>
-      <div class="form-group" style="text-align: left;">
-        <label>處理備註 (將傳送給相關人員)：</label>
-        <textarea id="review-admin-note" placeholder="例如：經查證屬實，已將物品下架。"></textarea>
+      
+      <div class="bg-gray-50 rounded-xl p-4 mb-6 text-sm text-gray-700 space-y-2 border border-gray-100">
+        <p><span class="font-medium text-gray-500 w-20 inline-block">目標物品</span> <span id="review-item-title" class="font-bold text-gray-900"></span></p>
+        <p><span class="font-medium text-gray-500 w-20 inline-block">被檢舉人</span> <span id="review-item-owner"></span></p>
+        <p><span class="font-medium text-gray-500 w-20 inline-block">檢舉人</span> <span id="review-reporter"></span></p>
+        <p><span class="font-medium text-gray-500 w-20 inline-block">檢舉原因</span> <span id="review-reason" class="text-red-600 font-medium"></span></p>
+        <p><span class="font-medium text-gray-500 w-20 inline-block align-top">補充說明</span> <span id="review-desc" class="inline-block w-3/4 break-words"></span></p>
       </div>
-      <div style="display:flex; gap:10px; flex-wrap: wrap;">
-        <button class="nav-btn nav-btn-outline" style="flex:1; min-width: 40%;" onclick="closeModal('admin-report-review-modal')">取消</button>
-        <button class="nav-btn nav-btn-outline" style="flex:1; min-width: 40%; color: var(--text-muted); border-color: #ccc;" onclick="rejectReport()">駁回檢舉</button>
-        <button class="nav-btn nav-btn-admin" style="flex:1; min-width: 100%; margin-top: 10px;" onclick="approveReportAndBan()">成立：下架物品並警告</button>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">處理備註 (將傳送給相關人員)：</label>
+        <textarea id="review-admin-note" class="input-field h-24 resize-none" placeholder="例如：經查證屬實，已將物品下架。"></textarea>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors" onclick="closeModal('admin-report-review-modal')">取消</button>
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm" onclick="rejectReport()">駁回檢舉</button>
+        <button class="flex-1 py-2.5 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm" onclick="approveReportAndBan()">成立並下架</button>
       </div>
     </div>
   </div>
 
-  <!-- 審核申請名單 -->
+  <!-- Applicants Modal -->
   <div class="modal-overlay" id="applicants-modal">
-    <div class="modal" style="max-width: 600px;">
-      <h3 style="margin-bottom: 16px;">📋 審核申請名單</h3>
-      <div class="table-responsive" style="margin-bottom: 16px;">
-        <table class="custom-table">
-          <thead><tr><th>申請人</th><th>提供的物品</th><th>狀態</th><th>操作</th></tr></thead>
-          <tbody id="applicants-list-body"></tbody>
+    <div class="modal-content bg-white p-6 sm:p-8 rounded-2xl max-w-2xl w-full mx-4 shadow-xl border border-gray-100 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between mb-6 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">📋</div>
+          <h3 class="text-xl font-bold text-gray-900">審核申請名單</h3>
+        </div>
+        <button onclick="closeModal('applicants-modal')" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      
+      <div class="overflow-y-auto min-h-0 flex-1 border border-gray-100 rounded-xl mb-6">
+        <table class="w-full text-sm text-left relative">
+          <thead class="bg-gray-50 text-gray-600 font-medium sticky top-0 shadow-sm">
+            <tr><th class="px-4 py-3">申請人</th><th class="px-4 py-3">提供的物品</th><th class="px-4 py-3">狀態</th><th class="px-4 py-3 text-right">操作</th></tr>
+          </thead>
+          <tbody id="applicants-list-body" class="divide-y divide-gray-100"></tbody>
         </table>
       </div>
-      <button class="nav-btn nav-btn-outline" style="width:100%;" onclick="closeModal('applicants-modal')">關閉</button>
+      
+      <div class="shrink-0 pt-2 border-t border-gray-100">
+         <p class="text-xs text-gray-500 text-center">確定選擇後，落選者的私訊功能將被自動關閉。</p>
+      </div>
     </div>
   </div>
 
-  <!-- 私訊聊天室 -->
+  <!-- Chat Modal -->
   <div class="modal-overlay" id="chat-modal">
-    <div class="modal">
-      <h3 style="margin-bottom: 12px;">💬 雙方私訊</h3>
-      <div class="chat-box" id="chat-history"></div>
-      <div class="chat-input-area"><input type="text" id="chat-input-text" placeholder="輸入訊息..."><button onclick="sendChatMessage()">傳送</button></div>
-      <button class="nav-btn nav-btn-outline" style="width:100%; margin-top: 12px;" onclick="closeModal('chat-modal')">關閉</button>
+    <div class="modal-content bg-white p-0 rounded-2xl max-w-md w-full mx-4 shadow-xl border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+      <div class="bg-gray-50 p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-sm">💬</div>
+          <h3 class="font-bold text-gray-900">私訊</h3>
+        </div>
+        <button onclick="closeModal('chat-modal')" class="text-gray-400 hover:text-gray-600 p-1 rounded-md hover:bg-gray-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      
+      <div class="flex-1 p-4 overflow-y-auto bg-white flex flex-col gap-4" id="chat-history">
+        <!-- Messages -->
+      </div>
+
+      <div class="p-4 bg-gray-50 border-t border-gray-100 shrink-0 flex gap-2">
+        <input type="text" id="chat-input-text" class="input-field py-2" placeholder="輸入訊息..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-xl font-medium transition-colors shadow-sm shrink-0">傳送</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // ================= 資料庫模擬 =================
+    // --- Data Store ---
     let itemsData = [
       { id: "item-1", category: "3C家電", title: "八成新藍牙音響", owner: "測試會員", wish: "空拍機", imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500", status: "active", selectedAppId: null, banReason: "", history: [{name:"貼紙", date:"2026-07-01"}, {name:"藍牙音響", date:"2026-07-25"}] },
       { id: "item-2", category: "居家生活", title: "入門級羽球拍套組", owner: "Emma", wish: "摺疊椅", imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500", status: "active", selectedAppId: null, banReason: "", history: [{name:"電影票", date:"2026-07-10"}, {name:"羽球拍", date:"2026-07-20"}] }
@@ -450,22 +808,23 @@
 
     let notificationsDB = [];
 
-    // ================= 狀態變數 =================
+    // --- App State ---
     let currentUser = null; 
     let currentSelectedItem = null;
     let currentChatAppId = null; 
     let currentReviewReportId = null;
 
-    // ================= 初始化 =================
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
 
+      // Auth Mode Switcher
       window.toggleAuthMode = function(mode) {
-        document.getElementById('login-card').style.display = mode === 'login' ? 'block' : 'none';
-        document.getElementById('register-card').style.display = mode === 'register' ? 'block' : 'none';
-        document.getElementById('forgot-card').style.display = mode === 'forgot' ? 'block' : 'none';
+        document.getElementById('login-card').classList.toggle('hidden', mode !== 'login');
+        document.getElementById('register-card').classList.toggle('hidden', mode !== 'register');
+        document.getElementById('forgot-card').classList.toggle('hidden', mode !== 'forgot');
       };
 
+      // Forms
       document.getElementById("register-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("reg-username").value.trim();
@@ -473,9 +832,7 @@
         const p = document.getElementById("reg-password").value.trim();
         if (usersDB.find(user => user.username === u)) return customAlert("⚠️ 帳號已被使用！請更換一個帳號。");
         usersDB.push({ username: u, password: p, name: n, role: 'user' });
-        customAlert("🎉 註冊成功！請使用剛註冊的帳號登入。", () => {
-             toggleAuthMode('login');
-        });
+        customAlert("🎉 註冊成功！請使用剛註冊的帳號登入。", () => { toggleAuthMode('login'); });
         e.target.reset();
       });
 
@@ -509,7 +866,7 @@
         const title = document.getElementById("input-title").value;
         const category = document.getElementById("input-category").value;
         const wish = document.getElementById("input-wish").value;
-        const imageUrl = document.getElementById("input-img").value || "https://placehold.co/500x300/E8DCC4/A67B5B?text=No+Image";
+        const imageUrl = document.getElementById("input-img").value || "https://placehold.co/500x300/E8DCC4/bcaaa4?text=No+Image";
         const origin = document.getElementById("input-origin").value;
 
         itemsData.unshift({
@@ -523,7 +880,7 @@
       });
     });
 
-    // ================= 輔助功能 =================
+    // UI Helpers
     window.customAlert = function(msg, callback) {
       document.getElementById('custom-alert-msg').innerText = msg;
       document.getElementById('custom-alert').classList.add('active');
@@ -551,13 +908,7 @@
     };
 
     function sendNotification(userId, text) {
-        notificationsDB.unshift({
-            id: "notif-" + Date.now(),
-            userId: userId,
-            text: text,
-            date: new Date().toISOString().split('T')[0],
-            isRead: false
-        });
+        notificationsDB.unshift({ id: "notif-" + Date.now(), userId: userId, text: text, date: new Date().toISOString().split('T')[0], isRead: false });
         updateNavUser();
     }
 
@@ -571,35 +922,40 @@
 
       if (currentUser) {
         displaySpan.textContent = `👤 ${currentUser.name}`;
+        displaySpan.classList.remove('hidden');
         loginBtn.textContent = "登出"; loginBtn.onclick = logout;
         
         const unreadCount = notificationsDB.filter(n => n.userId === currentUser.name && !n.isRead).length;
         if(unreadCount > 0 && currentUser.role !== 'admin'){
-            notifyBadge.style.display = "inline";
+            notifyBadge.classList.remove("hidden");
+            document.getElementById("unread-count").textContent = unreadCount;
+            document.getElementById("unread-count").classList.remove("hidden");
         } else {
-            notifyBadge.style.display = "none";
+            notifyBadge.classList.add("hidden");
+            document.getElementById("unread-count").classList.add("hidden");
         }
 
         if (currentUser.role === "admin") {
-          adminBtn.style.display = "inline-flex";
-          profileBtn.style.display = "none";
+          adminBtn.classList.remove("hidden");
+          profileBtn.classList.add("hidden");
           const pendingReports = reportsDB.filter(r => r.status === 'pending').length;
           if(pendingReports > 0){
-              adminBadge.style.display = "inline";
+              adminBadge.classList.remove("hidden");
               adminBadge.innerText = pendingReports;
           } else {
-              adminBadge.style.display = "none";
+              adminBadge.classList.add("hidden");
           }
         } else {
-          adminBtn.style.display = "none";
-          profileBtn.style.display = "inline-flex";
+          adminBtn.classList.add("hidden");
+          profileBtn.classList.remove("hidden");
         }
       } else {
         displaySpan.textContent = "未登入";
-        loginBtn.textContent = "登入 / 註冊"; loginBtn.onclick = () => switchView('login');
-        adminBtn.style.display = "none";
-        profileBtn.style.display = "none";
-        notifyBadge.style.display = "none";
+        displaySpan.classList.add('hidden');
+        loginBtn.textContent = "登入"; loginBtn.onclick = () => switchView('login');
+        adminBtn.classList.add("hidden");
+        profileBtn.classList.add("hidden");
+        notifyBadge.classList.add("hidden");
       }
     };
 
@@ -610,114 +966,231 @@
       switchView("home");
     };
 
-    function switchView(view) {
+    window.switchView = function(view) {
       document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
       document.getElementById(`view-${view}`).classList.add("active");
-      if (view === 'profile') switchProfileTab('apps');
+      if (view === 'profile') {
+          document.querySelector('.profile-sidebar .sidebar-item').click();
+      }
       if (view === 'admin') {
           switchAdminTab('items');
       }
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ================= 首頁大廳 =================
-    function renderGrid(categoryFilter = 'all') {
+    // --- Home View ---
+    window.renderGrid = function(categoryFilter = 'all') {
       const grid = document.getElementById("items-grid");
       let activeItems = itemsData.filter(i => i.status !== 'banned');
       if (categoryFilter !== 'all') { activeItems = activeItems.filter(i => i.category === categoryFilter); }
       
       grid.innerHTML = activeItems.map(item => `
-        <div class="card" onclick="openDetail('${item.id}')">
-          <div class="card-img-wrapper">
-            <img src="${item.imageUrl}" class="card-img">
-            <span class="card-tag ${item.status==='trading'?'trading':''}">${item.status==='trading'?'已配對':'開放中'}</span>
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-hover cursor-pointer flex flex-col" onclick="openDetail('${item.id}')">
+          <div class="relative w-full h-48 bg-gray-100">
+            <img src="${item.imageUrl}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+            <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-bold text-white shadow-sm ${item.status==='trading'?'bg-orange-500':'bg-blue-500'}">
+              ${item.status==='trading'?'已配對':'開放中'}
+            </span>
           </div>
-          <div class="card-body">
-            <div class="card-category">${item.category}</div>
-            <div class="card-title">${item.title}</div>
-            <div class="card-wish">💡 想換：${item.wish}</div>
+          <div class="p-5 flex flex-col flex-1">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">${item.category}</div>
+            <div class="text-lg font-bold text-gray-900 mb-3 line-clamp-2">${item.title}</div>
+            <div class="mt-auto bg-blue-50 text-blue-700 text-xs font-medium px-3 py-2 rounded-lg flex items-center gap-1.5">
+              <span>💡 想換：</span><span class="truncate">${item.wish}</span>
+            </div>
           </div>
         </div>
-      `).join("") || `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">目前此分類沒有物品哦！</div>`;
+      `).join("") || `<div class="col-span-full text-center py-20 text-gray-500">目前此分類沒有物品哦！</div>`;
     }
 
-    window.filterItems = function(category, event) {
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+    window.filterItems = function(category, btnElement) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-gray-900', 'text-white');
+        btn.classList.add('bg-white', 'text-gray-600');
+      });
+      btnElement.classList.remove('bg-white', 'text-gray-600');
+      btnElement.classList.add('bg-gray-900', 'text-white');
       renderGrid(category);
     }
 
-    function openDetail(id) {
+    // --- Detail View ---
+    window.openDetail = function(id) {
       currentSelectedItem = itemsData.find(i => i.id === id);
       let btnHtml = "";
-      if (currentSelectedItem.status === 'banned') btnHtml = `<div class="banned-box"><h4>⛔ 已下架</h4><p>${currentSelectedItem.banReason}</p></div>`;
-      else if (currentSelectedItem.status === 'trading') btnHtml = `<p style="color:#e65100; font-weight:bold; margin-bottom:10px;">⚠️ 持有人已選定對象，停止接收新申請。</p>`;
-      else if (currentUser && currentSelectedItem.owner === currentUser.name) btnHtml = `<p style="color:var(--primary-blue); font-weight:bold; margin-bottom:10px;">這是您刊登的物品，請至後台管理。</p>`;
-      else btnHtml = `<button class="submit-btn" onclick="handleProtectedAction('trade')">🤝 提出交換申請</button>`;
+      
+      if (currentSelectedItem.status === 'banned') {
+        btnHtml = `
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+            <h4 class="text-red-800 font-bold mb-1">⛔ 已下架</h4>
+            <p class="text-red-600 text-sm">${currentSelectedItem.banReason}</p>
+          </div>`;
+      } else if (currentSelectedItem.status === 'trading') {
+        btnHtml = `
+          <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl mb-6 text-center">
+            <p class="text-orange-700 font-bold text-sm">⚠️ 持有人已選定對象，停止接收新申請。</p>
+          </div>`;
+      } else if (currentUser && currentSelectedItem.owner === currentUser.name) {
+        btnHtml = `
+          <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6 text-center">
+            <p class="text-blue-700 font-bold text-sm">這是您刊登的物品，請至後台管理。</p>
+          </div>`;
+      } else {
+        btnHtml = `<button class="w-full btn-gradient text-white font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all mb-4" onclick="handleProtectedAction('trade')">🤝 提出交換申請</button>`;
+      }
 
-      const reportHtml = currentSelectedItem.status !== 'banned' && (!currentUser || currentSelectedItem.owner !== currentUser.name) ? `<a class="report-link" onclick="handleProtectedAction('report')">🚨 檢舉這個交換</a>` : '';
+      const reportHtml = currentSelectedItem.status !== 'banned' && (!currentUser || currentSelectedItem.owner !== currentUser.name) ? 
+        `<button class="text-xs text-red-500 hover:text-red-700 underline font-medium" onclick="handleProtectedAction('report')">🚨 檢舉這個交換</button>` : '';
 
       const timelineHtml = currentSelectedItem.history.map((h, idx) => {
         const isCurrent = idx === currentSelectedItem.history.length - 1;
-        return `<div class="timeline-item ${isCurrent ? 'current' : ''}"><div class="timeline-text">${isCurrent ? '<b>[現況]</b> ' : ''}${h.name}</div><div class="timeline-date">${h.date}</div></div>`;
+        return `
+          <div class="relative pl-6 pb-6 last:pb-0">
+            ${idx !== currentSelectedItem.history.length - 1 ? `<div class="absolute left-[5px] top-2 bottom-0 w-0.5 bg-gray-200"></div>` : ''}
+            <div class="absolute left-0 top-1.5 timeline-dot ${isCurrent ? 'current' : ''}"></div>
+            <div class="text-sm ${isCurrent ? 'font-bold text-blue-600' : 'text-gray-600'}">
+              ${isCurrent ? '<span class="mr-1">✨</span>' : ''}${h.name}
+            </div>
+            <div class="text-xs text-gray-400 mt-0.5">${h.date}</div>
+          </div>
+        `;
       }).join("");
 
       document.getElementById("detail-content").innerHTML = `
-        <div class="detail-grid">
-          <div>
-            <img src="${currentSelectedItem.imageUrl}" class="detail-img">
-            <div class="timeline-section">
-                <h3>📈 小換大增值履歷</h3>
-                <div class="timeline">${timelineHtml}</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          <!-- Left: Image & Timeline -->
+          <div class="space-y-6">
+            <div class="rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 shadow-inner">
+              <img src="${currentSelectedItem.imageUrl}" class="w-full object-cover max-h-[400px]">
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                  小換大增值履歷
+                </h3>
+                <div class="pt-2">
+                  ${timelineHtml}
+                </div>
             </div>
           </div>
-          <div>
-            <div class="card-category">${currentSelectedItem.category}</div>
-            <h2>${currentSelectedItem.title}</h2>
-            <div style="margin-bottom:16px; display:inline-block; background:#f0f0f0; padding:4px 8px; border-radius:4px; font-size:12px;">👤 持有人：${currentSelectedItem.owner}</div>
-            <div style="background:var(--milktea-light); border-left:4px solid var(--milktea-dark); padding:12px; margin-bottom:20px; border-radius:0 8px 8px 0;">
-                <h4 style="color:var(--milktea-dark); margin-bottom:4px;">🎯 願望：</h4>
-                <p style="color:#6b4f31; font-size:14px;">${currentSelectedItem.wish}</p>
+
+          <!-- Right: Info & Actions -->
+          <div class="flex flex-col">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">${currentSelectedItem.category}</div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4 leading-tight">${currentSelectedItem.title}</h2>
+            
+            <div class="flex items-center gap-2 mb-8">
+              <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-xs font-bold uppercase">
+                ${currentSelectedItem.owner.charAt(0)}
+              </div>
+              <span class="text-sm font-medium text-gray-600">持有人：${currentSelectedItem.owner}</span>
             </div>
-            ${btnHtml}
-            <div style="text-align:right;">${reportHtml}</div>
+            
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-orange-100 mb-8 shadow-sm">
+                <h4 class="text-sm font-bold text-orange-800 mb-2 flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                  願望清單
+                </h4>
+                <p class="text-orange-900 font-medium">${currentSelectedItem.wish}</p>
+            </div>
+            
+            <div class="mt-auto">
+              ${btnHtml}
+              <div class="text-right">${reportHtml}</div>
+            </div>
           </div>
         </div>`;
       switchView("detail");
     }
 
-    // ================= 會員專區 =================
-    window.switchProfileTab = function(tab) {
-      document.getElementById('tab-my-apps').classList.toggle('active', tab === 'apps');
-      document.getElementById('tab-my-items').classList.toggle('active', tab === 'items');
-      document.getElementById('tab-my-notifications').classList.toggle('active', tab === 'notifications');
+    window.switchProfileMenu = function(menuId, btnEl) {
+      document.querySelectorAll('.profile-sidebar .sidebar-item').forEach(el => el.classList.remove('active'));
+      if(btnEl) btnEl.classList.add('active');
       
-      document.getElementById('profile-sec-apps').style.display = tab === 'apps' ? 'block' : 'none';
-      document.getElementById('profile-sec-items').style.display = tab === 'items' ? 'block' : 'none';
-      document.getElementById('profile-sec-notifications').style.display = tab === 'notifications' ? 'block' : 'none';
+      document.querySelectorAll('.profile-content .menu-section').forEach(el => el.classList.remove('active'));
+      document.getElementById(`menu-${menuId}`).classList.add('active');
+
+      if (menuId === 'wallet') switchWalletTab('records');
+      if (menuId === 'notifications') renderNotifications();
+    }
+
+    window.switchWalletTab = function(tab) {
+      const activeClass = ['border-blue-500', 'text-blue-600'];
+      const inactiveClass = ['border-transparent', 'text-gray-500', 'hover:text-gray-700'];
+
+      document.querySelectorAll('#menu-wallet > div.flex > button').forEach(btn => {
+        btn.classList.remove(...activeClass);
+        btn.classList.add(...inactiveClass);
+      });
+
+      const selectedBtn = document.getElementById(`tab-my-${tab}`);
+      selectedBtn.classList.remove(...inactiveClass);
+      selectedBtn.classList.add(...activeClass);
       
-      if(tab === 'apps') renderUserApps();
+      document.getElementById('wallet-sec-records').classList.toggle('hidden', tab !== 'records');
+      document.getElementById('wallet-sec-items').classList.toggle('hidden', tab !== 'items');
+      document.getElementById('wallet-sec-apps').classList.toggle('hidden', tab !== 'apps');
+      
+      if(tab === 'records') renderUserRecords();
       if(tab === 'items') renderUserItems();
-      if(tab === 'notifications') renderNotifications();
+      if(tab === 'apps') renderUserApps();
+    }
+
+    function renderUserRecords() {
+      const records = userApplications.filter(a => a.status === '已成交' && (a.applicant === currentUser.name || a.targetOwner === currentUser.name));
+      document.getElementById("user-records-list").innerHTML = records.map(app => {
+        const isApplicant = app.applicant === currentUser.name;
+        const targetPerson = isApplicant ? app.targetOwner : app.applicant;
+        const myItemGiven = isApplicant ? app.myOffer : app.targetTitle;
+        const itemReceived = isApplicant ? app.targetTitle : app.myOffer;
+        
+        return `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-gray-500">${app.date}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">${itemReceived}</td>
+            <td class="px-6 py-4 text-gray-600">${targetPerson}</td>
+            <td class="px-6 py-4 text-gray-600">${myItemGiven}</td>
+            <td class="px-6 py-4"><span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold">交換成功</span></td>
+          </tr>`;
+      }).join("") || `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">目前還沒有成功交換的紀錄喔！</td></tr>`;
     }
 
     function renderUserApps() {
       document.getElementById("user-applications-list").innerHTML = userApplications.filter(a => a.applicant === currentUser.name).map(app => {
         let isLocked = app.status === '未入選';
-        let badgeClass = app.status === '已成交' ? 'trading' : (isLocked ? 'rejected' : '');
-        return `<tr><td>${app.date}</td><td><b>${app.targetTitle}</b></td><td>${app.myOffer}</td><td><span class="status-badge ${badgeClass}">${app.status}</span></td>
-        <td><button class="btn-action" ${isLocked?'disabled':''} onclick="openChat('${app.id}')">${isLocked?'🔒 關閉':'💬 私訊'}</button></td></tr>`;
-      }).join("") || `<tr><td colspan="5" style="text-align:center;">無紀錄</td></tr>`;
+        let badgeClass = app.status === '已成交' ? 'bg-orange-100 text-orange-700' : (isLocked ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700');
+        return `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-gray-500">${app.date}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">${app.targetTitle}</td>
+            <td class="px-6 py-4 text-gray-600">${app.myOffer}</td>
+            <td class="px-6 py-4"><span class="${badgeClass} px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap">${app.status}</span></td>
+            <td class="px-6 py-4 text-right">
+              <button class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${isLocked ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}" ${isLocked?'disabled':''} onclick="openChat('${app.id}')">
+                ${isLocked?'🔒 關閉':'💬 私訊'}
+              </button>
+            </td>
+          </tr>`;
+      }).join("") || `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">目前沒有申請紀錄</td></tr>`;
     }
 
     function renderUserItems() {
       document.getElementById("user-posted-list").innerHTML = itemsData.filter(i => i.owner === currentUser.name).map(item => {
         const c = userApplications.filter(a => a.targetItemId === item.id).length;
-        let badgeClass = item.status === 'trading' ? 'trading' : (item.status === 'banned' ? 'rejected' : '');
+        let badgeClass = item.status === 'trading' ? 'bg-orange-100 text-orange-700' : (item.status === 'banned' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700');
         let statusText = item.status === 'trading' ? '已結案' : (item.status === 'banned' ? '已下架' : '徵求中');
-        return `<tr><td><b>${item.title}</b></td><td><span class="status-badge ${badgeClass}">${statusText}</span></td><td>${c} 人</td>
-        <td><button class="btn-action" ${item.status === 'banned'?'disabled':''} onclick="openApplicantsModal('${item.id}')">查看申請者</button></td></tr>`;
-      }).join("") || `<tr><td colspan="4" style="text-align:center;">無紀錄</td></tr>`;
+        return `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 font-medium text-gray-900">${item.title}</td>
+            <td class="px-6 py-4"><span class="${badgeClass} px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap">${statusText}</span></td>
+            <td class="px-6 py-4 text-gray-600">${c} 人</td>
+            <td class="px-6 py-4 text-right">
+              <button class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${item.status === 'banned' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-gray-800'}" ${item.status === 'banned'?'disabled':''} onclick="openApplicantsModal('${item.id}')">
+                查看申請者
+              </button>
+            </td>
+          </tr>`;
+      }).join("") || `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">目前沒有刊登紀錄</td></tr>`;
     }
 
     function renderNotifications() {
@@ -725,14 +1198,14 @@
         const myNotifs = notificationsDB.filter(n => n.userId === currentUser.name);
         
         list.innerHTML = myNotifs.map(n => `
-            <div class="notification-item ${n.isRead ? '' : 'unread'}">
-                <div class="notification-date">${n.date}</div>
-                <div class="notification-text">${n.text}</div>
+            <div class="bg-white p-4 rounded-xl border ${n.isRead ? 'border-gray-100' : 'border-blue-200 bg-blue-50'} shadow-sm transition-colors">
+                <div class="text-[11px] text-gray-400 mb-1 font-medium">${n.date}</div>
+                <div class="text-sm text-gray-800 leading-relaxed">${n.text}</div>
             </div>
-        `).join("") || `<div style="padding:20px; text-align:center; color:#888;">目前沒有新通知</div>`;
+        `).join("") || `<div class="text-center py-10 text-gray-500">目前沒有新通知</div>`;
 
         myNotifs.forEach(n => n.isRead = true);
-        setTimeout(() => { document.getElementById("unread-count").innerText = ""; updateNavUser(); }, 500);
+        setTimeout(() => { updateNavUser(); }, 500);
     }
 
     window.confirmTrade = function() {
@@ -740,27 +1213,40 @@
       if (!offer) return;
       userApplications.unshift({ id: "app-"+Date.now(), applicant: currentUser.name, targetItemId: currentSelectedItem.id, targetTitle: currentSelectedItem.title, targetOwner: currentSelectedItem.owner, myOffer: offer, date: new Date().toISOString().split('T')[0], status: "等待回應" });
       document.getElementById("offer-item-name").value = "";
-      sendNotification(currentSelectedItem.owner, `您的物品「${currentSelectedItem.title}」收到新的交換申請：${offer}。`);
-      customAlert("✅ 申請成功！"); closeModal('trade-modal');
+      sendNotification(currentSelectedItem.owner, `📦 您的物品「${currentSelectedItem.title}」收到新的交換申請：${offer}。`);
+      customAlert("✅ 申請成功送出！"); 
+      closeModal('trade-modal');
     }
 
     window.openApplicantsModal = function(itemId) {
       const item = itemsData.find(i => i.id === itemId);
       document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
         let btn = "";
-        let badgeClass = app.status === '已成交' ? 'trading' : (app.status === '未入選' ? 'rejected' : '');
+        let badgeClass = app.status === '已成交' ? 'bg-orange-100 text-orange-700' : (app.status === '未入選' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700');
         if (item.status !== 'trading') {
-             btn = `<button class="btn-action" onclick="openChat('${app.id}')">💬</button> <button class="btn-success" onclick="acceptApplicant('${app.id}','${itemId}')">✅ 選擇</button>`;
+             btn = `
+              <div class="flex justify-end gap-2">
+                <button class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors" onclick="openChat('${app.id}')" title="私訊">💬</button> 
+                <button class="px-3 py-1 rounded bg-green-500 hover:bg-green-600 text-white text-xs font-bold transition-colors" onclick="acceptApplicant('${app.id}','${itemId}')">✅ 選擇</button>
+              </div>`;
         } else {
-             btn = item.selectedAppId === app.id ? `<button class="btn-action" onclick="openChat('${app.id}')">💬</button>` : `<button class="btn-action" disabled>🔒</button>`;
+             btn = item.selectedAppId === app.id ? 
+              `<button class="px-2 py-1 rounded bg-blue-50 text-blue-600 transition-colors" onclick="openChat('${app.id}')">💬 繼續聯絡</button>` : 
+              `<span class="text-xs text-gray-400 font-medium">🔒 已鎖定</span>`;
         }
-        return `<tr><td>${app.applicant}</td><td>${app.myOffer}</td><td><span class="status-badge ${badgeClass}">${app.status}</span></td><td>${btn}</td></tr>`;
-      }).join("") || `<tr><td colspan="4" style="text-align:center;">無申請</td></tr>`;
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium text-gray-900">${app.applicant}</td>
+            <td class="px-4 py-3 text-gray-600">${app.myOffer}</td>
+            <td class="px-4 py-3"><span class="${badgeClass} px-2 py-0.5 rounded-full text-[11px] font-bold whitespace-nowrap">${app.status}</span></td>
+            <td class="px-4 py-3 text-right">${btn}</td>
+          </tr>`;
+      }).join("") || `<tr><td colspan="4" class="text-center py-8 text-gray-500">無申請</td></tr>`;
       openModal('applicants-modal');
     }
 
     window.acceptApplicant = function(appId, itemId) {
-      if(!confirm("確定選擇他？其他人的通訊將被關閉。")) return;
+      if(!confirm("確定選擇他？\n確認後其他申請者的通訊將被關閉。")) return;
       const item = itemsData.find(i => i.id === itemId);
       item.status = 'trading';
       item.selectedAppId = appId;
@@ -768,7 +1254,7 @@
           if (a.targetItemId === itemId) {
               if (a.id === appId) {
                   a.status = '已成交';
-                  sendNotification(a.applicant, `🎉 恭喜！您對「${item.title}」的交換申請已被接受！`);
+                  sendNotification(a.applicant, `🎉 恭喜！您對「${item.title}」的交換申請已被接受！快去私訊討論細節吧。`);
               } else {
                   a.status = '未入選';
                   sendNotification(a.applicant, `很遺憾，您對「${item.title}」的交換申請未入選。`);
@@ -783,7 +1269,14 @@
       const box = document.getElementById("chat-history");
       box.innerHTML = chatDB.filter(m => m.appId === currentChatAppId).map(m => {
         let isMe = m.sender === currentUser.name;
-        return `<div class="chat-msg ${isMe?'me':'other'}"><div class="chat-sender">${isMe?'我':m.sender}</div>${m.text}</div>`;
+        return `
+          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <span class="text-[10px] text-gray-400 mb-1 mx-1">${isMe ? '我' : m.sender}</span>
+            <div class="px-4 py-2 text-sm shadow-sm max-w-[85%] ${isMe ? 'chat-bubble-me' : 'chat-bubble-other'}">
+              ${m.text}
+            </div>
+          </div>
+        `;
       }).join("");
       box.scrollTop = box.scrollHeight;
     }
@@ -793,7 +1286,6 @@
       document.getElementById("chat-input-text").value = ""; renderChat();
     }
 
-    // ================= 檢舉機制 =================
     window.submitReport = function() {
       const reason = document.getElementById("report-reason-select").value;
       const desc = document.getElementById("report-reason-text").value.trim();
@@ -809,23 +1301,33 @@
       updateNavUser(); 
     }
 
-    // ================= 管理員專區 =================
     window.switchAdminTab = function(tab) {
-        document.getElementById('tab-admin-items').classList.toggle('active', tab === 'items');
-        document.getElementById('tab-admin-reports').classList.toggle('active', tab === 'reports');
-        document.getElementById('admin-sec-items').style.display = tab === 'items' ? 'block' : 'none';
-        document.getElementById('admin-sec-reports').style.display = tab === 'reports' ? 'block' : 'none';
+        document.getElementById('tab-admin-items').classList.toggle('text-gray-500', tab !== 'items');
+        document.getElementById('tab-admin-items').classList.toggle('border-transparent', tab !== 'items');
+        document.getElementById('tab-admin-items').classList.toggle('text-red-600', tab === 'items');
+        document.getElementById('tab-admin-items').classList.toggle('border-red-500', tab === 'items');
+
+        document.getElementById('tab-admin-reports').classList.toggle('text-gray-500', tab !== 'reports');
+        document.getElementById('tab-admin-reports').classList.toggle('border-transparent', tab !== 'reports');
+        document.getElementById('tab-admin-reports').classList.toggle('text-red-600', tab === 'reports');
+        document.getElementById('tab-admin-reports').classList.toggle('border-red-500', tab === 'reports');
+
+        document.getElementById('admin-sec-items').classList.toggle('hidden', tab !== 'items');
+        document.getElementById('admin-sec-reports').classList.toggle('hidden', tab !== 'reports');
+        
         if (tab === 'items') renderAdminItems();
         if (tab === 'reports') renderAdminReports();
     }
 
     function renderAdminItems() {
       document.getElementById("admin-items-list").innerHTML = itemsData.map(item => `
-        <tr>
-          <td><img src="${item.imageUrl}" style="width:50px;height:50px;object-fit:cover; border-radius:4px;"></td>
-          <td><b>${item.title}</b></td><td>${item.category}</td><td>${item.owner}</td>
-          <td><span class="status-badge ${item.status==='banned'?'rejected':''}">${item.status==='banned'?'已下架':(item.status==='trading'?'已成交':'上架中')}</span></td>
-          <td>${item.status !== 'banned' ? `<button class="btn-danger" onclick="adminDirectBan('${item.id}')">強制下架</button>` : `<span style="color:#999; font-size:12px;">無操作</span>`}</td>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4"><img src="${item.imageUrl}" class="w-12 h-12 object-cover rounded-lg border border-gray-200"></td>
+          <td class="px-6 py-4 font-medium text-gray-900">${item.title}</td>
+          <td class="px-6 py-4 text-gray-500 text-xs">${item.category}</td>
+          <td class="px-6 py-4 text-gray-700">${item.owner}</td>
+          <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.status==='banned'?'bg-red-100 text-red-700':(item.status==='trading'?'bg-orange-100 text-orange-700':'bg-blue-100 text-blue-700')}">${item.status==='banned'?'已下架':(item.status==='trading'?'已成交':'上架中')}</span></td>
+          <td class="px-6 py-4 text-right">${item.status !== 'banned' ? `<button class="text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors" onclick="adminDirectBan('${item.id}')">強制下架</button>` : `<span class="text-xs text-gray-400">無操作</span>`}</td>
         </tr>`).join("");
     }
 
@@ -842,10 +1344,10 @@
         list.innerHTML = reportsDB.map(r => {
             const item = itemsData.find(i => i.id === r.targetItemId);
             let itemTitle = item ? item.title : '未知物品';
-            let statusHtml = r.status === 'pending' ? '<span class="status-badge">待審核</span>' : (r.status === 'approved' ? '<span class="status-badge rejected">已懲處</span>' : '<span class="status-badge" style="background:#eee; color:#666;">已駁回</span>');
-            let actionHtml = r.status === 'pending' ? `<button class="btn-action" onclick="openReviewModal('${r.id}')">進行審核</button>` : '';
-            return `<tr><td>${r.date}</td><td>${r.reporter}</td><td>${itemTitle}</td><td>${r.reason}</td><td>${statusHtml}</td><td>${actionHtml}</td></tr>`;
-        }).join("") || `<tr><td colspan="6" style="text-align:center;">目前沒有檢舉案件</td></tr>`;
+            let statusHtml = r.status === 'pending' ? '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-bold">待審核</span>' : (r.status === 'approved' ? '<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-bold">已懲處</span>' : '<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-bold">已駁回</span>');
+            let actionHtml = r.status === 'pending' ? `<button class="bg-gray-900 text-white hover:bg-gray-800 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-sm" onclick="openReviewModal('${r.id}')">進行審核</button>` : '';
+            return `<tr class="hover:bg-gray-50 transition-colors"><td class="px-6 py-4 text-gray-500 text-xs">${r.date}</td><td class="px-6 py-4 font-medium text-gray-900">${r.reporter}</td><td class="px-6 py-4 text-gray-700">${itemTitle}</td><td class="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">${r.reason}</td><td class="px-6 py-4">${statusHtml}</td><td class="px-6 py-4 text-right">${actionHtml}</td></tr>`;
+        }).join("") || `<tr><td colspan="6" class="text-center py-8 text-gray-500">目前沒有檢舉案件</td></tr>`;
     }
 
     window.openReviewModal = function(reportId) {
@@ -884,7 +1386,6 @@
         closeModal('admin-report-review-modal'); customAlert("已駁回此檢舉。");
         renderAdminReports(); updateNavUser();
     }
-
   </script>
 </body>
 </html>
