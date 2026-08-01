@@ -4,198 +4,470 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TradeUp 小換大 - 以物易物平台</title>
+  <!-- 引入 Tailwind CSS 進行現代化排版 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入 Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* 核心色彩定義 (較深奶茶色與天空藍) */
+    :root {
+      --primary-blue: #4A90E2;    /* 天空藍 */
+      --primary-blue-hover: #357ABD;
+      --milktea-dark: #C19A6B;    /* 較深的奶茶色 */
+      --milktea-light: #E8DCC4;   /* 淺奶茶底色 */
+      --bg-color: #FAFAFA;
+      --text-main: #333333;
+      --text-muted: #666666;
     }
 
-    body { background-color: #f4f6f8; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
-    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
     /* 頂部導覽列 */
-    header { background: #ffffff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
-    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
-    .logo { font-size: 20px; font-weight: 800; color: #2e7d32; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .nav-buttons { display: flex; gap: 10px; align-items: center; }
-    .nav-btn { border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-    .nav-btn-outline { background: transparent; color: #2e7d32; border: 1.5px solid #2e7d32; }
-    .nav-btn-outline:hover { background: #e8f5e9; }
-    .nav-btn-primary { background: #2e7d32; color: white; }
-    .nav-btn-primary:hover { background: #1b5e20; }
-    .nav-btn-admin { background: #d32f2f; color: white; }
-    .nav-btn-admin:hover { background: #9a0007; }
-    .user-tag { font-size: 13px; color: #666; font-weight: bold; }
+    header {
+      background: white;
+      border-bottom: 1px solid #E5E7EB;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
 
-    main { max-width: 1100px; margin: 20px auto; padding: 0 20px; flex: 1; width: 100%; }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* 按鈕共用樣式 */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 9999px; /* 圓角膠囊狀 */
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-blue);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(74, 144, 226, 0.3);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-blue-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(74, 144, 226, 0.4);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary-blue);
+      border: 1.5px solid var(--primary-blue);
+    }
+    .btn-outline:hover {
+      background-color: #F0F7FF;
+    }
+
+    .btn-milktea {
+      background-color: var(--milktea-dark);
+      color: white;
+    }
+    .btn-milktea:hover {
+      background-color: #A88154;
+    }
+
+    .btn-danger {
+      background-color: #EF4444;
+      color: white;
+    }
+    .btn-danger:hover { background-color: #DC2626; }
+
+    /* 主要內容區 */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+    }
+
     .view-section { display: none; }
-    .view-section.active { display: block; }
+    .view-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
-    /* 首頁與卡片 */
-    .hero-banner { background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%); color: white; padding: 30px 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; }
-    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-    .card-img-wrapper { position: relative; width: 100%; height: 180px; background: #eee; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 首頁英雄橫幅 */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--milktea-dark), #D4B28C);
+      color: white;
+      padding: 40px 24px;
+      border-radius: 24px;
+      margin-bottom: 32px;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(193, 154, 107, 0.4);
+    }
+    .hero-banner h1 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
+    .hero-banner p { font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+
+    /* 物品分類過濾器 */
+    .category-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .filter-btn {
+      padding: 6px 16px;
+      background: white;
+      border: 1px solid #E5E7EB;
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+    .filter-btn.active {
+      background: var(--primary-blue);
+      color: white;
+      border-color: var(--primary-blue);
+    }
+
+    /* 物品卡片 (網格) */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      border: 1px solid #F3F4F6;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1);
+    }
+    .card-img-wrapper {
+      position: relative;
+      height: 200px;
+      width: 100%;
+      background: #F9FAFB;
+    }
     .card-img { width: 100%; height: 100%; object-fit: cover; }
-    .card-tag { position: absolute; top: 10px; right: 10px; background: rgba(46, 125, 50, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-    .card-tag.trading { background: rgba(245, 124, 0, 0.9); }
-    .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
-    .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #222; }
-    .card-wish { font-size: 13px; color: #e65100; background: #fff3e0; padding: 6px 10px; border-radius: 6px; margin-bottom: 12px; }
+    .card-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(74, 144, 226, 0.9); /* primary-blue */
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(4px);
+    }
+    .card-tag.trading { background: rgba(245, 158, 11, 0.9); }
+    
+    .card-body { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+    .card-category { font-size: 12px; color: var(--primary-blue); font-weight: 700; margin-bottom: 4px; }
+    .card-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; line-height: 1.3; }
+    .card-wish {
+      background: var(--milktea-light);
+      color: #8C6A43;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .card-history {
+      margin-top: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid #F3F4F6;
+      padding-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
     /* 詳細頁面 */
-    .detail-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .back-btn { background: none; border: none; color: #666; font-size: 14px; cursor: pointer; margin-bottom: 16px; }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .detail-card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
     @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
-    .detail-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; }
-    .timeline-section { margin-top: 20px; background: #f9fbe7; padding: 16px; border-radius: 8px; border: 1px solid #dce775; }
-    .timeline { padding-left: 20px; border-left: 2px solid #8bc34a; margin-top:12px; }
-    .timeline-item { position: relative; margin-bottom: 12px; font-size: 13px; }
-    .timeline-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 8px; height: 8px; background: #689f38; border-radius: 50%; }
-    .timeline-item.current::before { background: #2e7d32; width: 12px; height: 12px; left: -27px; top: 2px; }
+    .detail-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; }
+    
+    /* 成長履歷 (時間軸) */
+    .timeline-section {
+      margin-top: 24px;
+      background: var(--milktea-light);
+      padding: 20px;
+      border-radius: 16px;
+    }
+    .timeline-title { font-size: 16px; font-weight: 700; color: var(--milktea-dark); margin-bottom: 16px; }
+    .timeline { border-left: 2px solid var(--milktea-dark); padding-left: 20px; margin-left: 8px; }
+    .timeline-item { position: relative; margin-bottom: 16px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -25px; top: 4px; width: 8px; height: 8px;
+      background: var(--milktea-dark); border-radius: 50%;
+    }
+    .timeline-item.current::before {
+      background: var(--primary-blue); width: 12px; height: 12px; left: -27px; top: 2px;
+      box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+    }
+    .timeline-text { font-size: 14px; color: var(--text-main); font-weight: 500; }
+    .timeline-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-    /* 表單 */
-    .form-card { background: white; max-width: 500px; margin: 20px auto; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 6px; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    .submit-btn { width: 100%; background: #2e7d32; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
-    .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+    /* 表單元件 */
+    .form-card {
+      background: white; max-width: 500px; margin: 0 auto; padding: 32px;
+      border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
+    .form-control {
+      width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 12px;
+      font-size: 15px; transition: border-color 0.2s; background: #F9FAFB;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary-blue); background: white; box-shadow: 0 0 0 3px rgba(74,144,226,0.1); }
+    textarea.form-control { resize: vertical; min-height: 100px; }
 
-    /* 會員中心與表格 */
-    .profile-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-    .tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #888; cursor: pointer; padding: 8px 12px; border-radius: 6px; }
-    .tab-btn.active { background: #e8f5e9; color: #2e7d32; }
-    .custom-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-    .custom-table th, .custom-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-    .custom-table th { background: #f5f5f5; font-weight: bold; }
-    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; background: #e3f2fd; color: #1976d2; }
-    .status-badge.trading { background: #fff3e0; color: #e65100; }
-    .status-badge.rejected { background: #ffebee; color: #c62828; }
-    .btn-action { background: #1976d2; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    .btn-action:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-success { background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-    .btn-danger { background: #d32f2f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    /* 彈出對話框 (Modal) & 警告框 */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 1000;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; animation: fadeInModal 0.2s ease-out; }
+    @keyframes fadeInModal { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    
+    .modal-box {
+      background: white; padding: 32px; border-radius: 24px; width: 100%; max-width: 500px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; text-align: center; color: var(--text-main); }
+    
+    /* 自訂 Alert */
+    #custom-alert .modal-box { max-width: 400px; text-align: center; }
+    #custom-alert-msg { font-size: 16px; margin-bottom: 24px; color: var(--text-main); line-height: 1.5; white-space: pre-line; }
 
-    /* 對話框 (Modal) & Chat */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; }
-    .modal-overlay.active { display: flex; }
-    .modal { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-    .chat-box { background: #f4f6f8; border-radius: 8px; height: 250px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; border: 1px solid #ddd; }
-    .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.4; position: relative; }
-    .chat-msg.me { background: #dcf8c6; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .chat-msg.other { background: white; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #eee; }
-    .chat-sender { font-size: 11px; color: #888; margin-bottom: 4px; }
-    .chat-input-area { display: flex; gap: 8px; }
-    .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
-    .chat-input-area button { background: #2e7d32; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; }
-    .banned-box { background: #ffebee; border-left: 4px solid #d32f2f; padding: 16px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+    /* 表格 */
+    .custom-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .custom-table th, .custom-table td { padding: 16px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    .custom-table th { background: #F9FAFB; font-weight: 700; font-size: 14px; color: var(--text-muted); text-transform: uppercase; }
+    .custom-table tr:last-child td { border-bottom: none; }
+    .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+    .badge-blue { background: #E0F2FE; color: #0369A1; }
+    .badge-orange { background: #FEF3C7; color: #B45309; }
+
+    /* 聊天室 */
+    .chat-box {
+      background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 16px;
+      height: 300px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    }
+    .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.4; }
+    .chat-msg.me { background: var(--primary-blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .chat-msg.other { background: white; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #E5E7EB; }
+    .chat-sender { font-size: 11px; margin-bottom: 4px; opacity: 0.8; }
+    
+    .chat-input-area { display: flex; gap: 8px; margin-top: 12px; }
+    .chat-input-area input { flex: 1; border-radius: 999px; }
+    .chat-input-area button { border-radius: 999px; }
+
+    .report-link { color: #EF4444; font-size: 13px; text-decoration: underline; cursor: pointer; display: inline-block; margin-top: 16px; font-weight: 500;}
   </style>
 </head>
 <body>
 
+  <!-- 導覽列 -->
   <header>
     <div class="nav-container">
-      <div class="logo" onclick="switchView('home')">🔄 TradeUp 小換大</div>
+      <div class="logo" onclick="switchView('home')">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+        TradeUp
+      </div>
       <div class="nav-buttons">
         <span class="user-tag" id="user-display">未登入</span>
-        <button class="nav-btn nav-btn-outline" id="btn-user-profile" onclick="switchView('profile')" style="display:none;">📋 我的個人後台</button>
-        <button class="nav-btn nav-btn-outline" id="btn-login-nav" onclick="switchView('login')">會員登入 / 註冊</button>
-        <button class="nav-btn nav-btn-admin" id="btn-admin-nav" onclick="switchView('admin')" style="display:none;">管理後台</button>
-        <button class="nav-btn nav-btn-primary" onclick="handleProtectedAction('upload')">＋ 刊登物品</button>
+        <button class="btn btn-outline" id="btn-user-profile" onclick="switchView('profile')" style="display:none;">個人中心</button>
+        <button class="btn btn-outline" id="btn-login-nav" onclick="switchView('login')">登入 / 註冊</button>
+        <button class="btn btn-danger" id="btn-admin-nav" onclick="switchView('admin')" style="display:none;">管理後台</button>
+        <button class="btn btn-primary" onclick="handleProtectedAction('upload')">＋ 刊登物品</button>
       </div>
     </div>
   </header>
 
   <main>
+    <!-- 1. 首頁 -->
     <section id="view-home" class="view-section active">
       <div class="hero-banner">
-        <h1>用手邊的小東西，換到大驚喜！</h1>
-        <p>歡迎來到小換大實驗室！看看大家如何把小貼紙一步步換成高單價好物。</p>
+        <h1>把不需要的，換成想要的</h1>
+        <p>不花一毛錢，體驗「小換大」的奇妙旅程。分享、交換，讓物品發揮最大價值。</p>
       </div>
+
+      <!-- 分類過濾 -->
+      <div class="category-filters">
+        <button class="filter-btn active" onclick="filterItems('all', this)">全部</button>
+        <button class="filter-btn" onclick="filterItems('3C家電', this)">3C家電</button>
+        <button class="filter-btn" onclick="filterItems('居家生活', this)">居家生活</button>
+        <button class="filter-btn" onclick="filterItems('美妝保養', this)">美妝保養</button>
+        <button class="filter-btn" onclick="filterItems('服飾配件', this)">服飾配件</button>
+        <button class="filter-btn" onclick="filterItems('其他', this)">其他</button>
+      </div>
+
       <div class="grid-container" id="items-grid"></div>
     </section>
 
+    <!-- 2. 物品詳細頁 -->
     <section id="view-detail" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
+      <button class="btn btn-outline" style="margin-bottom: 24px; padding: 6px 12px; font-size:13px;" onclick="switchView('home')">← 返回大廳</button>
       <div class="detail-card" id="detail-content"></div>
     </section>
 
-    <!-- 登入 / 註冊 / 忘記密碼 區塊 -->
+    <!-- 3. 登入/註冊/忘記密碼 -->
     <section id="view-login" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      
-      <!-- 登入卡片 -->
+      <!-- 登入 -->
       <div class="form-card" id="login-card">
-        <h2 style="margin-bottom: 16px; text-align: center;">會員登入</h2>
-        <div style="background: #eefbe7; border: 1px solid #c5e1a5; padding: 10px; border-radius: 6px; font-size: 12px; color: #33691e; margin-bottom: 16px;">
-          💡 <b>測試帳號提示：</b><br>
-          一般會員：帳號 `user` / 密碼 `1234`<br>
-          系統管理員：帳號 `admin` / 密碼 `admin`
+        <h2 style="font-size: 24px; font-weight:900; text-align: center; margin-bottom: 24px; color: var(--primary-blue);">會員登入</h2>
+        <div style="background:#F0FDF4; border:1px solid #BBF7D0; padding:12px; border-radius:12px; font-size:13px; color:#166534; margin-bottom:20px;">
+          💡 <b>測試帳號提示：</b><br>會員：`user` / 密碼：`1234`<br>管理員：`admin` / 密碼：`admin`
         </div>
         <form id="login-form">
-          <div class="form-group"><label>帳號</label><input type="text" id="login-username" required></div>
+          <div class="form-group"><label>帳號</label><input type="text" id="login-username" class="form-control" required></div>
           <div class="form-group">
-            <label style="display: flex; justify-content: space-between;">密碼
-              <a href="javascript:void(0)" onclick="toggleAuthMode('forgot')" style="color: #1976d2; font-weight: normal; font-size: 12px;">忘記密碼？</a>
-            </label>
-            <input type="password" id="login-password" required>
+            <label style="display:flex; justify-content:space-between;">密碼 <a href="#" onclick="toggleAuthMode('forgot')" style="color:var(--primary-blue); font-weight:normal;">忘記密碼？</a></label>
+            <input type="password" id="login-password" class="form-control" required>
           </div>
-          <button type="submit" class="submit-btn">立即登入</button>
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px;">登入</button>
         </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          還沒有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color: #2e7d32; font-weight: bold;">點此免費註冊</a>
-        </p>
+        <div style="text-align:center; margin-top:20px; font-size:14px;">
+          還沒有帳號？ <a href="#" onclick="toggleAuthMode('register')" style="color:var(--primary-blue); font-weight:700;">註冊新帳號</a>
+        </div>
       </div>
 
-      <!-- 註冊卡片 -->
+      <!-- 註冊 -->
       <div class="form-card" id="register-card" style="display: none;">
-        <h2 style="margin-bottom: 16px; text-align: center;">註冊新帳號</h2>
+        <h2 style="font-size: 24px; font-weight:900; text-align: center; margin-bottom: 24px; color: var(--primary-blue);">註冊新帳號</h2>
         <form id="register-form">
-          <div class="form-group"><label>設定帳號 (需唯一，不可重複)</label><input type="text" id="reg-username" placeholder="登入用的帳號" required></div>
-          <div class="form-group"><label>設定您的暱稱</label><input type="text" id="reg-nickname" placeholder="大家在網站上會看到的稱呼" required></div>
-          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" placeholder="請設定密碼" required></div>
-          <button type="submit" class="submit-btn">立即註冊</button>
+          <div class="form-group"><label>設定帳號 (需唯一)</label><input type="text" id="reg-username" class="form-control" required></div>
+          <div class="form-group"><label>顯示暱稱</label><input type="text" id="reg-nickname" class="form-control" required></div>
+          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" class="form-control" required></div>
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px;">註冊</button>
         </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          已有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: #2e7d32; font-weight: bold;">點此登入</a>
-        </p>
+        <div style="text-align:center; margin-top:20px; font-size:14px;">
+          已有帳號？ <a href="#" onclick="toggleAuthMode('login')" style="color:var(--primary-blue); font-weight:700;">返回登入</a>
+        </div>
       </div>
 
-      <!-- 忘記密碼卡片 -->
+      <!-- 忘記密碼 -->
       <div class="form-card" id="forgot-card" style="display: none;">
-        <h2 style="margin-bottom: 8px; text-align: center; color: #1976d2;">重設密碼</h2>
-        <p style="text-align: center; font-size: 13px; color: #666; margin-bottom: 16px;">為了保護帳號安全，請輸入您的「帳號」與註冊時設定的「暱稱」以驗證身分。</p>
+        <h2 style="font-size: 24px; font-weight:900; text-align: center; margin-bottom: 8px; color: var(--primary-blue);">重設密碼</h2>
+        <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-bottom:24px;">請輸入帳號與註冊時的暱稱以驗證身分。</p>
         <form id="forgot-form">
-          <div class="form-group"><label>您的帳號</label><input type="text" id="forgot-username" required></div>
-          <div class="form-group"><label>您註冊時的暱稱</label><input type="text" id="forgot-nickname" required></div>
-          <div class="form-group"><label>設定新密碼</label><input type="password" id="forgot-password" required></div>
-          <button type="submit" class="submit-btn" style="background:#1976d2;">確認重設</button>
+          <div class="form-group"><label>您的帳號</label><input type="text" id="forgot-username" class="form-control" required></div>
+          <div class="form-group"><label>註冊的暱稱</label><input type="text" id="forgot-nickname" class="form-control" required></div>
+          <div class="form-group"><label>設定新密碼</label><input type="password" id="forgot-password" class="form-control" required></div>
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px;">確認重設</button>
         </form>
-        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
-          記起密碼了？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: #2e7d32; font-weight: bold;">返回登入</a>
-        </p>
+        <div style="text-align:center; margin-top:20px; font-size:14px;">
+           <a href="#" onclick="toggleAuthMode('login')" style="color:var(--primary-blue); font-weight:700;">返回登入</a>
+        </div>
       </div>
     </section>
 
-    <!-- 個人後台 -->
-    <section id="view-profile" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <h2 style="margin-bottom: 16px;">👤 我的個人會員專區</h2>
-      <div class="profile-tabs">
-        <button class="tab-btn active" id="tab-my-apps" onclick="switchProfileTab('apps')">📤 我提出的申請</button>
-        <button class="tab-btn" id="tab-my-items" onclick="switchProfileTab('items')">📦 我刊登的物品</button>
+    <!-- 4. 刊登物品 -->
+    <section id="view-upload" class="view-section">
+      <div class="form-card">
+        <h2 style="font-size: 24px; font-weight:900; margin-bottom: 24px; color: var(--primary-blue);">刊登交換物品</h2>
+        <form id="upload-form">
+          <div class="form-group">
+            <label>物品分類</label>
+            <select id="input-category" class="form-control" required>
+              <option value="3C家電">3C家電</option>
+              <option value="居家生活">居家生活</option>
+              <option value="美妝保養">美妝保養</option>
+              <option value="服飾配件">服飾配件</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="form-group"><label>物品名稱</label><input type="text" id="input-title" class="form-control" required></div>
+          <div class="form-group"><label>最想換到的物品 (許願池)</label><input type="text" id="input-wish" class="form-control" required></div>
+          <div class="form-group"><label>圖片網址 (可留空用預設圖)</label><input type="url" id="input-img" class="form-control"></div>
+          <div class="form-group"><label>這件物品最初是用什麼換來的？(起源歷史)</label><input type="text" id="input-origin" class="form-control" required></div>
+          <div style="display:flex; gap:12px; margin-top:32px;">
+             <button type="button" class="btn btn-outline" style="flex:1;" onclick="switchView('home')">取消</button>
+             <button type="submit" class="btn btn-primary" style="flex:2;">發佈刊登</button>
+          </div>
+        </form>
       </div>
-      <div id="profile-sec-apps">
+    </section>
+
+    <!-- 5. 會員中心 -->
+    <section id="view-profile" class="view-section">
+      <h2 style="font-size: 24px; font-weight:900; margin-bottom: 24px;">👤 我的個人中心</h2>
+      <div style="display:flex; gap:12px; margin-bottom: 24px; border-bottom: 2px solid #E5E7EB; padding-bottom:12px;">
+        <button class="btn btn-outline" id="tab-my-apps" onclick="switchProfileTab('apps')" style="border:none; border-radius:0;">📤 我提出的申請</button>
+        <button class="btn btn-outline" id="tab-my-items" onclick="switchProfileTab('items')" style="border:none; border-radius:0; color:var(--text-muted);">📦 我刊登的物品</button>
+      </div>
+
+      <div id="profile-sec-apps" style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
         <table class="custom-table">
-          <thead><tr><th>日期</th><th>目標物品</th><th>我拿來交換的</th><th>狀態</th><th>聯絡對方</th></tr></thead>
+          <thead><tr><th>日期</th><th>目標物品</th><th>我提供的物品</th><th>狀態</th><th>聯絡對方</th></tr></thead>
           <tbody id="user-applications-list"></tbody>
         </table>
       </div>
-      <div id="profile-sec-items" style="display:none;">
+
+      <div id="profile-sec-items" style="display:none; background:white; border-radius:16px; padding:24px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
         <table class="custom-table">
           <thead><tr><th>物品名稱</th><th>狀態</th><th>收到申請數</th><th>管理</th></tr></thead>
           <tbody id="user-posted-list"></tbody>
@@ -203,85 +475,133 @@
       </div>
     </section>
 
-    <!-- 管理員後台 -->
+    <!-- 6. 管理員後台 -->
     <section id="view-admin" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-      <h2 style="margin-bottom: 16px;">⚙️ 管理員控制台</h2>
-      <table class="custom-table">
-        <thead><tr><th>物品圖片</th><th>物品名稱</th><th>持有人</th><th>目前狀態</th><th>管理操作</th></tr></thead>
-        <tbody id="admin-items-list"></tbody>
-      </table>
-    </section>
-
-    <!-- 刊登物品 -->
-    <section id="view-upload" class="view-section">
-      <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
-      <div class="form-card">
-        <h2 style="margin-bottom: 16px;">刊登想要交換的物品</h2>
-        <form id="upload-form">
-          <div class="form-group"><label>物品名稱</label><input type="text" id="input-title" required></div>
-          <div class="form-group"><label>最想換到的物品</label><input type="text" id="input-wish" required></div>
-          <div class="form-group"><label>圖片網址</label><input type="url" id="input-img" value="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500"></div>
-          <div class="form-group"><label>這件物品最初是用什麼小東西換來的？</label><input type="text" id="input-origin" required></div>
-          <button type="submit" class="submit-btn">立即刊登並開始交換</button>
-        </form>
+      <h2 style="font-size: 24px; font-weight:900; margin-bottom: 24px; color:#DC2626;">⚙️ 管理員控制台</h2>
+      <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05); overflow-x:auto;">
+        <table class="custom-table">
+          <thead><tr><th>圖片</th><th>物品資訊</th><th>持有人</th><th>狀態</th><th>管理操作</th></tr></thead>
+          <tbody id="admin-items-list"></tbody>
+        </table>
       </div>
     </section>
+
   </main>
 
-  <!-- 模態框們 -->
+  <!-- Modals -->
+  <!-- 提出交換 -->
   <div class="modal-overlay" id="trade-modal">
-    <div class="modal">
-      <h3>🤝 提出交換申請</h3>
-      <div class="form-group"><label>您想拿來交換的物品名稱</label><input type="text" id="offer-item-name" required></div>
-      <div style="display:flex; gap:10px;"><button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('trade-modal')">取消</button><button class="nav-btn nav-btn-primary" style="flex:1;" onclick="confirmTrade()">確認發送</button></div>
+    <div class="modal-box">
+      <h3 class="modal-title">🤝 提出交換申請</h3>
+      <div class="form-group"><label>您想拿來交換的物品名稱</label><input type="text" id="offer-item-name" class="form-control" required></div>
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="closeModal('trade-modal')">取消</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="confirmTrade()">送出申請</button>
+      </div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="ban-reason-modal">
-    <div class="modal">
-      <h3 style="color:#d32f2f;">🚫 確認下架物品</h3>
+  <!-- 檢舉對話框 (新增) -->
+  <div class="modal-overlay" id="report-modal">
+    <div class="modal-box">
+      <h3 class="modal-title" style="color: #EF4444;">🚨 檢舉這個交換</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">檢舉會送平台人工複核。請據實檢舉，不要用來報復或干擾他人。</p>
+      
       <div class="form-group">
-        <label>選擇違規原因：</label>
-        <select id="ban-reason-select" onchange="document.getElementById('ban-reason-text').value = (this.value === 'custom' ? '' : this.value)">
-          <option value="">-- 請選擇常見原因 --</option>
-          <option value="物品描述不實 / 圖片不相符">物品描述不實 / 圖片不相符</option>
-          <option value="刊登違禁品或限制物品">刊登違禁品或限制物品</option>
-          <option value="重複刊登 / 惡意洗版">重複刊登 / 惡意洗版</option>
-          <option value="小換大歷史履歷造假">小換大歷史履歷造假</option>
-          <option value="custom">其他（自行輸入）</option>
+        <label>檢舉原因 *</label>
+        <select id="report-reason-select" class="form-control" required>
+          <option value="">請選擇原因...</option>
+          <option value="無效券 / 無法使用">無效物品 / 無法使用</option>
+          <option value="已過期 / 損壞">已過期 / 損壞</option>
+          <option value="已被使用 / 已轉售">已被使用 / 已轉售</option>
+          <option value="不合理的交換要求">不合理的交換要求</option>
+          <option value="持有者無回應 / 放鳥">持有者無回應 / 放鳥</option>
+          <option value="不當訊息 / 騷擾">不當訊息 / 騷擾</option>
+          <option value="詐騙">詐騙</option>
+          <option value="其他">其他</option>
         </select>
       </div>
-      <div class="form-group"><label>詳細下架說明：</label><textarea id="ban-reason-text" style="height:60px;"></textarea></div>
-      <div style="display:flex; gap:10px;"><button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('ban-reason-modal')">取消</button><button class="nav-btn nav-btn-admin" style="flex:1;" onclick="confirmBanItem()">下架</button></div>
+      <div class="form-group">
+        <label>補充說明</label>
+        <textarea id="report-reason-text" class="form-control" placeholder="請描述詳細情況..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>證據截圖（必附）</label>
+        <input type="file" id="report-file" class="form-control" accept="image/*">
+        <p style="font-size: 11px; color: #9CA3AF; margin-top: 4px;">上傳截圖（例如：到店顯示已使用、對話紀錄）</p>
+      </div>
+      
+      <label style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; cursor:pointer;">
+        <input type="checkbox" id="report-confirm-check" style="margin-top:2px;">
+        <span>我確認以上內容屬實、願意為這次檢舉負責。我了解惡意或不實的檢舉一經查證，累積 3 次帳號將被停權。</span>
+      </label>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="closeModal('report-modal')">取消</button>
+        <button class="btn btn-danger" style="flex:1;" onclick="submitReport()">送出檢舉</button>
+      </div>
     </div>
   </div>
 
+  <!-- 審核名單 -->
   <div class="modal-overlay" id="applicants-modal">
-    <div class="modal" style="max-width: 600px;">
-      <h3 style="margin-bottom: 16px;">📋 審核申請名單</h3>
-      <table class="custom-table" style="margin-bottom: 16px;">
-        <thead><tr><th>申請人</th><th>提供的物品</th><th>狀態</th><th>操作</th></tr></thead>
-        <tbody id="applicants-list-body"></tbody>
-      </table>
-      <button class="nav-btn nav-btn-outline" style="width:100%;" onclick="closeModal('applicants-modal')">關閉</button>
+    <div class="modal-box" style="max-width: 650px;">
+      <h3 class="modal-title">📋 審核申請名單</h3>
+      <div style="overflow-x:auto;">
+        <table class="custom-table">
+          <thead><tr><th>申請人</th><th>提供的物品</th><th>狀態</th><th>操作</th></tr></thead>
+          <tbody id="applicants-list-body"></tbody>
+        </table>
+      </div>
+      <div style="margin-top: 24px; text-align: center;">
+        <button class="btn btn-outline" onclick="closeModal('applicants-modal')">關閉</button>
+      </div>
     </div>
   </div>
 
+  <!-- 聊天室 -->
   <div class="modal-overlay" id="chat-modal">
-    <div class="modal">
-      <h3 style="margin-bottom: 12px;">💬 雙方私訊</h3>
+    <div class="modal-box">
+      <h3 class="modal-title">💬 私訊對話</h3>
       <div class="chat-box" id="chat-history"></div>
-      <div class="chat-input-area"><input type="text" id="chat-input-text" placeholder="輸入訊息..."><button onclick="sendChatMessage()">傳送</button></div>
-      <button class="nav-btn nav-btn-outline" style="width:100%; margin-top: 12px;" onclick="closeModal('chat-modal')">關閉</button>
+      <div class="chat-input-area">
+        <input type="text" id="chat-input-text" class="form-control" placeholder="輸入訊息...">
+        <button class="btn btn-primary" onclick="sendChatMessage()">傳送</button>
+      </div>
+      <div style="margin-top: 16px; text-align: center;">
+        <button class="btn btn-outline" onclick="closeModal('chat-modal')">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理員下架 -->
+  <div class="modal-overlay" id="ban-reason-modal">
+    <div class="modal-box">
+      <h3 class="modal-title" style="color:#DC2626;">🚫 下架物品</h3>
+      <div class="form-group">
+        <label>下架原因說明：</label>
+        <textarea id="ban-reason-text" class="form-control" placeholder="輸入下架原因..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="closeModal('ban-reason-modal')">取消</button>
+        <button class="btn btn-danger" style="flex:1;" onclick="confirmBanItem()">確認下架</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自訂 Alert -->
+  <div class="modal-overlay" id="custom-alert">
+    <div class="modal-box">
+      <div id="custom-alert-msg"></div>
+      <button class="btn btn-primary" style="width:100%;" onclick="closeAlert()">確定</button>
     </div>
   </div>
 
   <script>
     // 預設資料
     let itemsData = [
-      { id: "item-1", title: "八成新藍牙音響", owner: "測試會員", wish: "空拍機", imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500", status: "active", selectedAppId: null, history: [{name:"貼紙", date:"2026-07-01"}, {name:"藍牙音響", date:"2026-07-25"}] },
-      { id: "item-2", title: "入門級羽球拍套組", owner: "Emma", wish: "摺疊椅", imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500", status: "active", selectedAppId: null, history: [{name:"電影票", date:"2026-07-10"}, {name:"羽球拍", date:"2026-07-20"}] }
+      { id: "item-1", category: "3C家電", title: "八成新藍牙音響", owner: "測試會員", wish: "空拍機", imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500", status: "active", selectedAppId: null, history: [{name:"造型貼紙", date:"2026-07-01"}, {name:"藍牙音響", date:"2026-07-25"}] },
+      { id: "item-2", category: "居家生活", title: "陶瓷馬克杯", owner: "Emma", wish: "保溫瓶", imageUrl: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=500", status: "active", selectedAppId: null, history: [{name:"環保提袋", date:"2026-07-10"}, {name:"馬克杯", date:"2026-07-20"}] }
     ];
 
     let usersDB = [
@@ -290,13 +610,11 @@
     ];
 
     let userApplications = [
-      { id: "app-001", applicant: "王大明", targetItemId: "item-1", targetTitle: "八成新藍牙音響", targetOwner: "測試會員", myOffer: "微波爐", date: "2026-07-28", status: "等待回應" },
-      { id: "app-002", applicant: "陳小美", targetItemId: "item-1", targetTitle: "八成新藍牙音響", targetOwner: "測試會員", myOffer: "折疊腳踏車", date: "2026-07-29", status: "等待回應" }
+      { id: "app-001", applicant: "王大明", targetItemId: "item-1", targetTitle: "八成新藍牙音響", targetOwner: "測試會員", myOffer: "微波爐", date: "2026-07-28", status: "等待回應" }
     ];
 
     let chatDB = [
-      { appId: "app-001", sender: "王大明", text: "請問音質還好嗎？" },
-      { appId: "app-002", sender: "陳小美", text: "哈囉，我剛好有腳踏車想換！" }
+      { appId: "app-001", sender: "王大明", text: "請問音質還好嗎？" }
     ];
 
     let currentUser = null; 
@@ -307,110 +625,91 @@
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
 
-      // UI 切換：登入 / 註冊 / 忘記密碼
+      // UI 切換
       window.toggleAuthMode = function(mode) {
-        document.getElementById('login-card').style.display = mode === 'login' ? 'block' : 'none';
-        document.getElementById('register-card').style.display = mode === 'register' ? 'block' : 'none';
-        document.getElementById('forgot-card').style.display = mode === 'forgot' ? 'block' : 'none';
+        ['login-card', 'register-card', 'forgot-card'].forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById(`${mode}-card`).style.display = 'block';
       };
 
-      // 註冊邏輯
+      // 註冊
       document.getElementById("register-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("reg-username").value.trim();
         const n = document.getElementById("reg-nickname").value.trim();
         const p = document.getElementById("reg-password").value.trim();
-        
-        // 偵測帳號是否重複
-        if (usersDB.find(user => user.username === u)) {
-          return alert("⚠️ 註冊失敗：這個帳號已被使用！請更換一個帳號。");
-        }
-        
+        if (usersDB.find(user => user.username === u)) return customAlert("帳號已被使用！");
         usersDB.push({ username: u, password: p, name: n, role: 'user' });
-        alert("🎉 註冊成功！請使用剛註冊的帳號登入。");
-        toggleAuthMode('login');
-        e.target.reset();
+        customAlert("🎉 註冊成功！請登入。"); toggleAuthMode('login'); e.target.reset();
       });
 
-      // 登入邏輯
+      // 登入
       document.getElementById("login-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("login-username").value.trim();
         const p = document.getElementById("login-password").value.trim();
         const found = usersDB.find(user => user.username === u && user.password === p);
-        if (found) {
-          currentUser = found;
-          alert(`登入成功！歡迎回來，${currentUser.name}。`);
-          updateNavUser();
-          switchView("home");
-        } else { alert("❌ 帳號或密碼錯誤！"); }
+        if (found) { currentUser = found; updateNavUser(); switchView("home"); } 
+        else { customAlert("❌ 帳號或密碼錯誤！"); }
         e.target.reset();
       });
 
-      // 忘記密碼重設邏輯
+      // 忘記密碼
       document.getElementById("forgot-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const u = document.getElementById("forgot-username").value.trim();
         const n = document.getElementById("forgot-nickname").value.trim();
         const p = document.getElementById("forgot-password").value.trim();
-
-        // 尋找帳號
         const userIndex = usersDB.findIndex(user => user.username === u);
-        if (userIndex === -1) {
-          return alert("❌ 找不到此帳號！請確認您輸入的帳號是否正確。");
-        }
-
-        // 驗證身分 (使用暱稱)
-        if (usersDB[userIndex].name !== n) {
-          return alert("❌ 身分驗證失敗！您輸入的暱稱與該帳號註冊紀錄不符。");
-        }
-
-        if (usersDB[userIndex].password === p) {
-          return alert("⚠️ 新密碼不能與舊密碼相同！");
-        }
-
-        // 重設密碼
-        usersDB[userIndex].password = p;
-        alert("✅ 密碼重設成功！請使用您的新密碼重新登入。");
-        toggleAuthMode('login');
-        e.target.reset();
+        if (userIndex === -1 || usersDB[userIndex].name !== n) return customAlert("❌ 驗證失敗！帳號或暱稱錯誤。");
+        usersDB[userIndex].password = p; customAlert("✅ 密碼重設成功！請重新登入。", () => { toggleAuthMode('login'); e.target.reset(); });
       });
 
-      // 刊登物品邏輯
+      // 刊登物品
       document.getElementById("upload-form").addEventListener("submit", (e) => {
         e.preventDefault();
+        const title = document.getElementById("input-title").value;
+        const category = document.getElementById("input-category").value;
+        const wish = document.getElementById("input-wish").value;
+        const imageUrl = document.getElementById("input-img").value || "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500";
+        const origin = document.getElementById("input-origin").value;
+
         itemsData.unshift({
-          id: "item-" + Date.now(),
-          title: document.getElementById("input-title").value,
-          owner: currentUser.name,
-          wish: document.getElementById("input-wish").value,
-          imageUrl: document.getElementById("input-img").value || "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500",
-          status: "active", selectedAppId: null,
-          history: [{ name: document.getElementById("input-origin").value, date: new Date().toISOString().split('T')[0] },
-                    { name: document.getElementById("input-title").value, date: new Date().toISOString().split('T')[0] }]
+          id: "item-" + Date.now(), title: title, category: category, owner: currentUser.name, wish: wish, imageUrl: imageUrl, status: "active", selectedAppId: null, banReason: "",
+          history: [{ name: origin, date: new Date().toISOString().split('T')[0] }, { name: title, date: new Date().toISOString().split('T')[0] }]
         });
-        alert("🎉 刊登成功！"); renderGrid(); switchView("home"); e.target.reset();
+        customAlert("🎉 刊登成功！"); renderGrid(); switchView("home"); e.target.reset();
       });
     });
 
-    // 路由控制與防護
-    function handleProtectedAction(type) {
-      if (!currentUser) { alert("🔒 請先登入會員。"); switchView("login"); return; }
-      if (type === 'upload') switchView("upload");
-      if (type === 'trade') openModal('trade-modal');
-    }
-
-    function updateNavUser() {
-      document.getElementById("user-display").textContent = currentUser ? `👤 ${currentUser.name}` : "未登入";
-      const loginBtn = document.getElementById("btn-login-nav");
-      if (currentUser) {
-        loginBtn.textContent = "登出"; loginBtn.onclick = () => { currentUser = null; updateNavUser(); switchView("home"); };
-      } else {
-        loginBtn.textContent = "會員登入/註冊"; loginBtn.onclick = () => switchView('login');
+    // 登入防護
+    window.handleProtectedAction = function(actionType) {
+      if (!currentUser) { customAlert("🔒 本功能需要登入會員！請先登入或註冊帳號。"); switchView("login"); return; }
+      if (actionType === 'upload') switchView("upload");
+      if (actionType === 'trade') {
+        document.getElementById("offer-item-name").value = "";
+        openModal('trade-modal');
       }
-      document.getElementById("btn-user-profile").style.display = (currentUser && currentUser.role !== 'admin') ? 'inline-block' : 'none';
-      document.getElementById("btn-admin-nav").style.display = (currentUser && currentUser.role === 'admin') ? 'inline-block' : 'none';
-    }
+      if (actionType === 'report') openModal('report-modal');
+    };
+
+    // 更新導覽列
+    window.updateNavUser = function() {
+      const displaySpan = document.getElementById("user-display");
+      const loginBtn = document.getElementById("btn-login-nav");
+      const adminBtn = document.getElementById("btn-admin-nav");
+      const profileBtn = document.getElementById("btn-user-profile");
+      if (currentUser) {
+        displaySpan.textContent = `👤 ${currentUser.name}`;
+        loginBtn.textContent = "登出"; loginBtn.onclick = logout;
+        if (currentUser.role === "admin") { adminBtn.style.display = "inline-flex"; profileBtn.style.display = "none"; } 
+        else { adminBtn.style.display = "none"; profileBtn.style.display = "inline-flex"; }
+      } else {
+        displaySpan.textContent = "未登入"; loginBtn.textContent = "登入 / 註冊"; loginBtn.onclick = () => switchView('login');
+        adminBtn.style.display = "none"; profileBtn.style.display = "none";
+      }
+    };
+
+    window.logout = function() { currentUser = null; updateNavUser(); switchView("home"); };
 
     function switchView(view) {
       document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
@@ -420,38 +719,80 @@
       window.scrollTo(0, 0);
     }
 
-    // 大廳渲染
-    function renderGrid() {
-      document.getElementById("items-grid").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
+    // 渲染大廳與過濾
+    function renderGrid(categoryFilter = 'all') {
+      const grid = document.getElementById("items-grid");
+      let activeItems = itemsData.filter(i => i.status !== 'banned');
+      if (categoryFilter !== 'all') activeItems = activeItems.filter(i => i.category === categoryFilter);
+
+      grid.innerHTML = activeItems.map(item => `
         <div class="card" onclick="openDetail('${item.id}')">
-          <div class="card-img-wrapper"><img src="${item.imageUrl}" class="card-img"><span class="card-tag ${item.status==='trading'?'trading':''}">${item.status==='trading'?'已配對':'開放中'}</span></div>
-          <div class="card-body"><div class="card-title">${item.title}</div><div class="card-wish">💡 想換：${item.wish}</div></div>
-        </div>`).join("");
+          <div class="card-img-wrapper">
+            <img src="${item.imageUrl}" class="card-img">
+            <span class="card-tag ${item.status==='trading'?'trading':''}">${item.status==='trading'?'已配對':'開放中'}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-category">${item.category}</div>
+            <div class="card-title">${item.title}</div>
+            <div class="card-wish">💡 想換：${item.wish}</div>
+            <div class="card-history">🚀 歷經 ${item.history.length - 1} 次交換</div>
+          </div>
+        </div>`).join("") || `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">目前無相符物品</div>`;
     }
 
+    window.filterItems = function(category, event) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.color = 'var(--text-muted)';
+        btn.style.borderColor = '#E5E7EB';
+        btn.style.background = 'white';
+      });
+      event.target.classList.add('active');
+      event.target.style.background = 'var(--primary-blue)';
+      event.target.style.color = 'white';
+      event.target.style.borderColor = 'var(--primary-blue)';
+      renderGrid(category);
+    }
+
+    // 詳細頁
     function openDetail(id) {
       currentSelectedItem = itemsData.find(i => i.id === id);
       let btnHtml = "";
-      if (currentSelectedItem.status === 'banned') btnHtml = `<div class="banned-box"><h4>⛔ 已下架</h4><p>${currentSelectedItem.banReason}</p></div>`;
-      else if (currentSelectedItem.status === 'trading') btnHtml = `<p style="color:#e65100; font-weight:bold;">⚠️ 持有人已選定對象，停止接收新申請。</p>`;
-      else if (currentUser && currentSelectedItem.owner === currentUser.name) btnHtml = `<p style="color:#1976d2; font-weight:bold;">這是您刊登的物品，請至後台管理。</p>`;
-      else btnHtml = `<button class="submit-btn" onclick="handleProtectedAction('trade')">🤝 提出交換申請</button>`;
+      if (currentSelectedItem.status === 'banned') btnHtml = `<div style="background:#FEE2E2; padding:16px; border-radius:12px; color:#DC2626;"><h4>⛔ 已下架</h4><p>${currentSelectedItem.banReason}</p></div>`;
+      else if (currentSelectedItem.status === 'trading') btnHtml = `<p style="color:#D97706; font-weight:700;">⚠️ 停止接收新申請。</p>`;
+      else if (currentUser && currentSelectedItem.owner === currentUser.name) btnHtml = `<button class="btn btn-outline" style="width:100%;" onclick="switchView('profile')">前往管理</button>`;
+      else btnHtml = `<button class="btn btn-primary" style="width:100%; padding:14px; font-size:16px;" onclick="handleProtectedAction('trade')">🤝 提出交換申請</button>`;
+
+      const reportHtml = `<div style="text-align:right;"><a class="report-link" onclick="handleProtectedAction('report')">🚨 檢舉這個交換</a></div>`;
+      const timelineHtml = currentSelectedItem.history.map((h, idx) => {
+        const isCur = idx === currentSelectedItem.history.length - 1;
+        return `<div class="timeline-item ${isCur ? 'current' : ''}"><div class="timeline-text">${isCur?'[現況] ':''}${h.name}</div><div class="timeline-date">${h.date}</div></div>`;
+      }).join("");
 
       document.getElementById("detail-content").innerHTML = `
         <div class="detail-grid">
-          <div><img src="${currentSelectedItem.imageUrl}" class="detail-img"></div>
-          <div><h2>${currentSelectedItem.title}</h2><span class="owner-badge">👤 ${currentSelectedItem.owner}</span>
-            <div style="background:#fff8e1; border-left:4px solid #ffb300; padding:12px; margin-bottom:20px;"><h4>🎯 願望：</h4><p>${currentSelectedItem.wish}</p></div>
+          <div><img src="${currentSelectedItem.imageUrl}" class="detail-img">
+            <div class="timeline-section"><div class="timeline-title">📈 增值履歷</div><div class="timeline">${timelineHtml}</div></div>
+          </div>
+          <div>
+            <div class="card-category" style="font-size:14px;">${currentSelectedItem.category}</div>
+            <h2 style="font-size:28px; font-weight:900; margin-bottom:16px;">${currentSelectedItem.title}</h2>
+            <div style="display:inline-block; background:#F3F4F6; padding:6px 12px; border-radius:8px; font-size:13px; margin-bottom:24px;">👤 持有人：${currentSelectedItem.owner}</div>
+            <div style="background:var(--milktea-light); padding:20px; border-radius:16px; margin-bottom:32px;">
+              <h4 style="color:var(--milktea-dark); font-weight:900; margin-bottom:8px;">🎯 願望：</h4>
+              <p style="color:#8C6A43; font-weight:500;">${currentSelectedItem.wish}</p>
+            </div>
             ${btnHtml}
+            ${reportHtml}
           </div>
         </div>`;
       switchView("detail");
     }
 
-    // 個人中心
-    function switchProfileTab(tab) {
-      document.getElementById('tab-my-apps').classList.toggle('active', tab === 'apps');
-      document.getElementById('tab-my-items').classList.toggle('active', tab === 'items');
+    // 會員專區 Tabs
+    window.switchProfileTab = function(tab) {
+      document.getElementById('tab-my-apps').style.color = tab === 'apps' ? 'var(--primary-blue)' : 'var(--text-muted)';
+      document.getElementById('tab-my-items').style.color = tab === 'items' ? 'var(--primary-blue)' : 'var(--text-muted)';
       document.getElementById('profile-sec-apps').style.display = tab === 'apps' ? 'block' : 'none';
       document.getElementById('profile-sec-items').style.display = tab === 'items' ? 'block' : 'none';
       if(tab === 'apps') renderUserApps();
@@ -460,51 +801,52 @@
 
     function renderUserApps() {
       document.getElementById("user-applications-list").innerHTML = userApplications.filter(a => a.applicant === currentUser.name).map(app => {
-        let isLocked = app.status === '未入選';
-        return `<tr><td>${app.date}</td><td><b>${app.targetTitle}</b></td><td>${app.myOffer}</td><td><span class="status-badge">${app.status}</span></td>
-        <td><button class="btn-action" ${isLocked?'disabled':''} onclick="openChat('${app.id}')">${isLocked?'🔒 關閉':'💬 私訊'}</button></td></tr>`;
-      }).join("") || `<tr><td colspan="5">無紀錄</td></tr>`;
+        let isL = app.status === '未入選';
+        let bClass = app.status==='已成交'?'badge-blue':(isL?'badge-orange':'status-badge');
+        return `<tr><td>${app.date}</td><td><b>${app.targetTitle}</b></td><td>${app.myOffer}</td><td><span class="${bClass}">${app.status}</span></td>
+        <td><button class="btn btn-primary" style="padding:6px 12px; font-size:12px;" ${isL?'disabled':''} onclick="openChat('${app.id}')">${isL?'🔒 關閉':'💬 私訊'}</button></td></tr>`;
+      }).join("") || `<tr><td colspan="5" style="text-align:center; padding:24px;">無紀錄</td></tr>`;
     }
 
     function renderUserItems() {
       document.getElementById("user-posted-list").innerHTML = itemsData.filter(i => i.owner === currentUser.name).map(item => {
         const c = userApplications.filter(a => a.targetItemId === item.id).length;
-        return `<tr><td><b>${item.title}</b></td><td>${item.status==='trading'?'已結案':'徵求中'}</td><td>${c} 人</td>
-        <td><button class="btn-action" onclick="openApplicantsModal('${item.id}')">查看申請者</button></td></tr>`;
-      }).join("") || `<tr><td colspan="4">無紀錄</td></tr>`;
+        return `<tr><td><b>${item.title}</b></td><td><span class="status-badge ${item.status==='trading'?'badge-blue':''}">${item.status==='trading'?'已結案':'徵求中'}</span></td><td>${c} 人</td>
+        <td><button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="openApplicantsModal('${item.id}')">查看申請者</button></td></tr>`;
+      }).join("") || `<tr><td colspan="4" style="text-align:center; padding:24px;">無紀錄</td></tr>`;
     }
 
-    function confirmTrade() {
-      const offer = document.getElementById("offer-item-name").value;
-      if (!offer) return;
+    window.confirmTrade = function() {
+      const offer = document.getElementById("offer-item-name").value.trim();
+      if (!offer) return customAlert("請輸入物品名稱！");
       userApplications.unshift({ id: "app-"+Date.now(), applicant: currentUser.name, targetItemId: currentSelectedItem.id, targetTitle: currentSelectedItem.title, targetOwner: currentSelectedItem.owner, myOffer: offer, date: new Date().toISOString().split('T')[0], status: "等待回應" });
-      alert("✅ 申請成功！"); closeModal('trade-modal');
+      document.getElementById("offer-item-name").value = "";
+      customAlert("✅ 申請成功！"); closeModal('trade-modal');
     }
 
-    // 審核名單與私訊
-    function openApplicantsModal(itemId) {
+    // 審核
+    window.openApplicantsModal = function(itemId) {
       const item = itemsData.find(i => i.id === itemId);
       document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
         let btn = "";
-        if (item.status !== 'trading') btn = `<button class="btn-action" onclick="openChat('${app.id}')">💬</button> <button class="btn-success" onclick="acceptApplicant('${app.id}','${itemId}')">✅ 選擇</button>`;
-        else btn = item.selectedAppId === app.id ? `<button class="btn-action" onclick="openChat('${app.id}')">💬</button>` : `<button class="btn-action" disabled>🔒</button>`;
-        return `<tr><td>${app.applicant}</td><td>${app.myOffer}</td><td>${app.status}</td><td>${btn}</td></tr>`;
-      }).join("") || `<tr><td colspan="4">無申請</td></tr>`;
+        if (item.status !== 'trading') btn = `<button class="btn btn-primary" style="padding:4px 8px; font-size:12px;" onclick="openChat('${app.id}')">💬</button> <button class="btn btn-milktea" style="padding:4px 8px; font-size:12px;" onclick="acceptApplicant('${app.id}','${itemId}')">✅</button>`;
+        else btn = item.selectedAppId === app.id ? `<button class="btn btn-primary" style="padding:4px 8px; font-size:12px;" onclick="openChat('${app.id}')">💬</button>` : `<button class="btn" disabled style="padding:4px 8px; font-size:12px;">🔒</button>`;
+        return `<tr><td>${app.applicant}</td><td>${app.myOffer}</td><td><span class="status-badge">${app.status}</span></td><td>${btn}</td></tr>`;
+      }).join("") || `<tr><td colspan="4" style="text-align:center;">無申請</td></tr>`;
       openModal('applicants-modal');
     }
 
-    function acceptApplicant(appId, itemId) {
-      if(!confirm("確定選擇他？其他人的通訊將被關閉。")) return;
-      itemsData.find(i => i.id === itemId).status = 'trading';
-      itemsData.find(i => i.id === itemId).selectedAppId = appId;
-      userApplications.forEach(a => { if (a.targetItemId === itemId) a.status = (a.id === appId) ? '已成交' : '未入選'; });
-      openApplicantsModal(itemId); renderGrid();
+    window.acceptApplicant = function(appId, itemId) {
+      customAlert("確定選擇他？", () => {
+        itemsData.find(i => i.id === itemId).status = 'trading';
+        itemsData.find(i => i.id === itemId).selectedAppId = appId;
+        userApplications.forEach(a => { if (a.targetItemId === itemId) a.status = (a.id === appId) ? '已成交' : '未入選'; });
+        openApplicantsModal(itemId); renderGrid();
+      });
     }
 
-    function openChat(appId) {
-      currentChatAppId = appId; renderChat(); openModal('chat-modal');
-    }
-
+    // 聊天
+    window.openChat = function(appId) { currentChatAppId = appId; renderChat(); openModal('chat-modal'); }
     function renderChat() {
       const box = document.getElementById("chat-history");
       box.innerHTML = chatDB.filter(m => m.appId === currentChatAppId).map(m => {
@@ -513,40 +855,64 @@
       }).join("");
       box.scrollTop = box.scrollHeight;
     }
-
-    function sendChatMessage() {
-      const t = document.getElementById("chat-input-text").value; if (!t) return;
+    window.sendChatMessage = function() {
+      const t = document.getElementById("chat-input-text").value.trim(); if (!t) return;
       chatDB.push({ appId: currentChatAppId, sender: currentUser.name, text: t });
       document.getElementById("chat-input-text").value = ""; renderChat();
     }
 
-    // 管理員專區
-    function renderAdminList() {
+    // 管理員與檢舉
+    window.renderAdminList = function() {
       document.getElementById("admin-items-list").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
         <tr>
-          <td><img src="${item.imageUrl}" style="width:50px;height:50px;object-fit:cover;"></td>
-          <td><b>${item.title}</b></td><td>${item.owner}</td><td>${item.status==='trading'?'已成交':'上架中'}</td>
-          <td><button class="btn-danger" onclick="openBanModal('${item.id}')">下架</button></td>
+          <td><img src="${item.imageUrl}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;"></td>
+          <td><div style="font-weight:700;">${item.title}</div><div style="font-size:12px;color:var(--primary-blue);">${item.category}</div></td>
+          <td>${item.owner}</td><td><span class="status-badge">${item.status==='trading'?'已成交':'上架中'}</span></td>
+          <td><button class="btn btn-danger" style="padding:6px 12px; font-size:12px;" onclick="openBanModal('${item.id}')">下架</button></td>
         </tr>`).join("");
     }
 
-    function openBanModal(id) {
-      itemPendingBanId = id; 
-      document.getElementById("ban-reason-select").value = "";
-      document.getElementById("ban-reason-text").value = "";
-      openModal('ban-reason-modal'); 
+    window.openBanModal = function(id) {
+      itemPendingBanId = id; document.getElementById("ban-reason-text").value = ""; openModal('ban-reason-modal');
     }
 
-    function confirmBanItem() {
-      const r = document.getElementById('ban-reason-text').value;
-      if(!r) return alert("請填寫下架原因");
+    window.confirmBanItem = function() {
+      const r = document.getElementById('ban-reason-text').value.trim();
+      if(!r) return customAlert("請輸入下架原因");
       const item = itemsData.find(i => i.id === itemPendingBanId);
       if(item) { item.status = 'banned'; item.banReason = r; }
-      closeModal('ban-reason-modal'); renderAdminList(); renderGrid(); alert("✅ 已下架");
+      closeModal('ban-reason-modal'); renderAdminList(); renderGrid(); customAlert("✅ 已下架");
     }
 
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    window.submitReport = function() {
+      const r1 = document.getElementById("report-reason-select").value;
+      const r2 = document.getElementById("report-reason-text").value.trim();
+      const f = document.getElementById("report-file").value;
+      const c = document.getElementById("report-confirm-check").checked;
+      if (!r1 && !r2) return customAlert("請選擇或填寫檢舉原因！");
+      if (!f) return customAlert("請上傳證據截圖！");
+      if (!c) return customAlert("請勾選確認條款！");
+      customAlert(`✅ 檢舉已送出！\n我們將盡快查核。`, () => {
+        closeModal('report-modal');
+        document.getElementById("report-reason-select").value = "";
+        document.getElementById("report-reason-text").value = "";
+        document.getElementById("report-file").value = "";
+        document.getElementById("report-confirm-check").checked = false;
+      });
+    }
+
+    // Modal 與 Alert
+    window.openModal = function(id) { document.getElementById(id).classList.add('active'); }
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); }
+    window.customAlert = function(msg, cb) {
+      document.getElementById('custom-alert-msg').innerText = msg;
+      document.getElementById('custom-alert').classList.add('active');
+      window.customAlertCallback = cb;
+    }
+    window.closeAlert = function() {
+      document.getElementById('custom-alert').classList.remove('active');
+      if (typeof window.customAlertCallback === 'function') { window.customAlertCallback(); window.customAlertCallback = null; }
+    }
   </script>
 </body>
 </html>
