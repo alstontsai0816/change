@@ -1,472 +1,700 @@
-```
-body {
-  background-color: #f4f6f8;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeUp 小換大 - 以物易物平台</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 
-/* 導覽列 */
-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+    body {
+      background-color: #f4f6f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-.nav-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-}
+    /* 頂部導覽列 */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.logo {
-  font-size: 20px;
-  font-weight: 800;
-  color: #2e7d32;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+    }
 
-.nav-buttons {
-  display: flex;
-  gap: 10px;
-}
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: #2e7d32;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
 
-.nav-btn {
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
 
-.nav-btn-outline {
-  background: transparent;
-  color: #2e7d32;
-  border: 1.5px solid #2e7d32;
-}
+    .nav-btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-.nav-btn-outline:hover {
-  background: #e8f5e9;
-}
+    .nav-btn-outline {
+      background: transparent;
+      color: #2e7d32;
+      border: 1.5px solid #2e7d32;
+    }
 
-.nav-btn-primary {
-  background: #2e7d32;
-  color: white;
-}
+    .nav-btn-outline:hover {
+      background: #e8f5e9;
+    }
 
-.nav-btn-primary:hover {
-  background: #1b5e20;
-}
+    .nav-btn-primary {
+      background: #2e7d32;
+      color: white;
+    }
 
-/* 主要區域 */
-main {
-  max-width: 1100px;
-  margin: 20px auto;
-  padding: 0 20px;
-  flex: 1;
-  width: 100%;
-}
+    .nav-btn-primary:hover {
+      background: #1b5e20;
+    }
 
-/* 頁面切換控制 */
-.view-section {
-  display: none;
-}
+    /* 主要內容區 */
+    main {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 20px;
+      flex: 1;
+      width: 100%;
+    }
 
-.view-section.active {
-  display: block;
-}
+    /* 頁面切換機制 */
+    .view-section {
+      display: none;
+    }
 
-/* 首頁與篩選器 */
-.hero-banner {
-  background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%);
-  color: white;
-  padding: 30px 20px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  text-align: center;
-}
+    .view-section.active {
+      display: block;
+    }
 
-.hero-banner h1 {
-  font-size: 26px;
-  margin-bottom: 8px;
-}
+    /* 首頁英雄橫幅與卡片網格 */
+    .hero-banner {
+      background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
 
-.hero-banner p {
-  font-size: 14px;
-  opacity: 0.9;
-}
+    .hero-banner h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
+    .hero-banner p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
 
-/* 卡片樣式 */
-.card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-}
+    /* 物品卡片樣式 */
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
 
-.card-img-wrapper {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  background: #eee;
-}
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
 
-.card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .card-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: #eee;
+    }
 
-.card-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(46, 125, 50, 0.9);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: bold;
-}
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.card-body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+    .card-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(46, 125, 50, 0.9);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
 
-.card-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 6px;
-  color: #222;
-}
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
 
-.card-wish {
-  font-size: 13px;
-  color: #e65100;
-  background: #fff3e0;
-  padding: 6px 10px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #222;
+    }
 
-.card-history-preview {
-  font-size: 12px;
-  color: #666;
-  border-top: 1px dashed #eee;
-  padding-top: 10px;
-  margin-top: auto;
-}
+    .card-wish {
+      font-size: 13px;
+      color: #e65100;
+      background: #fff3e0;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
 
-.card-history-count {
-  color: #2e7d32;
-  font-weight: bold;
-}
+    .card-history-preview {
+      font-size: 12px;
+      color: #666;
+      border-top: 1px dashed #eee;
+      padding-top: 10px;
+      margin-top: auto;
+    }
 
-/* 詳細頁面 */
-.detail-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+    .card-history-count {
+      color: #2e7d32;
+      font-weight: bold;
+    }
 
-.back-btn {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+    /* 詳細頁面樣式 */
+    .detail-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
+    .back-btn {
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-@media (max-width: 768px) {
-  .detail-grid {
-    grid-template-columns: 1fr;
-  }
-}
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
 
-.detail-img {
-  width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 8px;
-}
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-.detail-info h2 {
-  font-size: 22px;
-  margin-bottom: 12px;
-}
+    .detail-img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
 
-.owner-badge {
-  display: inline-block;
-  font-size: 12px;
-  color: #555;
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
+    .detail-info h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
 
-.detail-wish-box {
-  background: #fff8e1;
-  border-left: 4px solid #ffb300;
-  padding: 12px;
-  margin-bottom: 20px;
-  border-radius: 0 8px 8px 0;
-}
+    .owner-badge {
+      display: inline-block;
+      font-size: 12px;
+      color: #555;
+      background: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
 
-.detail-wish-box h4 {
-  font-size: 13px;
-  color: #b78103;
-  margin-bottom: 4px;
-}
+    .detail-wish-box {
+      background: #fff8e1;
+      border-left: 4px solid #ffb300;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+    }
 
-/* 時間軸 (小換大成長履歷) */
-.timeline-section {
-  margin-top: 20px;
-  background: #f9fbe7;
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #dce775;
-}
+    .detail-wish-box h4 {
+      font-size: 13px;
+      color: #b78103;
+      margin-bottom: 4px;
+    }
 
-.timeline-section h3 {
-  font-size: 15px;
-  color: #33691e;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+    /* 時間軸 (小換大成長履歷) */
+    .timeline-section {
+      margin-top: 20px;
+      background: #f9fbe7;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #dce775;
+    }
 
-.timeline {
-  position: relative;
-  padding-left: 20px;
-  border-left: 2px solid #8bc34a;
-}
+    .timeline-section h3 {
+      font-size: 15px;
+      color: #33691e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-.timeline-item {
-  position: relative;
-  margin-bottom: 12px;
-}
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid #8bc34a;
+    }
 
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
+    .timeline-item {
+      position: relative;
+      margin-bottom: 12px;
+    }
 
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -25px;
-  top: 4px;
-  width: 8px;
-  height: 8px;
-  background: #689f38;
-  border-radius: 50%;
-}
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
 
-.timeline-item.current::before {
-  background: #2e7d32;
-  width: 12px;
-  height: 12px;
-  left: -27px;
-  top: 2px;
-}
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -25px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      background: #689f38;
+      border-radius: 50%;
+    }
 
-.timeline-text {
-  font-size: 13px;
-  color: #444;
-}
+    .timeline-item.current::before {
+      background: #2e7d32;
+      width: 12px;
+      height: 12px;
+      left: -27px;
+      top: 2px;
+    }
 
-.timeline-date {
-  font-size: 11px;
-  color: #888;
-}
+    .timeline-text {
+      font-size: 13px;
+      color: #444;
+    }
 
-/* 表單頁面 */
-.form-card {
-  background: white;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+    .timeline-date {
+      font-size: 11px;
+      color: #888;
+    }
 
-.form-group {
-  margin-bottom: 16px;
-}
+    /* 刊登表單頁面 */
+    .form-card {
+      background: white;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-.form-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+    .form-group {
+      margin-bottom: 16px;
+    }
 
-.form-group input, .form-group textarea, .form-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-.form-group textarea {
-  resize: vertical;
-  height: 80px;
-}
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
 
-.submit-btn {
-  width: 100%;
-  background: #2e7d32;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .form-group textarea {
+      resize: vertical;
+      height: 80px;
+    }
 
-.submit-btn:hover {
-  background: #1b5e20;
-}
+    .submit-btn {
+      width: 100%;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-/* 彈出對話框 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 200;
-}
+    .submit-btn:hover {
+      background: #1b5e20;
+    }
 
-.modal-overlay.active {
-  display: flex;
-}
+    /* 對話框 (Modal) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
 
-.modal {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-}
+    .modal-overlay.active {
+      display: flex;
+    }
 
-.modal h3 {
-  margin-bottom: 12px;
-}
+    .modal {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
 
-.modal p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 20px;
-}
+    .modal h3 {
+      margin-bottom: 12px;
+    }
 
-.modal-btns {
-  display: flex;
-  gap: 10px;
-}
+    .modal p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
 
-.modal-btns button {
-  flex: 1;
-}
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+    }
 
-```
+    .modal-btns button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
 
-```
-<!-- 1. 首頁 (物品牆) -->
-<section id="view-home" class="view-section active">
-  <div class="hero-banner">
-    <h1>用手邊的小東西，換到大驚喜！</h1>
-    <p>歡迎來到小換大實驗室！看看大家如何把小貼紙一步步換成高單價好物。</p>
+  <!-- 頂部導覽列 -->
+  <header>
+    <div class="nav-container">
+      <div class="logo" onclick="switchView('home')">
+        🔄 TradeUp 小換大
+      </div>
+      <div class="nav-buttons">
+        <button class="nav-btn nav-btn-primary" onclick="switchView('upload')">＋ 刊登物品</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要內容區域 -->
+  <main>
+
+    <!-- 1. 首頁 (物品大廳) -->
+    <section id="view-home" class="view-section active">
+      <div class="hero-banner">
+        <h1>用手邊的小東西，換到大驚喜！</h1>
+        <p>歡迎來到小換大實驗室！看看大家如何把小貼紙一步步換成高單價好物。</p>
+      </div>
+
+      <div class="grid-container" id="items-grid">
+        <!-- JS 動態繪製卡片 -->
+      </div>
+    </section>
+
+    <!-- 2. 物品詳細頁面 -->
+    <section id="view-detail" class="view-section">
+      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
+      <div class="detail-card" id="detail-content">
+        <!-- JS 動態繪製詳細資訊 -->
+      </div>
+    </section>
+
+    <!-- 3. 刊登新物品頁面 -->
+    <section id="view-upload" class="view-section">
+      <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
+      <div class="form-card">
+        <h2 style="margin-bottom: 16px;">刊登想要交換的物品</h2>
+        <form id="upload-form">
+          <div class="form-group">
+            <label>物品名稱</label>
+            <input type="text" id="input-title" placeholder="例如：7成新藍牙音響" required>
+          </div>
+          <div class="form-group">
+            <label>持有人暱稱</label>
+            <input type="text" id="input-owner" placeholder="例如：Alex" required>
+          </div>
+          <div class="form-group">
+            <label>最想換到的物品 (許願池)</label>
+            <input type="text" id="input-wish" placeholder="例如：二手折疊腳踏車或咖啡機" required>
+          </div>
+          <div class="form-group">
+            <label>圖片網址 (可直接使用預設圖片)</label>
+            <input type="url" id="input-img" placeholder="https://..." value="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500">
+          </div>
+          <div class="form-group">
+            <label>這件物品最初是用什麼小東西換來的？(起源歷史)</label>
+            <input type="text" id="input-origin" placeholder="例如：造型貼紙" required>
+          </div>
+          <button type="submit" class="submit-btn">立即刊登並開始交換</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 提出交換對話框 (Modal) -->
+  <div class="modal-overlay" id="trade-modal">
+    <div class="modal">
+      <h3>🤝 提出交換申請</h3>
+      <p id="modal-text">您確定要用您的物品發起交換嗎？此操作將發送通知給對方。</p>
+      <div class="form-group" style="text-align: left;">
+        <label>您想拿來交換的物品名稱</label>
+        <input type="text" id="offer-item-name" placeholder="例如：九成新耳機">
+      </div>
+      <div class="modal-btns">
+        <button class="nav-btn nav-btn-outline" onclick="closeModal()">取消</button>
+        <button class="nav-btn nav-btn-primary" onclick="confirmTrade()">確認發送</button>
+      </div>
+    </div>
   </div>
 
-  <div class="grid-container" id="items-grid">
-    <!-- 動態渲染卡片 -->
-  </div>
-</section>
+  <script>
+    // 預設物品資料庫
+    let itemsData = [
+      {
+        id: "item-1",
+        title: "八成新藍牙音響",
+        owner: "小明",
+        wish: "二手折疊腳踏車 / 空拍機",
+        imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500",
+        history: [
+          { name: "手作造型貼紙", date: "2026-07-01" },
+          { name: "精裝陶瓷馬克杯", date: "2026-07-12" },
+          { name: "八成新藍牙音響", date: "2026-07-25" }
+        ]
+      },
+      {
+        id: "item-2",
+        title: "入門級羽球拍套組",
+        owner: "Emma",
+        wish: "露營用摺疊椅 / 復古底片機",
+        imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500",
+        history: [
+          { name: "電影優待券一張", date: "2026-07-10" },
+          { name: "入門級羽球拍套組", date: "2026-07-20" }
+        ]
+      },
+      {
+        id: "item-3",
+        title: "經典復古底片相機",
+        owner: "阿豪",
+        wish: "iPad平板 (可補些微差額) / 膠囊咖啡機",
+        imageUrl: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
+        history: [
+          { name: "舊款手錶", date: "2026-06-15" },
+          { name: "桌上型小螢幕", date: "2026-06-28" },
+          { name: "無線耳機", date: "2026-07-15" },
+          { name: "經典復古底片相機", date: "2026-07-29" }
+        ]
+      }
+    ];
 
-<!-- 2. 物品詳細頁面 -->
-<section id="view-detail" class="view-section">
-  <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
-  <div class="detail-card" id="detail-content">
-    <!-- 動態渲染詳細內容 -->
-  </div>
-</section>
+    let currentSelectedItem = null;
 
-<!-- 3. 刊登新物品頁面 -->
-<section id="view-upload" class="view-section">
-  <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
-  <div class="form-card">
-    <h2 style="margin-bottom: 16px;">刊登想要交換的物品</h2>
-    <form id="upload-form">
-      <div class="form-group">
-        <label>物品名稱</label>
-        <input type="text" id="input-title" placeholder="例如：7成新藍牙音響" required>
-      </div>
-      <div class="form-group">
-        <label>持有人暱稱</label>
-        <input type="text" id="input-owner" placeholder="例如：Alex" required>
-      </div>
-      <div class="form-group">
-        <label>最想換到的物品 (許願池)</label>
-        <input type="text" id="input-wish" placeholder="例如：二手折疊腳踏車或咖啡機" required>
-      </div>
-      <div class="form-group">
-        <label>圖片網址 (可使用預設或貼上網址)</label>
-        <input type="url" id="input-img" placeholder="https://..." value="[https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500](https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500)">
-      </div>
-      <div class="form-group">
-        <label>這件物品是從什麼小東西換來的？(起源)</label>
-        <input type="text" id="input-origin" placeholder="例如：造型貼紙 (若為第1手可填自身物品)" required>
-      </div>
-      <button type="submit" class="submit-btn">立即刊登並開始交換</button>
-    </form>
-  </div>
-</section>
+    // 頁面初始化
+    document.addEventListener("DOMContentLoaded", () => {
+      renderGrid();
+
+      // 表單送出監聽
+      document.getElementById("upload-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById("input-title").value;
+        const owner = document.getElementById("input-owner").value;
+        const wish = document.getElementById("input-wish").value;
+        const imageUrl = document.getElementById("input-img").value || "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500";
+        const origin = document.getElementById("input-origin").value;
+
+        const newItem = {
+          id: "item-" + (itemsData.length + 1),
+          title: title,
+          owner: owner,
+          wish: wish,
+          imageUrl: imageUrl,
+          history: [
+            { name: origin, date: new Date().toISOString().split('T')[0] },
+            { name: title, date: new Date().toISOString().split('T')[0] }
+          ]
+        };
+
+        itemsData.unshift(newItem);
+        renderGrid();
+        switchView("home");
+        e.target.reset();
+        alert("🎉 刊登成功！您的物品已成功上架。");
+      });
+    });
+
+    // 頁面切換控制
+    function switchView(viewName) {
+      document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
+      document.getElementById(`view-${viewName}`).classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    // 繪製大廳卡片
+    function renderGrid() {
+      const grid = document.getElementById("items-grid");
+      grid.innerHTML = itemsData.map(item => `
+        <div class="card" onclick="openDetail('${item.id}')">
+          <div class="card-img-wrapper">
+            <img src="${item.imageUrl}" class="card-img" alt="${item.title}">
+            <span class="card-tag">開放交換中</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${item.title}</div>
+            <div class="card-wish">💡 想換：${item.wish}</div>
+            <div class="card-history-preview">
+              🚀 已轉手 <span class="card-history-count">${item.history.length - 1}</span> 次 
+              (起點：${item.history[0].name})
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // 開啟物品詳細頁面
+    function openDetail(id) {
+      const item = itemsData.find(i => i.id === id);
+      if (!item) return;
+      currentSelectedItem = item;
+
+      const detailContainer = document.getElementById("detail-content");
+
+      // 產生成長歷程時間軸
+      const timelineHtml = item.history.map((h, index) => {
+        const isCurrent = index === item.history.length - 1;
+        return `
+          <div class="timeline-item ${isCurrent ? 'current' : ''}">
+            <div class="timeline-text">
+              ${isCurrent ? '<b>[現況]</b> ' : ''}${h.name}
+            </div>
+            <div class="timeline-date">${h.date}</div>
+          </div>
+        `;
+      }).join("");
+
+      detailContainer.innerHTML = `
+        <div class="detail-grid">
+          <div>
+            <img src="${item.imageUrl}" class="detail-img" alt="${item.title}">
+            <div class="timeline-section">
+              <h3>📈 小換大增值履歷</h3>
+              <div class="timeline">
+                ${timelineHtml}
+              </div>
+            </div>
+          </div>
+          <div class="detail-info">
+            <h2>${item.title}</h2>
+            <span class="owner-badge">👤 持有人：${item.owner}</span>
+            
+            <div class="detail-wish-box">
+              <h4>🎯 持有人的交換願望：</h4>
+              <p>${item.wish}</p>
+            </div>
+
+            <p style="font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6;">
+              這件物品目前正在參與「小換大」計畫！您可以拿出符合對方願望或等值的物品來進行交換，體驗小物品變大驚喜的樂趣。
+            </p>
+
+            <button class="submit-btn" onclick="openModal()">🤝 我要提出交換申請</button>
+          </div>
+        </div>
+      `;
+
+      switchView("detail");
+    }
+
+    // 對話框控制
+    function openModal() {
+      document.getElementById("trade-modal").classList.add("active");
+    }
+
+    function closeModal() {
+      document.getElementById("trade-modal").classList.remove("active");
+    }
+
+    function confirmTrade() {
+      const offerInput = document.getElementById("offer-item-name").value;
+      if (!offerInput.trim()) {
+        alert("請輸入您想拿來交換的物品！");
+        return;
+      }
+
+      alert(`✅ 交換申請已送出！\n已通知 ${currentSelectedItem.owner} 您想用「${offerInput}」交換「${currentSelectedItem.title}」。`);
+      document.getElementById("offer-item-name").value = "";
+      closeModal();
+    }
+  </script>
+</body>
+</html>
