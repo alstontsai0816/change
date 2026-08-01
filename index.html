@@ -12,193 +12,88 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
-    body {
-      background-color: #f4f6f8;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
+    body { background-color: #f4f6f8; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+    
     /* 頂部導覽列 */
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid #e0e0e0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: 800;
-      color: #2e7d32;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .nav-btn {
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .nav-btn-outline {
-      background: transparent;
-      color: #2e7d32;
-      border: 1.5px solid #2e7d32;
-    }
-
+    header { background: #ffffff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
+    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
+    .logo { font-size: 20px; font-weight: 800; color: #2e7d32; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .nav-buttons { display: flex; gap: 10px; align-items: center; }
+    .nav-btn { border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .nav-btn-outline { background: transparent; color: #2e7d32; border: 1.5px solid #2e7d32; }
     .nav-btn-outline:hover { background: #e8f5e9; }
     .nav-btn-primary { background: #2e7d32; color: white; }
     .nav-btn-primary:hover { background: #1b5e20; }
     .nav-btn-admin { background: #d32f2f; color: white; }
     .nav-btn-admin:hover { background: #9a0007; }
+    .user-tag { font-size: 13px; color: #666; font-weight: bold; }
 
-    .user-tag {
-      font-size: 13px;
-      color: #666;
-      font-weight: bold;
-    }
-
-    /* 主要內容區 */
-    main {
-      max-width: 1100px;
-      margin: 20px auto;
-      padding: 0 20px;
-      flex: 1;
-      width: 100%;
-    }
-
+    main { max-width: 1100px; margin: 20px auto; padding: 0 20px; flex: 1; width: 100%; }
     .view-section { display: none; }
     .view-section.active { display: block; }
 
-    /* 首頁與卡片網格 */
-    .hero-banner {
-      background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%);
-      color: white;
-      padding: 30px 20px;
-      border-radius: 12px;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    /* 物品卡片樣式 */
-    .card {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-    }
-
+    /* 首頁與卡片 */
+    .hero-banner { background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%); color: white; padding: 30px 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; }
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
     .card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
     .card-img-wrapper { position: relative; width: 100%; height: 180px; background: #eee; }
     .card-img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .card-tag {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(46, 125, 50, 0.9);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-    }
+    .card-tag { position: absolute; top: 10px; right: 10px; background: rgba(46, 125, 50, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
     .card-tag.trading { background: rgba(245, 124, 0, 0.9); }
-
     .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
     .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #222; }
     .card-wish { font-size: 13px; color: #e65100; background: #fff3e0; padding: 6px 10px; border-radius: 6px; margin-bottom: 12px; }
-    .card-history-preview { font-size: 12px; color: #666; border-top: 1px dashed #eee; padding-top: 10px; margin-top: auto; }
 
-    /* 詳細頁面樣式 */
+    /* 詳細頁面 */
     .detail-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .back-btn { background: none; border: none; color: #666; font-size: 14px; cursor: pointer; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 4px; }
+    .back-btn { background: none; border: none; color: #666; font-size: 14px; cursor: pointer; margin-bottom: 16px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
     .detail-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; }
-    .detail-wish-box { background: #fff8e1; border-left: 4px solid #ffb300; padding: 12px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
-    
-    /* 時間軸 (小換大成長履歷) */
     .timeline-section { margin-top: 20px; background: #f9fbe7; padding: 16px; border-radius: 8px; border: 1px solid #dce775; }
-    .timeline { position: relative; padding-left: 20px; border-left: 2px solid #8bc34a; margin-top:12px; }
-    .timeline-item { position: relative; margin-bottom: 12px; }
+    .timeline { padding-left: 20px; border-left: 2px solid #8bc34a; margin-top:12px; }
+    .timeline-item { position: relative; margin-bottom: 12px; font-size: 13px; }
     .timeline-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 8px; height: 8px; background: #689f38; border-radius: 50%; }
     .timeline-item.current::before { background: #2e7d32; width: 12px; height: 12px; left: -27px; top: 2px; }
 
-    /* 表單頁面 */
+    /* 表單 */
     .form-card { background: white; max-width: 500px; margin: 20px auto; padding: 24px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 6px; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
     .submit-btn { width: 100%; background: #2e7d32; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-    /* 會員中心 Tab 切換 */
+    /* 會員中心與表格 */
     .profile-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
     .tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; color: #888; cursor: pointer; padding: 8px 12px; border-radius: 6px; }
     .tab-btn.active { background: #e8f5e9; color: #2e7d32; }
-
-    /* 表格通用樣式 */
-    .custom-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .custom-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
     .custom-table th, .custom-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
     .custom-table th { background: #f5f5f5; font-weight: bold; }
     .status-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; background: #e3f2fd; color: #1976d2; }
     .status-badge.trading { background: #fff3e0; color: #e65100; }
     .status-badge.rejected { background: #ffebee; color: #c62828; }
-
     .btn-action { background: #1976d2; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    .btn-action:hover { background: #115293; }
     .btn-action:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-success { background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .btn-success { background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .btn-danger { background: #d32f2f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-    /* 對話框 (Modal) */
+    /* 對話框 (Modal) & Chat */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 200; }
     .modal-overlay.active { display: flex; }
     .modal { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-    
-    /* 聊天室 UI */
-    .chat-box { background: #f4f6f8; border-radius: 8px; height: 300px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; border: 1px solid #ddd; }
+    .chat-box { background: #f4f6f8; border-radius: 8px; height: 250px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; border: 1px solid #ddd; }
     .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.4; position: relative; }
     .chat-msg.me { background: #dcf8c6; align-self: flex-end; border-bottom-right-radius: 4px; }
     .chat-msg.other { background: white; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #eee; }
     .chat-sender { font-size: 11px; color: #888; margin-bottom: 4px; }
     .chat-input-area { display: flex; gap: 8px; }
     .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
-    .chat-input-area button { background: #2e7d32; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-    .chat-input-area button:disabled { background: #ccc; cursor: not-allowed; }
+    .chat-input-area button { background: #2e7d32; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; }
+
+    .banned-box { background: #ffebee; border-left: 4px solid #d32f2f; padding: 16px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
   </style>
 </head>
 <body>
@@ -217,7 +112,6 @@
     </div>
   </header>
 
-  <!-- 主要內容區域 -->
   <main>
     <!-- 1. 首頁 (物品大廳) -->
     <section id="view-home" class="view-section active">
@@ -237,213 +131,201 @@
     <!-- 3. 登入 / 註冊頁面 -->
     <section id="view-login" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
+      
+      <!-- 登入卡片 -->
       <div class="form-card" id="login-card">
         <h2 style="margin-bottom: 16px; text-align: center;">會員登入</h2>
         <div style="background: #eefbe7; border: 1px solid #c5e1a5; padding: 10px; border-radius: 6px; font-size: 12px; color: #33691e; margin-bottom: 16px;">
-          💡 <b>測試帳號提示：</b> 帳號 `user` / 密碼 `1234`
+          💡 <b>測試帳號提示：</b><br>
+          一般會員：帳號 `user` / 密碼 `1234`<br>
+          系統管理員：帳號 `admin` / 密碼 `admin`
         </div>
         <form id="login-form">
-          <div class="form-group">
-            <label>帳號</label>
-            <input type="text" id="login-username" required>
-          </div>
-          <div class="form-group">
-            <label>密碼</label>
-            <input type="password" id="login-password" required>
-          </div>
-          <button type="submit" class="submit-btn">登入</button>
+          <div class="form-group"><label>帳號</label><input type="text" id="login-username" required></div>
+          <div class="form-group"><label>密碼</label><input type="password" id="login-password" required></div>
+          <button type="submit" class="submit-btn">立即登入</button>
         </form>
+        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
+          還沒有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color: #2e7d32; font-weight: bold;">點此註冊</a>
+        </p>
+      </div>
+
+      <!-- 註冊卡片 -->
+      <div class="form-card" id="register-card" style="display: none;">
+        <h2 style="margin-bottom: 16px; text-align: center;">註冊新帳號</h2>
+        <form id="register-form">
+          <div class="form-group"><label>設定帳號</label><input type="text" id="reg-username" required></div>
+          <div class="form-group"><label>設定您的暱稱</label><input type="text" id="reg-nickname" required></div>
+          <div class="form-group"><label>設定密碼</label><input type="password" id="reg-password" required></div>
+          <button type="submit" class="submit-btn">立即註冊</button>
+        </form>
+        <p style="text-align: center; margin-top: 16px; font-size: 14px;">
+          已有帳號？ <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color: #2e7d32; font-weight: bold;">點此登入</a>
+        </p>
       </div>
     </section>
 
-    <!-- 4. 會員個人中心（雙分頁：我的申請 / 我的刊登） -->
+    <!-- 4. 會員個人中心 -->
     <section id="view-profile" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
       <h2 style="margin-bottom: 16px;">👤 我的個人會員專區</h2>
-      
       <div class="profile-tabs">
         <button class="tab-btn active" id="tab-my-apps" onclick="switchProfileTab('apps')">📤 我提出的申請</button>
         <button class="tab-btn" id="tab-my-items" onclick="switchProfileTab('items')">📦 我刊登的物品</button>
       </div>
 
-      <!-- 分頁 A：我提出的申請 -->
       <div id="profile-sec-apps">
         <table class="custom-table">
-          <thead>
-            <tr>
-              <th>申請日期</th>
-              <th>目標物品</th>
-              <th>我拿來交換的物品</th>
-              <th>審核進度</th>
-              <th>聯絡對方</th>
-            </tr>
-          </thead>
+          <thead><tr><th>日期</th><th>目標物品</th><th>我拿來交換的</th><th>狀態</th><th>聯絡對方</th></tr></thead>
           <tbody id="user-applications-list"></tbody>
         </table>
       </div>
 
-      <!-- 分頁 B：我刊登的物品 -->
       <div id="profile-sec-items" style="display:none;">
         <table class="custom-table">
-          <thead>
-            <tr>
-              <th>物品名稱</th>
-              <th>狀態</th>
-              <th>收到申請數</th>
-              <th>操作管理</th>
-            </tr>
-          </thead>
+          <thead><tr><th>物品名稱</th><th>狀態</th><th>收到申請數</th><th>管理</th></tr></thead>
           <tbody id="user-posted-list"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- 5. 刊登新物品頁面 -->
+    <!-- 5. 系統管理員後台 -->
+    <section id="view-admin" class="view-section">
+      <button class="back-btn" onclick="switchView('home')">← 返回大廳</button>
+      <h2 style="margin-bottom: 16px;">⚙️ 管理員控制台</h2>
+      <table class="custom-table">
+        <thead>
+          <tr><th>物品圖片</th><th>物品名稱</th><th>持有人</th><th>目前狀態</th><th>管理操作</th></tr>
+        </thead>
+        <tbody id="admin-items-list"></tbody>
+      </table>
+    </section>
+
+    <!-- 6. 刊登新物品 -->
     <section id="view-upload" class="view-section">
       <button class="back-btn" onclick="switchView('home')">← 取消刊登</button>
       <div class="form-card">
         <h2 style="margin-bottom: 16px;">刊登想要交換的物品</h2>
         <form id="upload-form">
-          <div class="form-group">
-            <label>物品名稱</label>
-            <input type="text" id="input-title" required>
-          </div>
-          <div class="form-group">
-            <label>最想換到的物品 (許願池)</label>
-            <input type="text" id="input-wish" required>
-          </div>
-          <div class="form-group">
-            <label>圖片網址</label>
-            <input type="url" id="input-img" value="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500">
-          </div>
-          <div class="form-group">
-            <label>這件物品最初是用什麼小東西換來的？</label>
-            <input type="text" id="input-origin" required>
-          </div>
+          <div class="form-group"><label>物品名稱</label><input type="text" id="input-title" required></div>
+          <div class="form-group"><label>最想換到的物品</label><input type="text" id="input-wish" required></div>
+          <div class="form-group"><label>圖片網址</label><input type="url" id="input-img" value="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500"></div>
+          <div class="form-group"><label>這件物品最初是用什麼小東西換來的？</label><input type="text" id="input-origin" required></div>
           <button type="submit" class="submit-btn">立即刊登並開始交換</button>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- 模態框：提出交換申請 -->
+  <!-- 模態框區塊 -->
+  <!-- 提出交換 -->
   <div class="modal-overlay" id="trade-modal">
     <div class="modal">
       <h3>🤝 提出交換申請</h3>
-      <div class="form-group" style="text-align: left;">
-        <label>您想拿來交換的物品名稱</label>
-        <input type="text" id="offer-item-name" placeholder="例如：九成新耳機" required>
+      <div class="form-group"><label>您想拿來交換的物品名稱</label><input type="text" id="offer-item-name" required></div>
+      <div style="display:flex; gap:10px;"><button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('trade-modal')">取消</button><button class="nav-btn nav-btn-primary" style="flex:1;" onclick="confirmTrade()">確認發送</button></div>
+    </div>
+  </div>
+
+  <!-- 管理員下架 (含選單與自訂輸入) -->
+  <div class="modal-overlay" id="ban-reason-modal">
+    <div class="modal">
+      <h3 style="color:#d32f2f;">🚫 確認下架物品</h3>
+      <div class="form-group">
+        <label>選擇違規原因：</label>
+        <select id="ban-reason-select" onchange="document.getElementById('ban-reason-text').value = (this.value === 'custom' ? '' : this.value)">
+          <option value="">-- 請選擇常見原因 --</option>
+          <option value="物品描述不實 / 圖片不相符">物品描述不實 / 圖片不相符</option>
+          <option value="刊登違禁品或限制物品">刊登違禁品或限制物品</option>
+          <option value="重複刊登 / 惡意洗版">重複刊登 / 惡意洗版</option>
+          <option value="小換大歷史履歷造假">小換大歷史履歷造假</option>
+          <option value="custom">其他（自行輸入）</option>
+        </select>
       </div>
-      <div style="display:flex; gap:10px; margin-top:16px;">
-        <button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('trade-modal')">取消</button>
-        <button class="nav-btn nav-btn-primary" style="flex:1;" onclick="confirmTrade()">確認發送</button>
+      <div class="form-group">
+        <label>詳細下架說明：</label>
+        <textarea id="ban-reason-text" style="height:60px;"></textarea>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="nav-btn nav-btn-outline" style="flex:1;" onclick="closeModal('ban-reason-modal')">取消</button>
+        <button class="nav-btn nav-btn-admin" style="flex:1;" onclick="confirmBanItem()">下架</button>
       </div>
     </div>
   </div>
 
-  <!-- 模態框：查看申請者名單 (管理我的刊登) -->
+  <!-- 審核申請名單 -->
   <div class="modal-overlay" id="applicants-modal">
     <div class="modal" style="max-width: 600px;">
-      <h3 style="margin-bottom: 16px;">📋 審核交換申請名單</h3>
-      <p style="font-size: 13px; color: #666; margin-bottom: 16px;">
-        您可以先點擊「私訊」了解物品狀況。<b>一旦點擊「確認選擇他」，其他未入選者的私訊功能將會被關閉！</b>
-      </p>
+      <h3 style="margin-bottom: 16px;">📋 審核申請名單</h3>
       <table class="custom-table" style="margin-bottom: 16px;">
-        <thead>
-          <tr>
-            <th>申請人</th>
-            <th>提供的物品</th>
-            <th>狀態</th>
-            <th>操作</th>
-          </tr>
-        </thead>
+        <thead><tr><th>申請人</th><th>提供的物品</th><th>狀態</th><th>操作</th></tr></thead>
         <tbody id="applicants-list-body"></tbody>
       </table>
-      <button class="nav-btn nav-btn-outline" style="width:100%;" onclick="closeModal('applicants-modal')">關閉視窗</button>
+      <button class="nav-btn nav-btn-outline" style="width:100%;" onclick="closeModal('applicants-modal')">關閉</button>
     </div>
   </div>
 
-  <!-- 模態框：私訊聊天室 -->
+  <!-- 私訊聊天室 -->
   <div class="modal-overlay" id="chat-modal">
     <div class="modal">
-      <h3 style="margin-bottom: 8px;">💬 雙方私訊溝通</h3>
-      <p id="chat-status-notice" style="font-size: 12px; color: #d32f2f; margin-bottom: 12px; font-weight: bold;"></p>
-      
-      <div class="chat-box" id="chat-history">
-        <!-- 訊息會動態塞入這裡 -->
-      </div>
-
+      <h3 style="margin-bottom: 12px;">💬 雙方私訊</h3>
+      <div class="chat-box" id="chat-history"></div>
       <div class="chat-input-area">
         <input type="text" id="chat-input-text" placeholder="輸入訊息...">
-        <button id="chat-send-btn" onclick="sendChatMessage()">傳送</button>
+        <button onclick="sendChatMessage()">傳送</button>
       </div>
-      <button class="nav-btn nav-btn-outline" style="width:100%; margin-top: 12px;" onclick="closeModal('chat-modal')">關閉聊天室</button>
+      <button class="nav-btn nav-btn-outline" style="width:100%; margin-top: 12px;" onclick="closeModal('chat-modal')">關閉</button>
     </div>
   </div>
 
   <script>
-    // 預設資料：為了讓您一登入就有感覺，我們把 Item-1 的持有人設為 "測試會員"
+    // 預設資料
     let itemsData = [
-      {
-        id: "item-1",
-        title: "八成新藍牙音響",
-        owner: "測試會員", // 測試會員刊登的！
-        wish: "二手折疊腳踏車 / 空拍機",
-        imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500",
-        status: "active", // active | trading (已選擇對象)
-        selectedAppId: null,
-        history: [{ name: "手作貼紙", date: "2026-07-01" }, { name: "藍牙音響", date: "2026-07-25" }]
-      },
-      {
-        id: "item-2",
-        title: "入門級羽球拍套組",
-        owner: "Emma",
-        wish: "露營用摺疊椅",
-        imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500",
-        status: "active",
-        selectedAppId: null,
-        history: [{ name: "電影票", date: "2026-07-10" }, { name: "羽球拍", date: "2026-07-20" }]
-      }
+      { id: "item-1", title: "八成新藍牙音響", owner: "測試會員", wish: "空拍機", imageUrl: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500", status: "active", selectedAppId: null, history: [{name:"貼紙", date:"2026-07-01"}, {name:"藍牙音響", date:"2026-07-25"}] },
+      { id: "item-2", title: "入門級羽球拍套組", owner: "Emma", wish: "摺疊椅", imageUrl: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500", status: "active", selectedAppId: null, history: [{name:"電影票", date:"2026-07-10"}, {name:"羽球拍", date:"2026-07-20"}] }
     ];
 
-    let usersDB = [ { username: 'user', password: '1234', name: '測試會員', role: 'user' } ];
+    let usersDB = [
+      { username: 'admin', password: 'admin', name: '系統管理員', role: 'admin' }, // 管理員強勢回歸！
+      { username: 'user', password: '1234', name: '測試會員', role: 'user' }
+    ];
 
-    // 所有的交換申請紀錄 (包含假資料，讓 item-1 已經有兩個人來申請)
     let userApplications = [
-      {
-        id: "app-001",
-        applicant: "王大明", // 陌生人
-        targetItemId: "item-1",
-        targetTitle: "八成新藍牙音響",
-        targetOwner: "測試會員",
-        myOffer: "幾乎全新的微波爐",
-        date: "2026-07-28",
-        status: "等待回應" // 等待回應 | 已成交 | 未入選
-      },
-      {
-        id: "app-002",
-        applicant: "陳小美", // 陌生人
-        targetItemId: "item-1",
-        targetTitle: "八成新藍牙音響",
-        targetOwner: "測試會員",
-        myOffer: "折疊腳踏車 (符合願望)",
-        date: "2026-07-29",
-        status: "等待回應"
-      }
+      { id: "app-001", applicant: "王大明", targetItemId: "item-1", targetTitle: "八成新藍牙音響", targetOwner: "測試會員", myOffer: "微波爐", date: "2026-07-28", status: "等待回應" },
+      { id: "app-002", applicant: "陳小美", targetItemId: "item-1", targetTitle: "八成新藍牙音響", targetOwner: "測試會員", myOffer: "折疊腳踏車", date: "2026-07-29", status: "等待回應" }
     ];
 
-    // 模擬資料庫儲存聊天訊息 { appId, sender, text }
     let chatDB = [
-      { appId: "app-001", sender: "王大明", text: "你好！我有一個微波爐想跟你換音響，請問音響音質還好嗎？" },
-      { appId: "app-002", sender: "陳小美", text: "哈囉～我剛好有折疊腳踏車，雖然舊了一點但堪用，想換！" }
+      { appId: "app-001", sender: "王大明", text: "請問音質還好嗎？" },
+      { appId: "app-002", sender: "陳小美", text: "哈囉，我剛好有腳踏車想換！" }
     ];
 
     let currentUser = null; 
     let currentSelectedItem = null;
-    let currentChatAppId = null; // 當前正在聊天的申請單ID
+    let currentChatAppId = null; 
+    let itemPendingBanId = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
+
+      // 切換註冊/登入卡片
+      window.toggleAuthMode = function(mode) {
+        document.getElementById('login-card').style.display = mode === 'login' ? 'block' : 'none';
+        document.getElementById('register-card').style.display = mode === 'register' ? 'block' : 'none';
+      };
+
+      // 註冊
+      document.getElementById("register-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const u = document.getElementById("reg-username").value.trim();
+        const n = document.getElementById("reg-nickname").value.trim();
+        const p = document.getElementById("reg-password").value.trim();
+        if (usersDB.find(user => user.username === u)) return alert("帳號已被使用！");
+        usersDB.push({ username: u, password: p, name: n, role: 'user' });
+        alert("🎉 註冊成功！請登入。");
+        toggleAuthMode('login');
+        e.target.reset();
+      });
 
       // 登入
       document.getElementById("login-form").addEventListener("submit", (e) => {
@@ -451,320 +333,185 @@
         const u = document.getElementById("login-username").value.trim();
         const p = document.getElementById("login-password").value.trim();
         const found = usersDB.find(user => user.username === u && user.password === p);
-
         if (found) {
           currentUser = found;
           alert(`登入成功！歡迎，${currentUser.name}。`);
           updateNavUser();
           switchView("home");
-        } else {
-          alert("❌ 帳號或密碼錯誤！");
-        }
+        } else { alert("❌ 帳號或密碼錯誤！"); }
       });
 
       // 刊登
       document.getElementById("upload-form").addEventListener("submit", (e) => {
         e.preventDefault();
-        const newItem = {
+        itemsData.unshift({
           id: "item-" + Date.now(),
           title: document.getElementById("input-title").value,
           owner: currentUser.name,
           wish: document.getElementById("input-wish").value,
           imageUrl: document.getElementById("input-img").value || "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500",
-          status: "active",
-          selectedAppId: null,
-          history: [
-            { name: document.getElementById("input-origin").value, date: new Date().toISOString().split('T')[0] },
-            { name: document.getElementById("input-title").value, date: new Date().toISOString().split('T')[0] }
-          ]
-        };
-        itemsData.unshift(newItem);
-        alert("🎉 刊登成功！");
-        renderGrid();
-        switchView("home");
-        e.target.reset();
+          status: "active", selectedAppId: null,
+          history: [{ name: document.getElementById("input-origin").value, date: new Date().toISOString().split('T')[0] },
+                    { name: document.getElementById("input-title").value, date: new Date().toISOString().split('T')[0] }]
+        });
+        alert("🎉 刊登成功！"); renderGrid(); switchView("home"); e.target.reset();
       });
     });
 
-    // 檢查登入
-    function handleProtectedAction(actionType) {
+    // 路由與權限
+    function handleProtectedAction(type) {
       if (!currentUser) { alert("🔒 請先登入會員。"); switchView("login"); return; }
-      if (actionType === 'upload') switchView("upload");
-      else if (actionType === 'trade') openModal('trade-modal');
+      if (type === 'upload') switchView("upload");
+      if (type === 'trade') openModal('trade-modal');
     }
 
     function updateNavUser() {
-      const displaySpan = document.getElementById("user-display");
+      document.getElementById("user-display").textContent = currentUser ? `👤 ${currentUser.name}` : "未登入";
       const loginBtn = document.getElementById("btn-login-nav");
-      const profileBtn = document.getElementById("btn-user-profile");
       if (currentUser) {
-        displaySpan.textContent = `👤 ${currentUser.name}`;
         loginBtn.textContent = "登出"; loginBtn.onclick = () => { currentUser = null; updateNavUser(); switchView("home"); };
-        profileBtn.style.display = "inline-block";
       } else {
-        displaySpan.textContent = "未登入";
-        loginBtn.textContent = "會員登入"; loginBtn.onclick = () => switchView('login');
-        profileBtn.style.display = "none";
+        loginBtn.textContent = "會員登入/註冊"; loginBtn.onclick = () => switchView('login');
       }
+      document.getElementById("btn-user-profile").style.display = (currentUser && currentUser.role !== 'admin') ? 'inline-block' : 'none';
+      document.getElementById("btn-admin-nav").style.display = (currentUser && currentUser.role === 'admin') ? 'inline-block' : 'none';
     }
 
-    // 視窗切換
-    function switchView(viewName) {
+    function switchView(view) {
       document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
-      document.getElementById(`view-${viewName}`).classList.add("active");
-      if (viewName === 'profile') {
-        switchProfileTab('apps'); // 預設打開「我的申請」
-      }
+      document.getElementById(`view-${view}`).classList.add("active");
+      if (view === 'profile') switchProfileTab('apps');
+      if (view === 'admin') renderAdminList();
       window.scrollTo(0, 0);
     }
 
+    // 首頁與詳細頁
+    function renderGrid() {
+      document.getElementById("items-grid").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
+        <div class="card" onclick="openDetail('${item.id}')">
+          <div class="card-img-wrapper"><img src="${item.imageUrl}" class="card-img"><span class="card-tag ${item.status==='trading'?'trading':''}">${item.status==='trading'?'已配對':'開放中'}</span></div>
+          <div class="card-body"><div class="card-title">${item.title}</div><div class="card-wish">💡 想換：${item.wish}</div></div>
+        </div>`).join("");
+    }
+
+    function openDetail(id) {
+      currentSelectedItem = itemsData.find(i => i.id === id);
+      let btnHtml = "";
+      if (currentSelectedItem.status === 'banned') btnHtml = `<div class="banned-box"><h4>⛔ 已下架</h4><p>${currentSelectedItem.banReason}</p></div>`;
+      else if (currentSelectedItem.status === 'trading') btnHtml = `<p style="color:#e65100; font-weight:bold;">⚠️ 持有人已選定對象，停止接收新申請。</p>`;
+      else if (currentUser && currentSelectedItem.owner === currentUser.name) btnHtml = `<p style="color:#1976d2; font-weight:bold;">這是您刊登的物品，請至後台管理。</p>`;
+      else btnHtml = `<button class="submit-btn" onclick="handleProtectedAction('trade')">🤝 提出交換申請</button>`;
+
+      document.getElementById("detail-content").innerHTML = `
+        <div class="detail-grid">
+          <div><img src="${currentSelectedItem.imageUrl}" class="detail-img"></div>
+          <div><h2>${currentSelectedItem.title}</h2><span class="owner-badge">👤 ${currentSelectedItem.owner}</span>
+            <div style="background:#fff8e1; border-left:4px solid #ffb300; padding:12px; margin-bottom:20px;"><h4>🎯 願望：</h4><p>${currentSelectedItem.wish}</p></div>
+            ${btnHtml}
+          </div>
+        </div>`;
+      switchView("detail");
+    }
+
+    // 會員專區 (Tab 與表格)
     function switchProfileTab(tab) {
       document.getElementById('tab-my-apps').classList.toggle('active', tab === 'apps');
       document.getElementById('tab-my-items').classList.toggle('active', tab === 'items');
       document.getElementById('profile-sec-apps').style.display = tab === 'apps' ? 'block' : 'none';
       document.getElementById('profile-sec-items').style.display = tab === 'items' ? 'block' : 'none';
-      
-      if(tab === 'apps') renderUserApplications();
-      if(tab === 'items') renderUserPostedItems();
+      if(tab === 'apps') renderUserApps();
+      if(tab === 'items') renderUserItems();
     }
 
-    // 渲染大廳
-    function renderGrid() {
-      const grid = document.getElementById("items-grid");
-      const activeItems = itemsData.filter(i => i.status !== 'banned');
-      grid.innerHTML = activeItems.map(item => `
-        <div class="card" onclick="openDetail('${item.id}')">
-          <div class="card-img-wrapper">
-            <img src="${item.imageUrl}" class="card-img" alt="${item.title}">
-            <span class="card-tag ${item.status === 'trading' ? 'trading' : ''}">${item.status === 'trading' ? '已配對成交' : '開放交換中'}</span>
-          </div>
-          <div class="card-body">
-            <div class="card-title">${item.title}</div>
-            <div class="card-wish">💡 想換：${item.wish}</div>
-          </div>
-        </div>
-      `).join("");
+    function renderUserApps() {
+      document.getElementById("user-applications-list").innerHTML = userApplications.filter(a => a.applicant === currentUser.name).map(app => {
+        let isLocked = app.status === '未入選';
+        return `<tr><td>${app.date}</td><td><b>${app.targetTitle}</b></td><td>${app.myOffer}</td><td><span class="status-badge">${app.status}</span></td>
+        <td><button class="btn-action" ${isLocked?'disabled':''} onclick="openChat('${app.id}')">${isLocked?'🔒 關閉':'💬 私訊'}</button></td></tr>`;
+      }).join("") || `<tr><td colspan="5">無紀錄</td></tr>`;
     }
 
-    // 開啟商品詳細 (任何人都能看)
-    function openDetail(id) {
-      currentSelectedItem = itemsData.find(i => i.id === id);
-      const detailContainer = document.getElementById("detail-content");
-      
-      let actionHtml = "";
-      if (currentSelectedItem.status === 'trading') {
-        actionHtml = `<p style="color:#e65100; font-weight:bold;">⚠️ 該物品持有人已選擇了交換對象，目前停止接收新申請。</p>`;
-      } else if (currentUser && currentSelectedItem.owner === currentUser.name) {
-        actionHtml = `<p style="color:#1976d2; font-weight:bold;">這是您刊登的物品，請至「我的個人後台」管理申請者。</p>`;
-      } else {
-        actionHtml = `<button class="submit-btn" onclick="handleProtectedAction('trade')">🤝 我要提出交換申請</button>`;
-      }
-
-      detailContainer.innerHTML = `
-        <div class="detail-grid">
-          <div><img src="${currentSelectedItem.imageUrl}" class="detail-img"></div>
-          <div class="detail-info">
-            <h2>${currentSelectedItem.title}</h2>
-            <span class="owner-badge">👤 持有人：${currentSelectedItem.owner}</span>
-            <div class="detail-wish-box"><h4>🎯 持有人的交換願望：</h4><p>${currentSelectedItem.wish}</p></div>
-            ${actionHtml}
-          </div>
-        </div>
-      `;
-      switchView("detail");
+    function renderUserItems() {
+      document.getElementById("user-posted-list").innerHTML = itemsData.filter(i => i.owner === currentUser.name).map(item => {
+        const c = userApplications.filter(a => a.targetItemId === item.id).length;
+        return `<tr><td><b>${item.title}</b></td><td>${item.status==='trading'?'已結案':'徵求中'}</td><td>${c} 人</td>
+        <td><button class="btn-action" onclick="openApplicantsModal('${item.id}')">查看申請者</button></td></tr>`;
+      }).join("") || `<tr><td colspan="4">無紀錄</td></tr>`;
     }
 
-    // 發送申請
     function confirmTrade() {
-      const offer = document.getElementById("offer-item-name").value.trim();
-      if (!offer) return alert("請填寫您打算拿來交換的物品！");
-
-      userApplications.unshift({
-        id: "app-" + Date.now(),
-        applicant: currentUser.name,
-        targetItemId: currentSelectedItem.id,
-        targetTitle: currentSelectedItem.title,
-        targetOwner: currentSelectedItem.owner,
-        myOffer: offer,
-        date: new Date().toISOString().split('T')[0],
-        status: "等待回應"
-      });
-      alert(`✅ 交換申請成功送出！`);
-      document.getElementById("offer-item-name").value = "";
-      closeModal('trade-modal');
+      const offer = document.getElementById("offer-item-name").value;
+      if (!offer) return;
+      userApplications.unshift({ id: "app-"+Date.now(), applicant: currentUser.name, targetItemId: currentSelectedItem.id, targetTitle: currentSelectedItem.title, targetOwner: currentSelectedItem.owner, myOffer: offer, date: new Date().toISOString().split('T')[0], status: "等待回應" });
+      alert("✅ 申請成功！"); closeModal('trade-modal');
     }
 
-    // ==========================================
-    // 核心邏輯區：會員後台管理 (審核 & 私訊限制)
-    // ==========================================
-
-    // 1. 渲染「我提出的申請」
-    function renderUserApplications() {
-      const list = document.getElementById("user-applications-list");
-      const myApps = userApplications.filter(a => a.applicant === currentUser.name);
-      
-      list.innerHTML = myApps.map(app => {
-        // 判斷按鈕是否鎖定：如果狀態是未入選，鎖定私訊
-        const isLocked = app.status === '未入選';
-        let badgeClass = app.status === '已成交' ? 'trading' : (isLocked ? 'rejected' : '');
-
-        return `
-        <tr>
-          <td>${app.date}</td>
-          <td><b>${app.targetTitle}</b></td>
-          <td>${app.myOffer}</td>
-          <td><span class="status-badge ${badgeClass}">${app.status}</span></td>
-          <td>
-            <button class="btn-action" ${isLocked ? 'disabled title="已結案無法私訊"' : ''} onclick="openChat('${app.id}')">
-              ${isLocked ? '🔒 關閉' : '💬 私訊'}
-            </button>
-          </td>
-        </tr>
-      `}).join("") || `<tr><td colspan="5">尚無申請紀錄</td></tr>`;
-    }
-
-    // 2. 渲染「我刊登的物品」
-    function renderUserPostedItems() {
-      const list = document.getElementById("user-posted-list");
-      const myItems = itemsData.filter(i => i.owner === currentUser.name);
-
-      list.innerHTML = myItems.map(item => {
-        const appsCount = userApplications.filter(a => a.targetItemId === item.id).length;
-        return `
-        <tr>
-          <td><b>${item.title}</b></td>
-          <td><span class="status-badge ${item.status==='trading'?'trading':''}">${item.status === 'trading' ? '已結案' : '徵求中'}</span></td>
-          <td>${appsCount} 人</td>
-          <td><button class="btn-action" onclick="openApplicantsModal('${item.id}')">查看申請者</button></td>
-        </tr>
-      `}).join("") || `<tr><td colspan="4">尚未刊登任何物品</td></tr>`;
-    }
-
-    // 3. 開啟審核名單 Modal
+    // 審核與私訊
     function openApplicantsModal(itemId) {
       const item = itemsData.find(i => i.id === itemId);
-      const apps = userApplications.filter(a => a.targetItemId === itemId);
-      const listBody = document.getElementById("applicants-list-body");
-
-      listBody.innerHTML = apps.map(app => {
-        // 如果這個物品已經決定了人選 (status === trading)
-        const itemHasDecided = item.status === 'trading';
-        // 這個 app 是否是得標者
-        const isSelectedOne = item.selectedAppId === app.id;
-        
-        let actionsHtml = "";
-        
-        if (!itemHasDecided) {
-          // 還沒決定：每個人都可以私訊、可以選擇
-          actionsHtml = `
-            <button class="btn-action" onclick="openChat('${app.id}')">💬 私訊</button>
-            <button class="btn-success" style="margin-left:4px;" onclick="acceptApplicant('${app.id}', '${itemId}')">✅ 選擇他</button>
-          `;
-        } else {
-          // 已經決定了：只允許跟得標者私訊，其他人鎖定
-          if (isSelectedOne) {
-            actionsHtml = `<button class="btn-action" onclick="openChat('${app.id}')">💬 繼續私訊</button>`;
-          } else {
-            actionsHtml = `<button class="btn-action" disabled>🔒 已鎖定</button>`;
-          }
-        }
-
-        let badgeClass = app.status === '已成交' ? 'trading' : (app.status === '未入選' ? 'rejected' : '');
-
-        return `
-          <tr>
-            <td>👤 ${app.applicant}</td>
-            <td>${app.myOffer}</td>
-            <td><span class="status-badge ${badgeClass}">${app.status}</span></td>
-            <td>${actionsHtml}</td>
-          </tr>
-        `;
-      }).join("") || `<tr><td colspan="4" style="text-align:center;">目前還沒有人提出申請喔！</td></tr>`;
-
+      document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
+        let btn = "";
+        if (item.status !== 'trading') btn = `<button class="btn-action" onclick="openChat('${app.id}')">💬</button> <button class="btn-success" onclick="acceptApplicant('${app.id}','${itemId}')">✅ 選擇</button>`;
+        else btn = item.selectedAppId === app.id ? `<button class="btn-action" onclick="openChat('${app.id}')">💬</button>` : `<button class="btn-action" disabled>🔒</button>`;
+        return `<tr><td>${app.applicant}</td><td>${app.myOffer}</td><td>${app.status}</td><td>${btn}</td></tr>`;
+      }).join("") || `<tr><td colspan="4">無申請</td></tr>`;
       openModal('applicants-modal');
     }
 
-    // 4. 點擊「確認選擇他」
     function acceptApplicant(appId, itemId) {
-      if(!confirm("確定要選擇這位申請者嗎？\n確認後，物品將標記為「已成交」，且您將無法再與其他落選者私訊。")) return;
-
-      const item = itemsData.find(i => i.id === itemId);
-      item.status = 'trading';
-      item.selectedAppId = appId;
-
-      // 更新所有這個物品的申請狀態
-      userApplications.forEach(app => {
-        if (app.targetItemId === itemId) {
-          app.status = (app.id === appId) ? '已成交' : '未入選';
-        }
-      });
-
-      alert("✅ 已確認選擇！現在只能與此位得標者進行私訊。");
-      openApplicantsModal(itemId); // 重新渲染名單 Modal 畫面
-      renderGrid(); // 更新首頁標籤
+      if(!confirm("確定選擇他？其他人的通訊將被關閉。")) return;
+      itemsData.find(i => i.id === itemId).status = 'trading';
+      itemsData.find(i => i.id === itemId).selectedAppId = appId;
+      userApplications.forEach(a => { if (a.targetItemId === itemId) a.status = (a.id === appId) ? '已成交' : '未入選'; });
+      openApplicantsModal(itemId); renderGrid();
     }
 
-    // ==========================================
-    // 聊天室邏輯
-    // ==========================================
     function openChat(appId) {
-      currentChatAppId = appId;
-      const app = userApplications.find(a => a.id === appId);
-      const item = itemsData.find(i => i.id === app.targetItemId);
-
-      // 防呆：如果是未入選狀態，不給開
-      if (app.status === '未入選') {
-        alert("此申請單已被拒絕或有其他得標者，通訊已關閉！");
-        return;
-      }
-
-      // 設定聊天室標題或警告
-      const notice = document.getElementById("chat-status-notice");
-      if (item.status === 'trading') {
-        notice.textContent = "✅ 此筆交易已確認，請安心與對方商討面交細節。";
-      } else {
-        notice.textContent = "ℹ️ 選擇對方前，請多利用私訊確認物品實際狀況。";
-      }
-
-      renderChatMessages();
-      openModal('chat-modal');
+      currentChatAppId = appId; renderChat(); openModal('chat-modal');
     }
 
-    function renderChatMessages() {
+    function renderChat() {
       const box = document.getElementById("chat-history");
-      const msgs = chatDB.filter(m => m.appId === currentChatAppId);
-      
-      box.innerHTML = msgs.map(m => {
-        const isMe = m.sender === currentUser.name;
-        return `
-          <div class="chat-msg ${isMe ? 'me' : 'other'}">
-            <div class="chat-sender">${isMe ? '我' : m.sender}</div>
-            ${m.text}
-          </div>
-        `;
-      }).join("") || `<div style="text-align:center; color:#888; font-size:12px; margin-top:20px;">尚無訊息，打個招呼吧！</div>`;
-      
-      // 捲動到底部
+      box.innerHTML = chatDB.filter(m => m.appId === currentChatAppId).map(m => {
+        let isMe = m.sender === currentUser.name;
+        return `<div class="chat-msg ${isMe?'me':'other'}"><div class="chat-sender">${isMe?'我':m.sender}</div>${m.text}</div>`;
+      }).join("");
       box.scrollTop = box.scrollHeight;
     }
 
     function sendChatMessage() {
-      const input = document.getElementById("chat-input-text");
-      const text = input.value.trim();
-      if (!text) return;
-
-      chatDB.push({
-        appId: currentChatAppId,
-        sender: currentUser.name,
-        text: text
-      });
-
-      input.value = "";
-      renderChatMessages();
+      const t = document.getElementById("chat-input-text").value; if (!t) return;
+      chatDB.push({ appId: currentChatAppId, sender: currentUser.name, text: t });
+      document.getElementById("chat-input-text").value = ""; renderChat();
     }
 
-    function openModal(modalId) { document.getElementById(modalId).classList.add("active"); }
-    function closeModal(modalId) { document.getElementById(modalId).classList.remove("active"); }
+    // 管理員專區
+    function renderAdminList() {
+      document.getElementById("admin-items-list").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
+        <tr>
+          <td><img src="${item.imageUrl}" style="width:50px;height:50px;object-fit:cover;"></td>
+          <td><b>${item.title}</b></td><td>${item.owner}</td><td>${item.status==='trading'?'已成交':'上架中'}</td>
+          <td><button class="btn-danger" onclick="openBanModal('${item.id}')">下架</button></td>
+        </tr>`).join("");
+    }
+
+    function openBanModal(id) {
+      itemPendingBanId = id; 
+      document.getElementById("ban-reason-select").value = "";
+      document.getElementById("ban-reason-text").value = "";
+      openModal('ban-reason-modal'); 
+    }
+
+    function confirmBanItem() {
+      const r = document.getElementById('ban-reason-text').value;
+      if(!r) return alert("請填寫下架原因");
+      const item = itemsData.find(i => i.id === itemPendingBanId);
+      if(item) { item.status = 'banned'; item.banReason = r; }
+      closeModal('ban-reason-modal'); renderAdminList(); renderGrid(); alert("✅ 已下架");
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
   </script>
 </body>
 </html>
