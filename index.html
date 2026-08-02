@@ -120,7 +120,7 @@
       </div>
 
       <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        <!-- JS 動態生成物品卡片 (純文字高質感) -->
+        <!-- JS 動態生成物品卡片 -->
       </div>
     </section>
 
@@ -139,18 +139,69 @@
       <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
         <div class="w-16 h-16 rounded-2xl bg-skyblue text-white flex items-center justify-center font-bold text-3xl shadow-lg mx-auto mb-6">T</div>
         <h2 class="text-2xl font-extrabold text-gray-800 mb-2">歡迎來到 TradeUp</h2>
-        <p class="text-gray-500 mb-8">登入以開始您的換物之旅</p>
+        <p class="text-gray-500 mb-6">登入或註冊以開始您的換物之旅</p>
         
-        <div class="space-y-4">
-          <!-- 測試用快速登入 -->
-          <button onclick="fastLogin('user1')" class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700">
+        <div class="space-y-4 text-left mb-8">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1 text-sm">電子郵件</label>
+            <input type="email" id="login-email" placeholder="輸入您的 Email" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1 text-sm flex justify-between">
+              <span>密碼</span>
+              <button onclick="forgotPassword()" class="text-skyblue hover:underline font-normal">忘記密碼？</button>
+            </label>
+            <input type="password" id="login-password" placeholder="輸入密碼" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
+          </div>
+          <button onclick="standardLogin()" class="w-full py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-md mt-2">
+            登入 / 註冊
+          </button>
+        </div>
+
+        <div class="relative flex py-2 items-center mb-6">
+          <div class="flex-grow border-t border-gray-200"></div>
+          <span class="flex-shrink-0 mx-4 text-gray-400 text-sm font-bold">或使用測試帳號</span>
+          <div class="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        <div class="space-y-3">
+          <button onclick="fastLogin('user1')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">
             👤 快速登入 (一般會員: 王小明)
           </button>
-          <button onclick="fastLogin('user2')" class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700">
+          <button onclick="fastLogin('user2')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">
             👤 快速登入 (一般會員: 陳小華)
           </button>
-          <button onclick="fastLogin('admin')" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition font-bold shadow-md">
+          <button onclick="fastLogin('admin')" class="w-full flex items-center justify-center gap-3 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition font-bold shadow-md text-sm">
             🛡️ 快速登入 (管理員)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 刊登物品頁面 -->
+    <section id="view-upload" class="view-section hidden max-w-2xl mx-auto">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
+        <h2 class="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-4">＋ 刊登新物品</h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-gray-700 font-bold mb-2">物品名稱</label>
+            <input type="text" id="upload-title" placeholder="例如：九成新 Sony 藍牙耳機" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-2">分類</label>
+            <select id="upload-type" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
+              <option value="3C與數位">3C與數位</option>
+              <option value="居家與生活">居家與生活</option>
+              <option value="戶外與休閒">戶外與休閒</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-2">物品描述與狀態</label>
+            <textarea id="upload-desc" placeholder="詳細描述物品的使用狀況、想換的類型..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium h-32 resize-none"></textarea>
+          </div>
+          <button onclick="submitUpload()" class="w-full py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md mt-4">
+            確認刊登
           </button>
         </div>
       </div>
@@ -310,10 +361,7 @@
         </div>
 
         <div id="admin-content-items" class="admin-content-section hidden">
-          <!-- 物品管理內容 -->
-          <div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">
-            所有物品清單建置中...
-          </div>
+          <!-- JS 填入物品清單 -->
         </div>
 
         <div id="admin-content-reports" class="admin-content-section hidden">
@@ -358,7 +406,7 @@
       </div>
       
       <!-- 內容區 (可捲動) -->
-      <div id="document-content" class="p-6 sm:p-10 overflow-y-auto text-gray-600 leading-relaxed text-sm sm:text-base space-y-4">
+      <div id="document-content" class="p-6 sm:p-10 overflow-y-auto text-gray-600 leading-relaxed text-sm sm:text-base space-y-4 no-scrollbar">
         <!-- 內容由 JS 動態填入 -->
       </div>
     </div>
@@ -426,7 +474,7 @@
 
       <div class="space-y-4">
         <div>
-          <label class="block text-gray-700 font-bold mb-2 text-sm">處理備註 (內部紀錄/通知信)</label>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">處理備註 (內部紀錄/通知信) <span class="text-red-500">*</span></label>
           <textarea id="admin-report-note" placeholder="例如：確認違規，予以警告並下架..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
         </div>
       </div>
@@ -521,6 +569,36 @@
       <div class="flex gap-3 mt-8">
         <button onclick="closeModal('admin-edit-user-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
         <button onclick="saveAdminUserEdit()" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">儲存修改</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. 下架物品確認與原因對話框 -->
+  <div id="takedown-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('takedown-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">🗑️ 確認下架物品</h2>
+      <p class="text-sm text-gray-600 mb-4">下架後，該物品將不再顯示於探索列表，且進行中的申請將會自動關閉。</p>
+      
+      <input type="hidden" id="takedown-item-id">
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">請選擇下架原因 <span class="text-red-500">*</span></label>
+          <select id="takedown-reason" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 font-medium text-sm">
+            <option value="">請選擇...</option>
+            <option value="已在其他平台換出">已在其他平台換出</option>
+            <option value="不想換了/自用">不想換了/決定自用</option>
+            <option value="物品損壞或遺失">物品損壞或遺失</option>
+            <option value="重新刊登調整內容">需要重新刊登調整內容</option>
+            <option value="其他原因">其他原因</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="closeModal('takedown-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="confirmTakedown()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定下架</button>
       </div>
     </div>
   </div>
@@ -703,6 +781,46 @@
       });
     };
 
+    window.forgotPassword = function() {
+      const email = document.getElementById('login-email').value.trim();
+      if (!email) {
+        customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件，我們才能將密碼重設信件寄給您！", "💡", "確認", "bg-gray-800");
+        return;
+      }
+      customConfirm("重設信已寄出", `我們已將密碼重設連結寄至 ${email}，請至信箱收取並依指示重設密碼。`, "✉️", "我知道了", "bg-skyblue hover:bg-skyblue-hover");
+    };
+
+    window.standardLogin = function() {
+      const email = document.getElementById('login-email').value.trim();
+      const pwd = document.getElementById('login-password').value.trim();
+      
+      if (!email || !pwd) {
+        customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
+        return;
+      }
+      
+      // 以 Email 前綴當作名稱，模擬註冊與登入邏輯
+      const namePrefix = email.split('@')[0];
+      let user = usersDB.find(u => u.name === namePrefix);
+      
+      if (!user) {
+        // 新註冊
+        user = { id: 'u' + Date.now(), name: namePrefix, role: 'user', points: 10, level: '🥉 青銅' };
+        usersDB.push(user);
+        customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+      } else {
+        // 登入
+        customConfirm("歡迎回來", "登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+      }
+      
+      currentUser = { ...user };
+      updateNavUser();
+      switchView('home');
+      
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+    };
+
     // --- 核心渲染邏輯 ---
     // 首頁
     function renderHome() {
@@ -790,6 +908,39 @@
         openModal('trade-modal');
       };
     }
+
+    // 刊登新物品
+    window.submitUpload = function() {
+      if (!currentUser) {
+        switchView('login');
+        return;
+      }
+      
+      const title = document.getElementById('upload-title').value.trim();
+      const type = document.getElementById('upload-type').value;
+      const desc = document.getElementById('upload-desc').value.trim();
+      
+      if (!title || !desc) {
+        alert("請完整填寫物品名稱與描述！");
+        return;
+      }
+
+      marketItems.unshift({
+        id: Date.now(),
+        title: title,
+        desc: desc,
+        owner: currentUser.name,
+        type: type,
+        status: 'active'
+      });
+      
+      document.getElementById('upload-title').value = '';
+      document.getElementById('upload-desc').value = '';
+      
+      customConfirm("刊登成功！", "您的物品已經成功上架，快到首頁看看吧。", "🎉", "回到探索", "bg-skyblue", () => {
+        switchView('home');
+      });
+    };
 
     // 提出交換視窗邏輯
     window.toggleShippingFee = function() {
@@ -897,6 +1048,32 @@
       if (tab === 'points') renderPoints();
     };
 
+    window.saveProfileSettings = function() {
+      const newName = document.getElementById('setting-name').value.trim();
+      if (!newName) {
+        alert("名稱不能為空！");
+        return;
+      }
+      const oldName = currentUser.name;
+      currentUser.name = newName;
+      
+      // 連動更新假資料庫中的名字
+      marketItems.forEach(i => { if(i.owner === oldName) i.owner = newName; });
+      userTrades.forEach(t => { 
+        if(t.applicant === oldName) t.applicant = newName; 
+        if(t.itemOwner === oldName) t.itemOwner = newName;
+      });
+      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
+      reportsDB.forEach(r => {
+        if(r.reporter === oldName) r.reporter = newName;
+        if(r.itemOwner === oldName) r.itemOwner = newName;
+      });
+
+      updateNavUser();
+      renderProfile();
+      customConfirm("儲存成功", "您的個人設定已經更新完畢。", "✅", "確認", "bg-gray-800 hover:bg-gray-700");
+    };
+
     window.switchWalletTab = function(type) {
       document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
@@ -916,13 +1093,13 @@
       // 1. 我上架的
       const listedContainer = document.getElementById('my-listed-items');
       listedContainer.innerHTML = '';
-      const myItems = marketItems.filter(item => item.owner === currentUser.name);
+      // 過濾出目前登入者上架的且狀態不為 banned (被管理員下架) 的物品
+      const myItems = marketItems.filter(item => item.owner === currentUser.name && item.status !== 'banned');
       
       if (myItems.length === 0) {
         listedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
       } else {
         myItems.forEach(item => {
-          // 找出申請這個物品的人
           const applicants = userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === currentUser.name);
           
           let appHtml = '';
@@ -943,6 +1120,11 @@
             </div>`;
           }
 
+          let takedownBtn = '';
+          if (item.status === 'active') {
+             takedownBtn = `<button onclick="openTakedownModal(${item.id})" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 rounded transition">🗑️ 下架</button>`;
+          }
+
           listedContainer.innerHTML += `
             <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
               <div class="flex justify-between items-start">
@@ -951,6 +1133,7 @@
                   <h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4>
                   <p class="text-xs text-gray-400 mt-1">狀態: ${item.status === 'active' ? '刊登中' : item.status}</p>
                 </div>
+                ${takedownBtn}
               </div>
               ${appHtml}
             </div>
@@ -995,6 +1178,40 @@
             </div>
           `;
         });
+      }
+    }
+
+    // 物品下架功能 (一般會員)
+    window.openTakedownModal = function(itemId) {
+      document.getElementById('takedown-item-id').value = itemId;
+      document.getElementById('takedown-reason').value = '';
+      openModal('takedown-modal');
+    }
+
+    window.confirmTakedown = function() {
+      const itemId = document.getElementById('takedown-item-id').value;
+      const reason = document.getElementById('takedown-reason').value;
+
+      if (!reason) {
+        alert("請選擇下架原因！");
+        return;
+      }
+
+      const item = marketItems.find(i => i.id == itemId);
+      if (item) {
+        item.status = '已下架 (' + reason + ')';
+        
+        // 關閉所有針對此物品的「待審核」申請
+        userTrades.forEach(t => {
+          if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
+            t.status = '已關閉';
+            sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架 (原因: ${reason})，申請已自動關閉。`);
+          }
+        });
+
+        closeModal('takedown-modal');
+        renderWallet();
+        customConfirm("下架完成", "該物品已從探索列表中移除。", "✅", "確認", "bg-gray-800");
       }
     }
 
@@ -1064,32 +1281,6 @@
       updateNotificationBadges();
     }
 
-    window.saveProfileSettings = function() {
-      const newName = document.getElementById('setting-name').value.trim();
-      if (!newName) {
-        alert("名稱不能為空！");
-        return;
-      }
-      const oldName = currentUser.name;
-      currentUser.name = newName;
-      
-      // 連動更新假資料庫中的名字
-      marketItems.forEach(i => { if(i.owner === oldName) i.owner = newName; });
-      userTrades.forEach(t => { 
-        if(t.applicant === oldName) t.applicant = newName; 
-        if(t.itemOwner === oldName) t.itemOwner = newName;
-      });
-      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
-      reportsDB.forEach(r => {
-        if(r.reporter === oldName) r.reporter = newName;
-        if(r.itemOwner === oldName) r.itemOwner = newName;
-      });
-
-      updateNavUser();
-      renderProfile();
-      customConfirm("儲存成功", "您的個人設定已經更新完畢。", "✅", "確認", "bg-gray-800 hover:bg-gray-700");
-    };
-
     // 計算等級邏輯
     function getLevelByPoints(points) {
       if(points >= 500) return '💎 鑽石';
@@ -1114,6 +1305,7 @@
       if(tab === 'stats') renderAdminStats();
       if(tab === 'reports') renderAdminReports();
       if(tab === 'users') renderAdminUsers();
+      if(tab === 'items') renderAdminItems();
     };
 
     function updateAdminBadges() {
@@ -1187,6 +1379,54 @@
           </table>
         </div>
       `;
+    }
+
+    // 物品管理清單
+    function renderAdminItems() {
+      const c = document.getElementById('admin-content-items');
+      c.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
+                <th class="p-3 font-bold">物品名稱</th>
+                <th class="p-3 font-bold">擁有者</th>
+                <th class="p-3 font-bold">狀態</th>
+                <th class="p-3 font-bold text-right">管理操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${marketItems.map(item => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                  <td class="p-3 text-sm font-bold text-gray-800">${item.title}</td>
+                  <td class="p-3 text-sm font-bold text-gray-600">${item.owner}</td>
+                  <td class="p-3 text-sm font-bold ${item.status === 'active' ? 'text-green-500' : 'text-red-500'}">${item.status === 'active' ? '刊登中' : item.status}</td>
+                  <td class="p-3 text-right">
+                    ${item.status === 'active' ? `<button onclick="forceTakedownItem(${item.id})" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-lg transition shadow-sm border border-red-200">強制下架</button>` : `<span class="text-xs text-gray-400">無法操作</span>`}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    window.forceTakedownItem = function(itemId) {
+       customConfirm("強制下架", "確定要強制下架此物品嗎？", "🚨", "強制下架", "bg-red-500 hover:bg-red-600", () => {
+          const item = marketItems.find(i => i.id == itemId);
+          if(item) {
+             item.status = 'banned';
+             // 關閉所有申請
+             userTrades.forEach(t => {
+               if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
+                 t.status = '已關閉';
+               }
+             });
+             sendNotification(item.owner, '⚠️ 物品下架通知', `您的物品「${item.title}」因違反社群守則，已被管理員強制下架。`);
+             renderAdminItems();
+          }
+       });
     }
 
     window.openEditUserModal = function(userId) {
@@ -1324,7 +1564,7 @@
       if (type === 'privacy') {
         titleEl.innerHTML = "🔒 隱私權政策";
         contentEl.innerHTML = `
-          <p class="mb-4">生效日期：2026 年 7 月 1 日</p>
+          <p class="mb-4 text-gray-500 font-bold">生效日期：2026 年 7 月 1 日</p>
           <p>本隱私權政策說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務時， 如何蒐集、處理、利用及保護您的個人資料。當您使用本服務，即表示您已閱讀並同意本政策之內容。</p>
           <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、蒐集之個人資料類別</h4>
           <p>帳戶資料：包含您的顯示名稱與使用之資料。</p>
