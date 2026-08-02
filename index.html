@@ -1275,8 +1275,13 @@
 
     window.processReport = function(action) {
       const report = reportsDB.find(r => r.id === currentReportId);
-      const note = document.getElementById('admin-report-note').value;
+      const note = document.getElementById('admin-report-note').value.trim();
       if (!report) return;
+
+      if (action === 'ban' && !note) {
+          alert("請填寫處理備註 (即下架原因)，以便通知使用者！");
+          return;
+      }
 
       if (action === 'ban') {
         report.status = 'banned';
