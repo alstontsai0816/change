@@ -4,101 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TradeUp 小換大</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root {
-      /* 淺奶茶色背景 */
-      --bg-milktea: #f5ebe0; 
-      /* 天空藍主色系 */
-      --primary-skyblue: #0ea5e9;
-      --primary-skyblue-hover: #0284c7;
-      --primary-skyblue-light: #e0f2fe;
+  
+  <!-- 客製化設定 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            skyblue: {
+              DEFAULT: '#0ea5e9',
+              hover: '#0284c7',
+              light: '#e0f2fe'
+            },
+            milktea: '#f5ebe0' /* 淺奶茶色背景 */
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
     }
-    body {
-      background-color: var(--bg-milktea);
-      font-family: 'Inter', 'Noto Sans TC', sans-serif;
-      color: #333;
-    }
-    .text-skyblue { color: var(--primary-skyblue); }
-    .bg-skyblue { background-color: var(--primary-skyblue); }
-    .bg-skyblue:hover { background-color: var(--primary-skyblue-hover); }
-    .bg-skyblue-light { background-color: var(--primary-skyblue-light); }
-    .border-skyblue { border-color: var(--primary-skyblue); }
-    .focus\:border-skyblue:focus { border-color: var(--primary-skyblue); }
+  </script>
 
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease-out;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-overlay .transform {
-      transform: scale(0.95) translateY(10px);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .modal-overlay.active .transform {
-      transform: scale(1) translateY(0);
-    }
-    
-    .view-section { display: none; }
-    .view-section.active { display: block; }
-    
-    .item-card {
-      background: #ffffff;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: 1px solid rgba(0,0,0,0.05);
+  <style>
+    body {
+      background-color: #f5ebe0; /* 淺奶茶色 */
+      color: #333;
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
     }
-    .item-card:hover {
-      transform: translateY(-4px);
+    
+    .card-hover {
+      transition: all 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border-color: #0ea5e9;
     }
-    
-    .sidebar-menu-item {
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #4b5563;
+
+    /* 隱藏捲軸但可捲動 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-    .sidebar-menu-item:hover {
-      background-color: var(--primary-skyblue-light);
-      color: var(--primary-skyblue-hover);
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
-    .sidebar-menu-item.active {
-      background-color: var(--primary-skyblue);
-      color: white;
+
+    /* Modal 進入動畫 */
+    .modal-enter {
+      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    
-    /* 自訂捲軸 */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="antialiased">
 
   <!-- 導覽列 -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
@@ -107,13 +76,19 @@
         <div class="w-8 h-8 rounded-full bg-skyblue text-white flex items-center justify-center font-bold text-xl shadow-md">T</div>
         <span class="font-extrabold text-xl tracking-tight text-gray-800">TradeUp 小換大</span>
       </a>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3 sm:gap-4">
         <span id="user-display" class="text-sm font-semibold text-gray-600 hidden sm:block">未登入</span>
+        
+        <!-- 通知中心按鈕 (登入後顯示) -->
+        <button id="btn-nav-notif" onclick="switchView('profile'); switchProfileSidebar('notifications');" class="hidden items-center justify-center w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 transition relative">
+          🔔 <span id="nav-notif-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">新</span>
+        </button>
+
         <button id="btn-admin-nav" onclick="switchView('admin')" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800 text-white text-sm font-bold shadow-md hover:bg-gray-700 transition relative">
           🛡️ 管理後台 <span id="admin-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
         </button>
         <button id="btn-user-profile" onclick="switchView('profile')" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-skyblue-light text-skyblue-hover text-sm font-bold shadow-sm hover:bg-blue-100 transition relative">
-          📋 個人中心 <span id="profile-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">!</span>
+          📋 個人中心
         </button>
         <button id="btn-login-nav" onclick="switchView('login')" class="px-4 py-2 rounded-full bg-skyblue text-white text-sm font-bold shadow-md hover:bg-skyblue-hover transition">
           登入 / 註冊
@@ -122,194 +97,176 @@
     </div>
   </header>
 
-  <!-- 主要內容區 -->
-  <main class="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-6 pb-20">
+  <!-- 主要內容區塊 -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
     
-    <!-- 首頁大廳 -->
-    <section id="view-home" class="view-section active space-y-6">
-      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-lg text-center relative overflow-hidden">
-        <div class="relative z-10">
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-3">讓閒置物品找到新主人</h1>
-          <p class="text-gray-500 mb-8 max-w-lg mx-auto">不花一毛錢，以物易物。把「我用不到」換成「我需要」，一起打造零浪費的永續生活！</p>
-          <button onclick="handleProtectedAction('upload')" class="px-8 py-3.5 bg-skyblue hover:bg-skyblue-hover text-white font-bold rounded-full shadow-xl transition transform hover:-translate-y-1 text-lg">
-            ✨ 立即刊登物品
-          </button>
+    <!-- 首頁 (瀏覽物品) -->
+    <section id="view-home" class="view-section">
+      <div class="flex justify-between items-end mb-6">
+        <div>
+          <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight mb-2">探索好物</h1>
+          <p class="text-gray-600 font-medium">用不到的好東西，在這裡遇見新主人。</p>
         </div>
+        <button onclick="switchView('upload')" class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-skyblue text-white font-bold rounded-full shadow-md hover:bg-skyblue-hover transition transform hover:-translate-y-0.5">
+          <span>＋</span> 刊登物品
+        </button>
       </div>
 
-      <div class="flex flex-wrap gap-2 justify-center my-6">
-        <button onclick="filterItems('all', event)" class="filter-btn active px-5 py-2 rounded-full font-bold text-sm bg-gray-800 text-white transition shadow">全部物品</button>
-        <button onclick="filterItems('3C數位', event)" class="filter-btn px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 hover:bg-gray-100 transition shadow">💻 3C數位</button>
-        <button onclick="filterItems('居家生活', event)" class="filter-btn px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 hover:bg-gray-100 transition shadow">🏠 居家生活</button>
-        <button onclick="filterItems('戶外休閒', event)" class="filter-btn px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 hover:bg-gray-100 transition shadow">⛺ 戶外休閒</button>
-        <button onclick="filterItems('書籍文具', event)" class="filter-btn px-5 py-2 rounded-full font-bold text-sm bg-white text-gray-600 hover:bg-gray-100 transition shadow">📚 書籍文具</button>
+      <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
+        <button class="px-4 py-1.5 rounded-full bg-gray-800 text-white font-bold text-sm shrink-0">全部</button>
+        <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">3C與數位</button>
+        <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">居家與生活</button>
+        <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">戶外與休閒</button>
       </div>
 
-      <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <!-- JS 渲染卡片 -->
+      <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <!-- JS 動態生成物品卡片 (純文字高質感) -->
       </div>
     </section>
 
-    <!-- 物品詳細頁 -->
-    <section id="view-detail" class="view-section">
-      <button onclick="switchView('home')" class="mb-4 text-gray-600 font-bold hover:text-skyblue transition flex items-center gap-1">
-        ← 返回大廳
+    <!-- 物品詳細頁面 -->
+    <section id="view-detail" class="view-section hidden max-w-3xl mx-auto">
+      <button onclick="switchView('home')" class="text-gray-500 hover:text-skyblue font-bold mb-4 flex items-center gap-1 transition">
+        ← 回到探索
       </button>
-      <div id="detail-content" class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl max-w-4xl mx-auto">
-        <!-- JS 渲染詳細內容 -->
+      <div id="detail-content" class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 relative">
+        <!-- JS 動態填入 -->
       </div>
     </section>
 
-    <!-- 刊登物品頁 -->
-    <section id="view-upload" class="view-section max-w-2xl mx-auto">
-      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl">
-        <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">✨ 刊登我的閒置物品</h2>
-        <form id="upload-form" class="space-y-5">
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">物品名稱 <span class="text-red-500">*</span></label>
-            <input type="text" id="input-title" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition" placeholder="例如：近全新藍牙耳機" required>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">物品分類 <span class="text-red-500">*</span></label>
-            <select id="input-category" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition bg-white" required>
-              <option value="3C數位">💻 3C數位</option>
-              <option value="居家生活">🏠 居家生活</option>
-              <option value="戶外休閒">⛺ 戶外休閒</option>
-              <option value="書籍文具">📚 書籍文具</option>
-              <option value="其他">📦 其他</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">物品來源 / 取得方式 <span class="text-gray-400 font-normal">(選填)</span></label>
-            <input type="text" id="input-origin" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition" placeholder="例如：去年尾牙抽中、自己買的">
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">你想換到什麼？ <span class="text-red-500">*</span></label>
-            <textarea id="input-wish" rows="3" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition resize-none" placeholder="例如：想換一台咖啡機，或是等值的超商禮券也可以！" required></textarea>
-          </div>
-          <button type="submit" class="w-full py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold rounded-xl shadow-lg transition transform hover:-translate-y-1 mt-4">
-            確認刊登
+    <!-- 登入頁面 -->
+    <section id="view-login" class="view-section hidden max-w-md mx-auto mt-10">
+      <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-skyblue text-white flex items-center justify-center font-bold text-3xl shadow-lg mx-auto mb-6">T</div>
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-2">歡迎來到 TradeUp</h2>
+        <p class="text-gray-500 mb-8">登入以開始您的換物之旅</p>
+        
+        <div class="space-y-4">
+          <!-- 測試用快速登入 -->
+          <button onclick="fastLogin('user1')" class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700">
+            👤 快速登入 (一般會員: 王小明)
           </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- 登入/註冊頁 -->
-    <section id="view-login" class="view-section max-w-md mx-auto">
-      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl">
-        <h2 id="auth-title" class="text-2xl font-extrabold text-gray-800 mb-6 text-center">歡迎回到 TradeUp</h2>
-        <form id="auth-form" class="space-y-4">
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">帳號 / 使用者名稱 <span class="text-red-500">*</span></label>
-            <input type="text" id="auth-username" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition" placeholder="請輸入帳號" required>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">密碼 <span class="text-red-500">*</span></label>
-            <input type="password" id="auth-password" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition" placeholder="請輸入密碼" required>
-          </div>
-          <div id="auth-password-confirm-group" class="hidden">
-            <label class="block text-sm font-bold text-gray-700 mb-2">確認密碼 <span class="text-red-500">*</span></label>
-            <input type="password" id="auth-password-confirm" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl transition" placeholder="請再次輸入密碼">
-          </div>
-          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl shadow-lg transition mt-4">登入</button>
-        </form>
-        <div class="mt-6 text-center text-sm">
-          <span id="auth-switch-text" class="text-gray-500">還沒有帳號嗎？</span>
-          <button id="auth-switch-btn" onclick="toggleAuthMode()" class="text-skyblue font-bold hover:underline ml-1">立即註冊</button>
-        </div>
-      </div>
-      <!-- 測試用快速登入 -->
-      <div class="mt-6 bg-white/50 backdrop-blur rounded-2xl p-4 border border-gray-200 shadow-sm">
-        <p class="text-xs font-bold text-gray-500 mb-2 text-center">🛠️ 測試專用快速登入</p>
-        <div class="flex gap-2 justify-center">
-          <button onclick="document.getElementById('auth-username').value='UserA';document.getElementById('auth-password').value='1234';document.getElementById('auth-submit-btn').click()" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-bold transition">一般會員 (UserA)</button>
-          <button onclick="document.getElementById('auth-username').value='admin';document.getElementById('auth-password').value='admin';document.getElementById('auth-submit-btn').click()" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-bold transition">管理員 (admin)</button>
+          <button onclick="fastLogin('user2')" class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700">
+            👤 快速登入 (一般會員: 陳小華)
+          </button>
+          <button onclick="fastLogin('admin')" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition font-bold shadow-md">
+            🛡️ 快速登入 (管理員)
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- 個人中心 (側邊欄) -->
-    <section id="view-profile" class="view-section">
-      <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
-        <!-- 左側邊欄 -->
+    <!-- 個人中心 (含側邊欄) -->
+    <section id="view-profile" class="view-section hidden">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- 側邊欄 -->
         <div class="w-full md:w-64 shrink-0">
-          <div class="bg-white rounded-3xl p-6 shadow-lg sticky top-20">
-            <div class="text-center mb-6">
-              <div class="w-20 h-20 bg-skyblue-light text-skyblue rounded-full mx-auto flex items-center justify-center text-3xl font-bold mb-3">
-                <span id="profile-avatar">👤</span>
-              </div>
-              <h3 id="profile-name" class="font-extrabold text-xl text-gray-800">User</h3>
-              <p class="text-sm text-gray-500 mt-1">一般會員</p>
+          <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 sticky top-24">
+            <div class="text-center mb-6 pb-6 border-b border-gray-100">
+              <div class="w-16 h-16 rounded-full bg-skyblue text-white flex items-center justify-center font-bold text-2xl shadow-md mx-auto mb-3" id="profile-avatar-letter">U</div>
+              <h3 class="font-extrabold text-lg text-gray-800" id="profile-name">User</h3>
+              <p class="text-sm text-gray-500 font-medium mt-1" id="profile-level-badge">青銅會員</p>
             </div>
             <nav class="space-y-1">
-              <div onclick="switchProfileSidebar('wallet')" id="sidebar-wallet" class="sidebar-menu-item active">💼 我的錢包</div>
-              <div onclick="switchProfileSidebar('contribution')" id="sidebar-contribution" class="sidebar-menu-item">🏆 貢獻值與等級</div>
-              <div onclick="switchProfileSidebar('notifications')" id="sidebar-notifications" class="sidebar-menu-item relative">
-                🔔 通知中心
-                <span id="sidebar-notif-badge" class="absolute right-3 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">新</span>
-              </div>
-              <div onclick="switchProfileSidebar('settings')" id="sidebar-settings" class="sidebar-menu-item">⚙️ 個人設定</div>
-              <div onclick="switchProfileSidebar('contact')" id="sidebar-contact" class="sidebar-menu-item">✉️ 聯絡創作者</div>
+              <button onclick="switchProfileSidebar('wallet')" id="tab-wallet" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-skyblue bg-skyblue-light">
+                💼 我的錢包
+              </button>
+              <button onclick="switchProfileSidebar('points')" id="tab-points" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
+                ⭐ 貢獻值與等級
+              </button>
+              <button onclick="switchProfileSidebar('settings')" id="tab-settings" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
+                ⚙️ 個人設定
+              </button>
+              <button onclick="switchProfileSidebar('notifications')" id="tab-notifications" class="profile-tab w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
+                <span class="flex items-center gap-3">🔔 通知中心</span>
+                <span id="sidebar-notif-badge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">新</span>
+              </button>
+              <button onclick="switchProfileSidebar('contact')" id="tab-contact" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
+                ✉️ 聯絡創作者
+              </button>
             </nav>
           </div>
         </div>
 
-        <!-- 右側內容區 -->
-        <div class="flex-1 bg-white rounded-3xl shadow-lg p-6 sm:p-8 min-h-[500px]">
-          <!-- 我的錢包 -->
+        <!-- 內容區塊 -->
+        <div class="flex-1 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 min-h-[500px]">
+          
+          <!-- 我的錢包 內容 -->
           <div id="profile-content-wallet" class="profile-content-section block">
-            <h2 class="text-2xl font-extrabold text-gray-800 mb-2">My wallet 我的錢包</h2>
-            <p class="text-gray-500 mb-6 border-b pb-4">管理你分享、申請與交換的所有物品。</p>
-            <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-xl w-fit">
-              <button onclick="switchWalletTab('history')" id="tab-wallet-history" class="px-4 py-2 rounded-lg text-sm font-bold bg-white shadow text-gray-800 transition">交易紀錄</button>
-              <button onclick="switchWalletTab('posted')" id="tab-wallet-posted" class="px-4 py-2 rounded-lg text-sm font-bold text-gray-500 hover:text-gray-800 transition">我上架的</button>
-              <button onclick="switchWalletTab('applied')" id="tab-wallet-applied" class="px-4 py-2 rounded-lg text-sm font-bold text-gray-500 hover:text-gray-800 transition">我申請的</button>
+            <div class="mb-6 border-b border-gray-100 pb-4">
+              <h2 class="text-2xl font-extrabold text-gray-800">💼 我的錢包</h2>
+              <p class="text-gray-500 text-sm mt-1">管理您上架、申請與交易的所有物品紀錄。</p>
             </div>
-            <div id="wallet-sec-history" class="wallet-sec block space-y-4">
-              <div class="text-center py-10 text-gray-400">目前尚無完成的交易紀錄。</div>
+            
+            <!-- 子分類 Tabs -->
+            <div class="flex gap-4 mb-6 border-b border-gray-200">
+              <button onclick="switchWalletTab('listed')" id="wallet-tab-listed" class="pb-2 font-bold text-skyblue border-b-2 border-skyblue px-1">我上架的</button>
+              <button onclick="switchWalletTab('applied')" id="wallet-tab-applied" class="pb-2 font-bold text-gray-500 hover:text-gray-700 px-1 transition">我申請的</button>
+              <button onclick="switchWalletTab('history')" id="wallet-tab-history" class="pb-2 font-bold text-gray-500 hover:text-gray-700 px-1 transition">交易紀錄</button>
             </div>
-            <div id="wallet-sec-posted" class="wallet-sec hidden space-y-4">
-              <div id="user-posted-list" class="space-y-4"></div>
+
+            <!-- 子分類內容: 我上架的 -->
+            <div id="wallet-content-listed" class="wallet-section block">
+              <div id="my-listed-items" class="space-y-4"></div>
             </div>
-            <div id="wallet-sec-applied" class="wallet-sec hidden space-y-4">
-              <div id="user-applications-list" class="space-y-4"></div>
+
+            <!-- 子分類內容: 我申請的 -->
+            <div id="wallet-content-applied" class="wallet-section hidden">
+              <div id="my-applied-items" class="space-y-4"></div>
+            </div>
+
+            <!-- 子分類內容: 交易紀錄 -->
+            <div id="wallet-content-history" class="wallet-section hidden">
+              <div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">
+                目前尚無已完成的交易紀錄
+              </div>
             </div>
           </div>
 
-          <!-- 貢獻值與等級 -->
-          <div id="profile-content-contribution" class="profile-content-section hidden">
-            <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">🏆 貢獻值與等級</h2>
-            <div class="bg-gradient-to-br from-skyblue-light to-blue-50 p-6 rounded-2xl border border-blue-100 text-center mb-6">
-              <p class="text-gray-600 font-bold mb-2">目前貢獻值</p>
-              <p class="text-5xl font-extrabold text-skyblue drop-shadow-sm">150</p>
-              <p class="text-sm text-gray-500 mt-4">再獲得 50 點即可升級至「換物達人」！</p>
+          <!-- 貢獻值與等級 內容 -->
+          <div id="profile-content-points" class="profile-content-section hidden">
+            <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">⭐ 貢獻值與等級</h2>
+            <div class="bg-gradient-to-br from-skyblue to-blue-600 rounded-3xl p-8 text-white text-center shadow-md mb-8">
+              <p class="text-blue-100 font-bold mb-2">目前貢獻值</p>
+              <div class="text-5xl font-extrabold mb-4" id="points-display">0</div>
+              <div class="inline-block px-4 py-1.5 bg-white/20 rounded-full font-bold text-sm backdrop-blur-sm" id="level-display-box">
+                青銅會員
+              </div>
             </div>
-            <h4 class="font-bold text-gray-700 mb-3">如何獲得貢獻值？</h4>
-            <ul class="space-y-2 text-sm text-gray-600 bg-gray-50 p-4 rounded-xl">
-              <li>✔️ 成功刊登一件物品 (+5 點)</li>
-              <li>✔️ 完成一次交換 (+20 點)</li>
-              <li>✔️ 獲得優良評價 (+10 點)</li>
-            </ul>
+            <div class="space-y-4">
+              <h4 class="font-bold text-gray-800">如何獲得貢獻值？</h4>
+              <ul class="text-gray-600 space-y-2 text-sm bg-gray-50 p-5 rounded-2xl">
+                <li class="flex items-start gap-2"><span>✅</span> 成功上架並被其他人換走 (+50)</li>
+                <li class="flex items-start gap-2"><span>✅</span> 收到優良評價 (+10)</li>
+                <li class="flex items-start gap-2"><span>✅</span> 協助檢舉違規內容且屬實 (+5)</li>
+              </ul>
+            </div>
           </div>
 
-          <!-- 通知中心 -->
-          <div id="profile-content-notifications" class="profile-content-section hidden">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-              <h2 class="text-2xl font-extrabold text-gray-800">🔔 通知中心</h2>
-              <button onclick="clearNotifications()" class="text-sm text-gray-500 hover:text-red-500 transition font-bold">全部標為已讀</button>
-            </div>
-            <div id="notifications-list" class="space-y-3"></div>
-          </div>
-
-          <!-- 個人設定 -->
+          <!-- 個人設定 內容 -->
           <div id="profile-content-settings" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">⚙️ 個人設定</h2>
-            <div class="space-y-4 max-w-md">
+            <div class="max-w-md space-y-5">
               <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">顯示名稱</label>
-                <input type="text" id="setting-name" class="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-skyblue outline-none transition">
+                <label class="block text-gray-700 font-bold mb-2">顯示名稱</label>
+                <input type="text" id="setting-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
               </div>
-              <button onclick="saveProfileSettings()" class="px-6 py-3 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-900 transition">儲存設定</button>
+              <div>
+                <label class="block text-gray-700 font-bold mb-2">聯絡 Email</label>
+                <input type="email" value="user@example.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
+              </div>
+              <button onclick="saveProfileSettings()" class="mt-4 px-6 py-2.5 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-700 transition shadow">儲存設定</button>
+            </div>
+          </div>
+
+          <!-- 通知中心 內容 -->
+          <div id="profile-content-notifications" class="profile-content-section hidden">
+            <div class="flex justify-between items-end mb-6 border-b pb-4">
+              <h2 class="text-2xl font-extrabold text-gray-800">🔔 通知中心</h2>
+              <button onclick="clearNotifications()" class="text-sm font-bold text-gray-500 hover:text-gray-800 transition">全部標示為已讀</button>
+            </div>
+            <div id="notification-list" class="space-y-3">
+              <!-- JS 動態生成通知 -->
             </div>
           </div>
 
@@ -317,39 +274,52 @@
           <div id="profile-content-contact" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">✉️ 聯絡創作者</h2>
             <div class="bg-gray-50 p-6 rounded-2xl text-center">
-              <p class="text-gray-600 mb-4">有任何問題、建議或是商業合作，歡迎與我們聯繫！</p>
-              <a href="mailto:iamlazybear2023@gmail.com" class="inline-block px-6 py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow">寫信給我們</a>
-              <p class="mt-4 text-sm text-gray-400">合作信箱：iamlazybear2023@gmail.com</p>
+              <p class="text-gray-600 mb-4 font-bold">有任何問題、建議或是商業合作，歡迎與我們聯繫！</p>
+              <a href="mailto:rexofgod2@gmail.com" class="inline-block px-6 py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow">寫信給我們</a>
+              <p class="mt-4 text-sm text-gray-400 font-bold">合作信箱：rexofgod2@gmail.com</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 管理員後台頁 -->
-    <section id="view-admin" class="view-section">
-      <div class="bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px]">
-        <div class="bg-gray-900 p-6 text-white flex justify-between items-center">
-          <div>
-            <h2 class="text-2xl font-extrabold">🛡️ 系統管理後台</h2>
-            <p class="text-gray-400 text-sm mt-1">最高權限管理員</p>
-          </div>
-          <button onclick="switchView('home')" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-bold transition text-sm">返回大廳</button>
+    <!-- 管理後台 -->
+    <section id="view-admin" class="view-section hidden">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+          <h2 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+            🛡️ 系統管理後台
+          </h2>
         </div>
         
-        <div class="flex border-b border-gray-200">
-          <button onclick="switchAdminTab('items')" id="admin-tab-items" class="flex-1 py-4 font-bold text-gray-800 border-b-2 border-gray-800 transition">📦 物品管理</button>
-          <button onclick="switchAdminTab('reports')" id="admin-tab-reports" class="flex-1 py-4 font-bold text-gray-500 hover:text-gray-800 transition relative">
-            🚨 檢舉審核 <span id="admin-tab-badge" class="absolute top-2 right-1/4 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+        <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
+          <button onclick="switchAdminTab('stats')" id="admin-tab-stats" class="admin-tab px-5 py-2 rounded-full font-bold transition text-skyblue bg-skyblue-light shrink-0">📊 系統概況</button>
+          <button onclick="switchAdminTab('users')" id="admin-tab-users" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0">👥 會員管理</button>
+          <button onclick="switchAdminTab('items')" id="admin-tab-items" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0">📦 物品管理</button>
+          <button onclick="switchAdminTab('reports')" id="admin-tab-reports" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
+            🚨 檢舉審核 <span id="admin-tab-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
           </button>
         </div>
 
-        <div class="p-6">
-          <div id="admin-sec-items" class="admin-sec block space-y-4">
-            <div id="admin-items-list" class="space-y-3"></div>
+        <div id="admin-content-stats" class="admin-content-section block">
+          <!-- JS 填入系統數據 -->
+        </div>
+
+        <div id="admin-content-users" class="admin-content-section hidden">
+           <!-- JS 填入會員清單 -->
+        </div>
+
+        <div id="admin-content-items" class="admin-content-section hidden">
+          <!-- 物品管理內容 -->
+          <div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">
+            所有物品清單建置中...
           </div>
-          <div id="admin-sec-reports" class="admin-sec hidden space-y-4">
-            <div id="admin-reports-list" class="space-y-3"></div>
+        </div>
+
+        <div id="admin-content-reports" class="admin-content-section hidden">
+          <div class="mb-4 text-gray-600 font-bold">待處理檢舉清單：</div>
+          <div id="admin-reports-list" class="space-y-4">
+             <!-- JS 填入檢舉 -->
           </div>
         </div>
       </div>
@@ -358,222 +328,289 @@
   </main>
 
   <!-- 頁尾 -->
-  <footer class="mt-auto py-8 text-center text-sm text-gray-500">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="font-extrabold text-gray-400">TradeUp 小換大</div>
-      <div class="flex gap-4">
-        <button onclick="openDocument('terms')" class="hover:text-gray-800 transition">使用條款</button>
-        <button onclick="openDocument('privacy')" class="hover:text-gray-800 transition">隱私權政策</button>
-        <button onclick="openDocument('coop')" class="hover:text-gray-800 transition">企業合作</button>
+  <footer class="w-full border-t border-gray-200 mt-auto py-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
+      <div class="flex items-center gap-2 mb-4 opacity-80">
+        <div class="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center font-bold text-xs">T</div>
+        <span class="font-extrabold text-sm text-gray-600 tracking-tight">TradeUp 小換大</span>
       </div>
-      <div>© 2026 TradeUp. All rights reserved.</div>
+      <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-bold text-gray-500 mb-4">
+        <button onclick="showDocument('terms')" class="hover:text-skyblue transition">使用條款</button>
+        <span>·</span>
+        <button onclick="showDocument('privacy')" class="hover:text-skyblue transition">隱私權政策</button>
+        <span>·</span>
+        <button onclick="showDocument('coop')" class="flex items-center gap-1 hover:text-skyblue transition">🤝 企業合作</button>
+      </div>
+      <p class="text-xs text-gray-400 font-medium">© 2026 TradeUp · 歡迎品牌合作</p>
     </div>
   </footer>
 
   <!-- ==================== Modals 區塊 ==================== -->
-
-  <!-- 提出交換申請 Modal -->
-  <div class="modal-overlay" id="trade-modal">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-lg mx-4 shadow-2xl transform transition-all">
-      <h3 class="text-2xl font-extrabold mb-4 text-gray-800 border-b pb-4">🤝 提出交換申請</h3>
+  
+  <!-- 1. 長篇文件閱讀視窗 -->
+  <div id="document-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl relative modal-enter">
+      <button onclick="closeModal('document-modal')" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold transition z-10">✕</button>
       
-      <!-- 溫馨提醒區塊 -->
-      <div class="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6 rounded-r-xl">
-        <p class="text-sm text-orange-800 font-bold flex items-center gap-2">💡 換物溫馨提醒</p>
-        <p class="text-xs text-orange-700 mt-2 leading-relaxed">
-          您是否確定你所提供交換的物品價值比原商品更高或相同？<br>
-          <span class="font-semibold">（價值越高越容易被選上喔！）</span>
-        </p>
+      <!-- 標題 -->
+      <div class="p-6 border-b border-gray-100 shrink-0">
+        <h2 id="document-title" class="text-2xl font-extrabold text-gray-800 text-center">文件標題</h2>
       </div>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">您想拿來交換的物品名稱 <span class="text-red-500">*</span></label>
-          <input type="text" id="offer-item-name" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl" placeholder="請具體描述您的物品名稱與狀態" required>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">交易方式 <span class="text-red-500">*</span></label>
-            <select id="offer-method" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl bg-white">
-              <option value="面交">面交</option>
-              <option value="寄送">寄送</option>
-              <option value="其他">其他...</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">運費要如何處理？ <span class="text-red-500">*</span></label>
-            <select id="offer-shipping" class="w-full border-2 border-gray-200 focus:border-skyblue outline-none p-3 rounded-xl bg-white">
-              <option value="各自負擔">各自負擔 (最常見)</option>
-              <option value="我方全額負擔">我方全額負擔</option>
-              <option value="不適用(面交)">不適用(面交)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="flex gap-3 mt-8">
-        <button onclick="closeModal('trade-modal')" class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">取消</button>
-        <button onclick="confirmTrade()" class="flex-1 py-3.5 bg-skyblue hover:bg-skyblue-hover text-white font-bold rounded-xl transition shadow-md">送出申請</button>
+      
+      <!-- 內容區 (可捲動) -->
+      <div id="document-content" class="p-6 sm:p-10 overflow-y-auto text-gray-600 leading-relaxed text-sm sm:text-base space-y-4">
+        <!-- 內容由 JS 動態填入 -->
       </div>
     </div>
   </div>
 
-  <!-- 檢舉 Modal -->
-  <div class="modal-overlay" id="report-modal">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-lg mx-4 shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
-      <h3 class="text-2xl font-extrabold mb-4 text-red-600 border-b pb-4 flex items-center gap-2">🚨 檢舉這個交換</h3>
+  <!-- 2. 檢舉對話框 -->
+  <div id="report-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('report-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">🚨</div>
+        <h2 class="text-xl font-extrabold text-gray-800">檢舉此物品</h2>
+        <p class="text-sm text-gray-500 mt-1">請告訴我們這個物品有什麼問題</p>
+      </div>
+      
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">檢舉原因 <span class="text-red-500">*</span></label>
-          <select id="report-reason-select" class="w-full border-2 border-gray-200 focus:border-red-400 outline-none p-3 rounded-xl bg-white">
-            <option value="" disabled selected>請選擇檢舉原因...</option>
-            <option value="無效物品 / 無法使用">無效物品 / 無法使用</option>
-            <option value="與描述嚴重不符">與描述嚴重不符</option>
-            <option value="不合理的交換要求">不合理的交換要求</option>
-            <option value="持有者無回應 / 放鳥">持有者無回應 / 放鳥</option>
-            <option value="不當訊息 / 騷擾">不當訊息 / 騷擾</option>
-            <option value="詐騙">詐騙</option>
-            <option value="其他">其他</option>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">檢舉原因 <span class="text-red-500">*</span></label>
+          <select id="report-reason" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue font-medium text-sm">
+            <option value="">請選擇原因...</option>
+            <option value="要求金錢交易">要求金錢交易或變相收費</option>
+            <option value="違禁品或非法物品">違禁品或非法物品 (如菸酒、藥品)</option>
+            <option value="物品資訊造假">物品資訊造假或圖文不符</option>
+            <option value="濫發廣告訊息">濫發廣告、推薦碼或無關訊息</option>
+            <option value="其他">其他原因</option>
           </select>
         </div>
+        
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">補充說明</label>
-          <textarea id="report-reason-text" rows="3" class="w-full border-2 border-gray-200 focus:border-red-400 outline-none p-3 rounded-xl resize-none" placeholder="請詳細描述遇到的狀況..."></textarea>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">補充說明 <span class="text-red-500">*</span></label>
+          <textarea id="report-desc" placeholder="請詳細描述您遇到的問題..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue h-24 text-sm resize-none"></textarea>
         </div>
+
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">證據截圖 <span class="text-gray-400 font-normal">(選填)</span></label>
-          <input type="file" id="report-file" accept="image/*" class="w-full border-2 border-gray-200 p-2 rounded-xl text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-          <p class="text-xs text-gray-500 mt-1">例如：對話紀錄、實物照片</p>
+          <label class="block text-gray-700 font-bold mb-2 text-sm flex justify-between">
+            <span>證據截圖</span> <span class="text-gray-400 font-normal">選填</span>
+          </label>
+          <input type="file" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-skyblue-light file:text-skyblue hover:file:bg-blue-100 cursor-pointer">
         </div>
-        <div class="bg-red-50 p-4 rounded-xl mt-4">
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input type="checkbox" id="report-confirm-check" class="mt-1 w-4 h-4 text-red-600 rounded border-gray-300">
-            <span class="text-xs text-red-800 leading-relaxed font-medium">我確認以上內容屬實、願意為這次檢舉負責。我了解惡意或不實的檢舉一經查證，累積 3 次帳號將被停權。檢舉會送平台人工複核。請據實檢舉，不要用來報復或干擾他人。</span>
+
+        <div class="flex items-start gap-2 mt-2">
+          <input type="checkbox" id="report-agree" class="mt-1 shrink-0 w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300 rounded">
+          <label for="report-agree" class="text-xs text-gray-500 leading-tight">
+            我保證以上檢舉內容屬實。惡意濫用檢舉功能可能會導致您的帳號遭到停權。
           </label>
         </div>
       </div>
-      <div class="flex gap-3 mt-6">
-        <button onclick="closeModal('report-modal')" class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">取消</button>
-        <button onclick="submitReport()" class="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-md">確認送出檢舉</button>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="closeModal('report-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="submitReport()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">送出檢舉</button>
       </div>
     </div>
   </div>
 
-  <!-- 查看申請者名單 Modal -->
-  <div class="modal-overlay" id="applicants-modal">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-xl mx-4 shadow-2xl transform transition-all">
-      <h3 class="text-2xl font-extrabold mb-4 text-gray-800 border-b pb-4">👥 申請者名單</h3>
-      <div id="applicants-list-body" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2"></div>
-      <div class="mt-6 flex justify-end">
-        <button onclick="closeModal('applicants-modal')" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">關閉</button>
+  <!-- 3. 管理員審核檢舉對話框 -->
+  <div id="admin-report-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('admin-report-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">檢舉審核單</h2>
+      
+      <div id="admin-report-details" class="text-sm space-y-2 mb-6 bg-gray-50 p-4 rounded-xl text-gray-700">
+        <!-- JS 填入 -->
       </div>
-    </div>
-  </div>
 
-  <!-- 聊天室 Modal -->
-  <div class="modal-overlay" id="chat-modal">
-    <div class="bg-white rounded-3xl w-full max-w-lg mx-4 shadow-2xl transform transition-all flex flex-col h-[70vh] overflow-hidden">
-      <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
-        <h3 class="text-lg font-extrabold text-gray-800">💬 交易留言板</h3>
-        <button onclick="closeModal('chat-modal')" class="text-gray-500 hover:text-gray-800 text-xl font-bold">×</button>
-      </div>
-      <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white"></div>
-      <div class="p-4 border-t bg-gray-50 flex gap-2">
-        <input type="text" id="chat-input-text" class="flex-1 border-2 border-gray-200 focus:border-skyblue outline-none p-2.5 rounded-xl" placeholder="輸入留言...">
-        <button onclick="sendChatMessage()" class="px-6 bg-skyblue hover:bg-skyblue-hover text-white font-bold rounded-xl transition">送出</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 管理員：處理檢舉 Modal -->
-  <div class="modal-overlay" id="admin-report-modal">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-md mx-4 shadow-2xl transform transition-all">
-      <h3 class="text-xl font-extrabold mb-4 text-gray-800 border-b pb-4">📋 審核檢舉單</h3>
-      <div id="admin-report-details" class="mb-4 text-sm space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100"></div>
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-2">處理備註 (選填)</label>
-          <input type="text" id="admin-report-note" class="w-full border-2 border-gray-200 p-3 rounded-xl outline-none focus:border-gray-800" placeholder="例如：已確認違規，下架處理">
+          <label class="block text-gray-700 font-bold mb-2 text-sm">處理備註 (內部紀錄/通知信)</label>
+          <textarea id="admin-report-note" placeholder="例如：確認違規，予以警告並下架..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
         </div>
       </div>
-      <div class="flex flex-col gap-3 mt-8">
-        <button onclick="processReport('ban')" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow">選項 A：成立 (強制下架物品並警告)</button>
-        <button onclick="processReport('reject')" class="w-full py-3.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition shadow">選項 B：駁回檢舉 (查無違規)</button>
-        <button onclick="closeModal('admin-report-modal')" class="w-full py-3.5 bg-white text-gray-500 font-bold rounded-xl transition mt-2">取消並關閉</button>
+
+      <div class="flex gap-3 mt-6">
+        <button onclick="processReport('reject')" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 transition">駁回檢舉 (無違規)</button>
+        <button onclick="processReport('ban')" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">檢舉成立 (下架)</button>
       </div>
     </div>
   </div>
 
-  <!-- 長篇文件閱讀 Modal -->
-  <div class="modal-overlay" id="document-modal">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-2xl mx-4 shadow-2xl transform transition-all max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center mb-4 border-b pb-4 shrink-0">
-        <h3 class="text-2xl font-extrabold text-gray-800" id="doc-modal-title">文件標題</h3>
-        <button onclick="closeModal('document-modal')" class="text-gray-400 hover:text-gray-800 text-2xl font-bold transition">&times;</button>
-      </div>
-      <div class="overflow-y-auto flex-1 pr-2 space-y-4 text-sm text-gray-600 leading-relaxed" id="doc-modal-content">
-        <!-- 內容渲染區 -->
-      </div>
-      <div class="mt-6 pt-4 border-t shrink-0">
-        <button onclick="closeModal('document-modal')" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">關閉閱讀</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 自訂 Alert -->
-  <div class="modal-overlay" id="custom-alert" style="z-index: 9999;">
-    <div class="bg-white rounded-3xl p-8 w-full max-w-sm mx-4 shadow-2xl text-center transform transition-all scale-100">
-      <div class="w-16 h-16 bg-skyblue-light text-skyblue rounded-full flex items-center justify-center text-3xl mx-auto mb-4">ℹ️</div>
-      <p id="custom-alert-msg" class="text-gray-700 font-medium mb-8 leading-relaxed whitespace-pre-line"></p>
-      <button onclick="closeAlert()" class="w-full py-3.5 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl transition shadow-md">確定</button>
-    </div>
-  </div>
-
-  <!-- 自訂 Confirm -->
-  <div class="modal-overlay" id="custom-confirm" style="z-index: 9999;">
-    <div class="bg-white rounded-3xl p-8 w-full max-w-sm mx-4 shadow-2xl text-center transform transition-all scale-100">
-      <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🤔</div>
-      <p id="custom-confirm-msg" class="text-gray-700 font-medium mb-8 leading-relaxed whitespace-pre-line text-left"></p>
+  <!-- 4. 自訂確認提示對話框 (Custom Confirm) -->
+  <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter text-center">
+      <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-gray-100">❓</div>
+      <h2 id="confirm-title" class="text-xl font-extrabold text-gray-800 mb-2">確認操作</h2>
+      <p id="confirm-message" class="text-gray-600 mb-8 text-sm">您確定要執行此操作嗎？</p>
+      
       <div class="flex gap-3">
-        <button onclick="closeConfirm(false)" class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">取消</button>
-        <button onclick="closeConfirm(true)" class="flex-1 py-3.5 bg-skyblue hover:bg-skyblue-hover text-white font-bold rounded-xl transition shadow-md">確定</button>
+        <button onclick="closeConfirmModal(false)" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button id="confirm-btn-yes" onclick="closeConfirmModal(true)" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">確定</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== JavaScript 邏輯 ==================== -->
+  <!-- 5. 提出交換選項對話框 -->
+  <div id="trade-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('trade-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">📦 提出交換申請</h2>
+      
+      <!-- 價值提醒警告 -->
+      <div class="bg-blue-50 border-l-4 border-skyblue p-4 rounded-r-xl mb-5">
+        <p class="text-sm text-blue-800 font-bold">💡 溫馨提醒：</p>
+        <p class="text-xs text-blue-700 mt-1">您是否確定提供的物品價值比原商品<span class="font-bold text-red-500">更高或相同</span>？價值越高越容易被主人選上喔！</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- 交易方式 -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">交易方式 <span class="text-red-500">*</span></label>
+          <select id="trade-method" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue font-medium text-sm" onchange="toggleShippingFee()">
+            <option value="面交">面交</option>
+            <option value="寄送">寄送</option>
+            <option value="其他">其他 (於留言說明)</option>
+          </select>
+        </div>
+        
+        <!-- 運費處理 (只有選寄送時顯示) -->
+        <div id="shipping-fee-container" class="hidden">
+          <label class="block text-gray-700 font-bold mb-2 text-sm">運費處理方式 <span class="text-red-500">*</span></label>
+          <select id="trade-shipping-fee" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue font-medium text-sm">
+            <option value="各自負擔">各自負擔 (最常見)</option>
+            <option value="由我負擔">由我(申請者)全額負擔</option>
+            <option value="對方負擔">由對方負擔</option>
+          </select>
+        </div>
+
+        <!-- 提供交換的物品描述 -->
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">我想用來交換的物品 / 留言 <span class="text-red-500">*</span></label>
+          <textarea id="trade-offer-desc" placeholder="例如：我想用九成新的無印良品後背包跟您換..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue h-24 text-sm resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="closeModal('trade-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="submitTradeOffer()" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">送出申請</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 管理員調整會員資料對話框 -->
+  <div id="admin-edit-user-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('admin-edit-user-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">⚙️ 調整會員權限</h2>
+      
+      <div class="space-y-4 mt-4">
+        <input type="hidden" id="edit-user-id">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1 text-sm">會員名稱</label>
+          <div id="edit-user-name" class="font-bold text-gray-800 px-4 py-2 bg-gray-50 rounded-xl">Name</div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1 text-sm">修改貢獻值</label>
+          <input type="number" id="edit-user-points" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-skyblue font-bold text-lg text-skyblue">
+          <p class="text-xs text-gray-400 mt-1">修改後系統將自動重新計算會員等級。</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="closeModal('admin-edit-user-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="saveAdminUserEdit()" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">儲存修改</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JavaScript 區塊 ==================== -->
   <script>
     // --- 假資料庫 (State) ---
-    const usersDB = [
-      { id: "u1", name: "UserA", password: "1234", role: "user" },
-      { id: "u2", name: "admin", password: "admin", role: "admin" }
+    // 所有會員名單 (包含管理員與一般使用者)
+    let usersDB = [
+      { id: 'admin', name: '管理員', role: 'admin', points: 9999, level: '💎 鑽石' },
+      { id: 'user1', name: '王小明', role: 'user', points: 120, level: '🥈 白銀' },
+      { id: 'user2', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅' }
     ];
 
-    let itemsData = [
-      { id: "item-1", title: "近全新 AirPods Pro 2", category: "3C數位", owner: "UserA", wish: "想換一台除濕機或等值超商禮券", status: "active", selectedAppId: null, banReason: "", history: [{ name: "朋友贈送", date: "2023-12-01" }, { name: "近全新 AirPods Pro 2", date: "2024-03-01" }] },
-      { id: "item-2", title: "無印良品 雙人床包組", category: "居家生活", owner: "Bob", wish: "想換全新的不沾平底鍋", status: "active", selectedAppId: null, banReason: "", history: [{ name: "自己購買", date: "2024-01-15" }] },
-      { id: "item-3", title: "Snow Peak 露營折疊椅", category: "戶外休閒", owner: "Charlie", wish: "想換大容量行動電源", status: "active", selectedAppId: null, banReason: "", history: [{ name: "抽獎抽中", date: "2024-02-20" }] },
-      { id: "item-4", title: "多肉植物 龜背芋盆栽", category: "居家生活", owner: "Dana", wish: "換任意一本財經好書", status: "active", selectedAppId: null, banReason: "", history: [{ name: "自己分株", date: "2024-03-05" }] }
+    let currentUser = null; // 當前登入者
+    let selectedItem = null; // 目前查看的物品
+    let currentReportId = null; // 管理員正在審核的檢舉單 ID
+
+    // 物品資料庫
+    let marketItems = [
+      { id: 1, title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active' },
+      { id: 2, title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active' },
+      { id: 3, title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '阿傑', type: '戶外與休閒', status: 'active' },
+      { id: 4, title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '林阿姨', type: '居家與生活', status: 'active' }
     ];
 
-    let userApplications = [];
-    let chatDB = [];
-    let reportsDB = []; 
+    // 交易申請資料庫
+    let userTrades = [];
+
+    // 系統通知資料庫
     let notificationsDB = [];
 
-    // --- 全域變數 ---
-    let currentUser = null;
-    let currentSelectedItem = null;
-    let currentChatAppId = null;
-    let currentAdminReportId = null;
+    // 檢舉資料庫
+    let reportsDB = [
+      // 假資料範例
+      { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: '2026-08-01' }
+    ];
 
-    // --- STREAMING_CHUNK: Handling system notifications... ---
-    function addNotification(username, title, message) {
+    // 自訂 Confirm 的 Callback 儲存
+    let confirmCallback = null;
+
+    // --- 共用 UI 控制 ---
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById('view-' + viewId).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      if (viewId === 'home') renderHome();
+      if (viewId === 'profile') renderProfile();
+      if (viewId === 'admin' && currentUser?.role === 'admin') renderAdmin();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // 自訂 Confirm 呼叫
+    function customConfirm(title, message, icon, btnText, btnClass, callback) {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      document.getElementById('confirm-icon').textContent = icon;
+      
+      const yesBtn = document.getElementById('confirm-btn-yes');
+      yesBtn.textContent = btnText;
+      yesBtn.className = `flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${btnClass}`;
+      
+      confirmCallback = callback;
+      openModal('custom-confirm-modal');
+    }
+
+    function closeConfirmModal(result) {
+      closeModal('custom-confirm-modal');
+      if (result && typeof confirmCallback === 'function') {
+        confirmCallback();
+      }
+      confirmCallback = null;
+    }
+
+    // --- 通知系統 ---
+    function sendNotification(targetUser, title, content) {
       notificationsDB.unshift({
-        id: "notif-" + Date.now(),
-        user: username,
+        id: Date.now(),
+        user: targetUser,
         title: title,
-        message: message,
-        date: new Date().toLocaleString(),
+        content: content,
+        date: new Date().toLocaleDateString(),
         isRead: false
       });
       updateNotificationBadges();
@@ -584,7 +621,7 @@
       const myNotifs = notificationsDB.filter(n => n.user === currentUser.name && !n.isRead);
       const count = myNotifs.length;
       
-      const navBadge = document.getElementById('profile-badge');
+      const navBadge = document.getElementById('nav-notif-badge');
       const sidebarBadge = document.getElementById('sidebar-notif-badge');
       
       if (count > 0) {
@@ -597,118 +634,32 @@
     }
 
     window.clearNotifications = function() {
-      if(!currentUser) return;
+      if (!currentUser) return;
       notificationsDB.forEach(n => {
-        if(n.user === currentUser.name) n.isRead = true;
+        if (n.user === currentUser.name) n.isRead = true;
       });
-      renderNotifications();
       updateNotificationBadges();
-      customAlert("所有通知已標示為已讀。");
+      renderNotifications();
     }
 
-    function renderNotifications() {
-      if(!currentUser) return;
-      const list = document.getElementById('notifications-list');
-      const myNotifs = notificationsDB.filter(n => n.user === currentUser.name);
-      
-      list.innerHTML = myNotifs.map(n => `
-        <div class="p-4 rounded-xl ${n.isRead ? 'bg-gray-50 border border-gray-100' : 'bg-blue-50 border border-blue-200'}">
-          <div class="flex justify-between items-start mb-1">
-            <h4 class="font-bold text-gray-800 ${n.isRead ? '' : 'text-skyblue'}">${n.title}</h4>
-            <span class="text-xs text-gray-400">${n.date}</span>
-          </div>
-          <p class="text-sm text-gray-600">${n.message}</p>
-        </div>
-      `).join("") || `<div class="text-center py-10 text-gray-400">目前沒有任何通知。</div>`;
-    }
-
-    // --- STREAMING_CHUNK: DOM Initialization and Event Listeners... ---
-    document.addEventListener("DOMContentLoaded", () => {
-      renderGrid();
-
-      // 登入/註冊表單
-      document.getElementById("auth-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const u = document.getElementById("auth-username").value.trim();
-        const p = document.getElementById("auth-password").value;
-        const isLogin = document.getElementById("auth-password-confirm-group").classList.contains("hidden");
-
-        if (isLogin) {
-          const user = usersDB.find(x => x.name === u && x.password === p);
-          if (user) {
-            currentUser = user;
-            updateNavUser();
-            customAlert(`✅ 歡迎回來，${user.name}！`);
-            switchView("home");
-            e.target.reset();
-            updateNotificationBadges();
-          } else {
-            customAlert("❌ 帳號或密碼錯誤！");
-          }
-        } else {
-          const cp = document.getElementById("auth-password-confirm").value;
-          if (p !== cp) return customAlert("❌ 兩次密碼不一致！");
-          if (usersDB.find(x => x.name === u)) return customAlert("❌ 帳號已存在！");
-          
-          const newUser = { id: "u" + Date.now(), name: u, password: p, role: "user" };
-          usersDB.push(newUser);
-          currentUser = newUser;
-          updateNavUser();
-          customAlert(`🎉 註冊成功！歡迎加入，${u}！`);
-          switchView("home");
-          e.target.reset();
-          toggleAuthMode();
-        }
-      });
-
-      // 刊登物品
-      document.getElementById("upload-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const title = document.getElementById("input-title").value;
-        const category = document.getElementById("input-category").value;
-        const wish = document.getElementById("input-wish").value;
-        const origin = document.getElementById("input-origin").value || "自用";
-
-        itemsData.unshift({
-          id: "item-" + Date.now(),
-          title: title,
-          category: category,
-          owner: currentUser.name,
-          wish: wish,
-          status: "active",
-          selectedAppId: null,
-          banReason: "",
-          history: [
-            { name: origin, date: new Date().toISOString().split('T')[0] },
-            { name: title, date: new Date().toISOString().split('T')[0] }
-          ]
-        });
-        
-        customAlert("🎉 刊登成功！貢獻值 +5");
-        renderGrid();
-        switchView("home");
-        e.target.reset();
-      });
-    });
-
-    // --- 登入防護 ---
-    window.handleProtectedAction = function(actionType) {
-      if (!currentUser) {
-        customAlert("🔒 本功能需要登入會員！請先登入或註冊帳號。");
-        switchView("login");
-        return;
+    // --- 身分驗證 (Auth) ---
+    window.fastLogin = function(userId) {
+      const user = usersDB.find(u => u.id === userId);
+      if (user) {
+        currentUser = { ...user };
+        updateNavUser();
+        switchView('home');
+      } else {
+        alert("找不到此帳號！");
       }
-      if (actionType === 'upload') switchView("upload");
-      if (actionType === 'trade') openModal('trade-modal');
-      if (actionType === 'report') openModal('report-modal');
     };
 
-    // --- STREAMING_CHUNK: View Switching and User Nav Updates... ---
     window.updateNavUser = function() {
       const displaySpan = document.getElementById("user-display");
       const loginBtn = document.getElementById("btn-login-nav");
       const adminBtn = document.getElementById("btn-admin-nav");
       const profileBtn = document.getElementById("btn-user-profile");
+      const notifBtn = document.getElementById("btn-nav-notif");
       
       if (currentUser) {
         displaySpan.textContent = `👤 ${currentUser.name}`;
@@ -717,6 +668,8 @@
         loginBtn.onclick = logout;
         loginBtn.classList.replace('bg-skyblue', 'bg-gray-200');
         loginBtn.classList.replace('text-white', 'text-gray-800');
+        
+        notifBtn.style.display = "flex";
         
         if (currentUser.role === "admin") {
           adminBtn.style.display = "inline-flex";
@@ -727,7 +680,9 @@
           profileBtn.style.display = "inline-flex";
           document.getElementById('setting-name').value = currentUser.name;
           document.getElementById('profile-name').textContent = currentUser.name;
+          document.getElementById('profile-level-badge').textContent = currentUser.level;
         }
+        updateNotificationBadges();
       } else {
         displaySpan.classList.add('hidden');
         loginBtn.textContent = "登入 / 註冊";
@@ -736,429 +691,441 @@
         loginBtn.classList.replace('text-gray-800', 'text-white');
         adminBtn.style.display = "none";
         profileBtn.style.display = "none";
+        notifBtn.style.display = "none";
       }
     };
 
     window.logout = function() {
-      currentUser = null;
-      updateNavUser();
-      customAlert("✅ 已安全登出！");
-      switchView("home");
-    };
-
-    window.toggleAuthMode = function() {
-      const isLogin = document.getElementById("auth-password-confirm-group").classList.contains("hidden");
-      document.getElementById("auth-password-confirm-group").classList.toggle("hidden");
-      document.getElementById("auth-title").innerText = isLogin ? "註冊新帳號" : "歡迎回到 TradeUp";
-      document.getElementById("auth-submit-btn").innerText = isLogin ? "註冊" : "登入";
-      document.getElementById("auth-switch-text").innerText = isLogin ? "已經有帳號了？" : "還沒有帳號嗎？";
-      document.getElementById("auth-switch-btn").innerText = isLogin ? "登入" : "立即註冊";
-    };
-
-    window.switchView = function(view) {
-      document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
-      document.getElementById(`view-${view}`).classList.add("active");
-      
-      if (view === 'profile') {
-        switchProfileSidebar('wallet');
-        switchWalletTab('history');
-      }
-      if (view === 'admin') {
-        updateAdminBadges();
-        switchAdminTab('items');
-      }
-      window.scrollTo(0, 0);
-    };
-
-    // --- STREAMING_CHUNK: Rendering Home Grid and Details... ---
-    window.renderGrid = function(categoryFilter = 'all') {
-      const grid = document.getElementById("items-grid");
-      let activeItems = itemsData.filter(i => i.status !== 'banned');
-      
-      if (categoryFilter !== 'all') {
-        activeItems = activeItems.filter(i => i.category === categoryFilter);
-      }
-      
-      grid.innerHTML = activeItems.map(item => `
-        <div class="item-card group cursor-pointer" onclick="openDetail('${item.id}')">
-          <div>
-            <div class="flex justify-between items-start mb-3">
-              <span class="text-xs font-bold px-3 py-1 bg-gray-100 text-gray-600 rounded-lg">${item.category}</span>
-              <span class="text-xs font-bold px-3 py-1 rounded-lg ${item.status==='trading' ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600'}">
-                ${item.status==='trading'?'已配對':'開放中'}
-              </span>
-            </div>
-            <h3 class="text-lg font-extrabold text-gray-800 mb-2 line-clamp-2">${item.title}</h3>
-            <p class="text-sm text-gray-500 mb-4 line-clamp-3">💡 徵求：${item.wish}</p>
-          </div>
-          <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-            <span class="text-xs text-gray-400 font-medium">提供者：${item.owner}</span>
-            <span class="text-skyblue font-bold text-sm group-hover:underline">查看詳情 →</span>
-          </div>
-        </div>
-      `).join("") || `<div class="col-span-full text-center py-20 text-gray-400 font-bold bg-white rounded-3xl border-2 border-dashed border-gray-200">此分類目前沒有物品哦！</div>`;
-    };
-
-    window.filterItems = function(category, event) {
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-gray-800', 'text-white');
-        btn.classList.add('bg-white', 'text-gray-600');
+      customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認登出", "bg-red-500 hover:bg-red-600", () => {
+        currentUser = null;
+        updateNavUser();
+        switchView('home');
       });
-      event.target.classList.remove('bg-white', 'text-gray-600');
-      event.target.classList.add('active', 'bg-gray-800', 'text-white');
-      renderGrid(category);
     };
 
-    window.openDetail = function(id) {
-      currentSelectedItem = itemsData.find(i => i.id === id);
-      if(!currentSelectedItem) return;
+    // --- 核心渲染邏輯 ---
+    // 首頁
+    function renderHome() {
+      const grid = document.getElementById('items-grid');
+      grid.innerHTML = '';
+      
+      const activeItems = marketItems.filter(item => item.status === 'active');
 
-      let btnHtml = "";
-      if (currentSelectedItem.status === 'banned') {
-        btnHtml = `<div class="bg-red-50 text-red-600 p-4 rounded-xl font-bold text-center border border-red-200">⛔ 此物品已由管理員下架<br><span class="text-sm font-normal">原因：${currentSelectedItem.banReason}</span></div>`;
-      } else if (currentSelectedItem.status === 'trading') {
-        btnHtml = `<div class="bg-orange-50 text-orange-600 p-4 rounded-xl font-bold text-center border border-orange-200">⚠️ 物品持有人已選定交換對象，目前停止接收新申請。</div>`;
-      } else if (currentUser && currentSelectedItem.owner === currentUser.name) {
-        btnHtml = `<div class="bg-gray-100 text-gray-600 p-4 rounded-xl font-bold text-center border border-gray-200">這是您刊登的物品，請至個人中心管理申請者。</div>`;
-      } else {
-        btnHtml = `<button onclick="handleProtectedAction('trade')" class="w-full py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-xl shadow-lg transition transform hover:-translate-y-1">🤝 提出交換申請</button>`;
-      }
+      activeItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
+        card.onclick = () => {
+          selectedItem = item;
+          renderDetail();
+          switchView('detail');
+        };
 
-      const reportHtml = `<button onclick="handleProtectedAction('report')" class="w-full py-3 bg-white border-2 border-red-100 text-red-500 hover:bg-red-50 font-bold rounded-xl transition mt-3">🚨 檢舉這個交換</button>`;
-
-      const timelineHtml = currentSelectedItem.history.map((h, idx) => {
-        const isCurrent = idx === currentSelectedItem.history.length - 1;
-        return `
-          <div class="relative pl-6 pb-4 border-l-2 ${isCurrent ? 'border-skyblue' : 'border-gray-200'} last:border-0 last:pb-0">
-            <div class="absolute w-3 h-3 rounded-full -left-[7px] top-1 ${isCurrent ? 'bg-skyblue shadow-[0_0_0_4px_#e0f2fe]' : 'bg-gray-300'}"></div>
-            <p class="font-bold text-gray-800 ${isCurrent ? 'text-lg' : 'text-sm'}">${isCurrent ? '[現況] ' : ''}${h.name}</p>
-            <p class="text-xs text-gray-400 mt-1">${h.date}</p>
+        card.innerHTML = `
+          <div class="flex-1">
+            <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
+              ${item.type}
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3>
+            <p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p>
+          </div>
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+            <span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span>
+            <span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span>
           </div>
         `;
-      }).join("");
+        grid.appendChild(card);
+      });
+    }
 
-      document.getElementById("detail-content").innerHTML = `
-        <div class="flex flex-col md:flex-row gap-8">
-          <div class="flex-1 space-y-6">
-            <div>
-              <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-sm font-bold rounded-lg mb-3">${currentSelectedItem.category}</span>
-              <h2 class="text-3xl font-extrabold text-gray-800 leading-tight">${currentSelectedItem.title}</h2>
-              <div class="flex items-center gap-2 mt-4 text-sm text-gray-500 bg-gray-50 w-fit px-4 py-2 rounded-full border border-gray-100">
-                <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">👤</span>
-                提供者：<span class="font-bold text-gray-700">${currentSelectedItem.owner}</span>
-              </div>
-            </div>
-            <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-              <h4 class="font-bold text-blue-800 flex items-center gap-2 mb-2">🎯 對方想換到的物品（願望清單）</h4>
-              <p class="text-blue-900 leading-relaxed">${currentSelectedItem.wish}</p>
-            </div>
-            <div class="pt-6">
-              ${btnHtml}
-              ${reportHtml}
-            </div>
+    // 物品詳情
+    function renderDetail() {
+      const c = document.getElementById('detail-content');
+      if (!selectedItem) return;
+
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
+            ${selectedItem.type}
           </div>
-          <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-2xl border border-gray-100 h-fit">
-            <h4 class="font-extrabold text-gray-800 mb-6 flex items-center gap-2">📈 小換大增值履歷</h4>
-            <div class="space-y-1">
-              ${timelineHtml}
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${selectedItem.title}</h2>
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">
+              ${selectedItem.owner.charAt(0)}
             </div>
+            <span class="text-gray-600 font-bold">${selectedItem.owner}</span>
+            <span class="text-gray-300 mx-2">|</span>
+            <span class="text-gray-400 text-sm font-medium">發布於 1 小時前</span>
           </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100">
+          <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4>
+          <p class="text-gray-600 leading-relaxed">${selectedItem.desc}</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8">
+          <button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md transform hover:-translate-y-1 flex items-center justify-center gap-2">
+            <span>🎁</span> 提出交換申請
+          </button>
+          <button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">
+            🚨 檢舉此物品
+          </button>
         </div>
       `;
-      switchView("detail");
-    };
 
-    // --- STREAMING_CHUNK: Trade Application Logic... ---
-    window.confirmTrade = function() {
-      const offer = document.getElementById("offer-item-name").value.trim();
-      const method = document.getElementById("offer-method").value;
-      const shipping = document.getElementById("offer-shipping").value;
-      
-      if (!offer) return customAlert("請輸入您想交換的物品名稱！");
-
-      const confirmMsg = `💡 您是否確定你所提供交換的物品價值比原商品更高或相同？\n(價值越高越容易被選上喔！)\n\n📦 您的提案：${offer}\n🤝 交易方式：${method}\n🚚 如是寄送，運費處理：${shipping}\n\n確認無誤並送出申請嗎？`;
-
-      customConfirm(confirmMsg, function(isConfirmed) {
-        if (!isConfirmed) return;
-
-        userApplications.unshift({
-          id: "app-" + Date.now(),
-          applicant: currentUser.name,
-          targetItemId: currentSelectedItem.id,
-          targetTitle: currentSelectedItem.title,
-          targetOwner: currentSelectedItem.owner,
-          myOffer: offer,
-          method: method,
-          shipping: shipping,
-          date: new Date().toISOString().split('T')[0],
-          status: "等待回應"
-        });
-
-        addNotification(currentSelectedItem.owner, "新的交換申請！", `${currentUser.name} 想要用「${offer}」交換您的「${currentSelectedItem.title}」`);
-
-        document.getElementById("offer-item-name").value = "";
-        customAlert("✅ 申請成功！\n持有人將會收到您的申請，請靜候佳音。");
-        closeModal('trade-modal');
-      });
-    };
-
-    // --- STREAMING_CHUNK: Profile Settings and Wallet Sidebar... ---
-    window.switchProfileSidebar = function(tab) {
-      document.querySelectorAll('.sidebar-menu-item').forEach(el => el.classList.remove('active'));
-      document.getElementById(`sidebar-${tab}`).classList.add('active');
-      
-      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
-      
-      if(tab === 'notifications') renderNotifications();
-    };
-
-    window.saveProfileSettings = function() {
-      const newName = document.getElementById('setting-name').value.trim();
-      if (!newName) return customAlert("顯示名稱不能為空！");
-      
-      if (newName !== currentUser.name && usersDB.find(u => u.name === newName)) {
-        return customAlert("❌ 這個名稱已經有人使用囉，請換一個！");
-      }
-
-      const oldName = currentUser.name;
-      currentUser.name = newName;
-
-      const userIndex = usersDB.findIndex(u => u.id === currentUser.id);
-      if(userIndex > -1) usersDB[userIndex].name = newName;
-
-      itemsData.forEach(i => { if(i.owner === oldName) i.owner = newName; });
-      userApplications.forEach(a => { 
-        if(a.applicant === oldName) a.applicant = newName; 
-        if(a.targetOwner === oldName) a.targetOwner = newName;
-      });
-      chatDB.forEach(c => { if(c.sender === oldName) c.sender = newName; });
-      reportsDB.forEach(r => {
-        if(r.reporter === oldName) r.reporter = newName;
-        if(r.targetOwner === oldName) r.targetOwner = newName;
-      });
-      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
-
-      document.getElementById('profile-name').textContent = newName;
-      updateNavUser();
-      if (document.getElementById('tab-wallet-posted').classList.contains('bg-white')) renderUserItems();
-      if (document.getElementById('tab-wallet-applied').classList.contains('bg-white')) renderUserApps();
-      
-      customAlert("✅ 設定已成功儲存！您的顯示名稱已更新。");
-    };
-
-    window.switchWalletTab = function(tab) {
-      document.querySelectorAll('#profile-content-wallet button').forEach(btn => {
-        btn.classList.remove('bg-white', 'shadow', 'text-gray-800');
-        btn.classList.add('text-gray-500');
-      });
-      document.getElementById(`tab-wallet-${tab}`).classList.add('bg-white', 'shadow', 'text-gray-800');
-      document.getElementById(`tab-wallet-${tab}`).classList.remove('text-gray-500');
-      
-      document.querySelectorAll('.wallet-sec').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`wallet-sec-${tab}`).classList.remove('hidden');
-
-      if (tab === 'posted') renderUserItems();
-      if (tab === 'applied') renderUserApps();
-    };
-
-    function renderUserApps() {
-      document.getElementById("user-applications-list").innerHTML = userApplications.filter(a => a.applicant === currentUser.name).map(app => {
-        let isLocked = app.status === '未入選';
-        let statusStyle = app.status === '已成交' ? 'bg-green-100 text-green-700' : (isLocked ? 'bg-gray-100 text-gray-500' : 'bg-blue-100 text-blue-700');
-        return `
-          <div class="p-4 border-2 border-gray-100 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
-            <div>
-              <div class="flex items-center gap-2 mb-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold ${statusStyle}">${app.status}</span>
-                <span class="text-xs text-gray-400">${app.date}</span>
-              </div>
-              <p class="font-bold text-gray-800 mb-1">目標：${app.targetTitle}</p>
-              <p class="text-sm text-gray-600">我的提案：<span class="font-semibold text-skyblue">${app.myOffer}</span> (${app.method} / ${app.shipping})</p>
-            </div>
-            <button onclick="openChat('${app.id}')" class="px-4 py-2 rounded-xl text-sm font-bold w-full sm:w-auto transition ${isLocked ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-skyblue-light text-skyblue-hover hover:bg-blue-100'}" ${isLocked ? 'disabled' : ''}>
-              ${isLocked ? '🔒 已關閉' : '💬 聯絡對方'}
-            </button>
-          </div>
-        `;
-      }).join("") || `<div class="text-center py-10 text-gray-400 font-medium">您還沒有提出過任何申請。</div>`;
-    }
-
-    function renderUserItems() {
-      document.getElementById("user-posted-list").innerHTML = itemsData.filter(i => i.owner === currentUser.name).map(item => {
-        const apps = userApplications.filter(a => a.targetItemId === item.id);
-        const count = apps.length;
-        const pendingCount = apps.filter(a => a.status === '等待回應').length;
-        
-        return `
-          <div class="p-4 border-2 border-gray-100 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold ${item.status==='trading'?'bg-gray-100 text-gray-500':'bg-orange-100 text-orange-600'}">${item.status==='trading'?'已配對':'徵求中'}</span>
-                <span class="text-xs text-gray-400 border border-gray-200 px-2 py-0.5 rounded">${item.category}</span>
-              </div>
-              <p class="font-bold text-gray-800 text-lg mb-1">${item.title}</p>
-              <p class="text-sm text-gray-500">共收到 ${count} 筆申請 <span class="text-orange-500 font-semibold">(${pendingCount} 筆待處理)</span></p>
-            </div>
-            <button onclick="openApplicantsModal('${item.id}')" class="px-5 py-2.5 bg-gray-800 hover:bg-gray-900 text-white rounded-xl text-sm font-bold transition shadow-md w-full sm:w-auto whitespace-nowrap">
-              查看申請者
-            </button>
-          </div>
-        `;
-      }).join("") || `<div class="text-center py-10 text-gray-400 font-medium">您目前沒有上架任何物品。</div>`;
-    }
-
-    // --- STREAMING_CHUNK: Managing Applicants and Chat... ---
-    window.openApplicantsModal = function(itemId) {
-      const item = itemsData.find(i => i.id === itemId);
-      document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
-        let actionBtn = "";
-        if (item.status !== 'trading') {
-          actionBtn = `<button onclick="acceptApplicant('${app.id}', '${itemId}')" class="px-4 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg text-sm font-bold transition">✅ 選擇他</button>`;
-        } else {
-          actionBtn = item.selectedAppId === app.id 
-            ? `<button onclick="openChat('${app.id}')" class="px-4 py-2 bg-skyblue-light text-skyblue-hover rounded-lg text-sm font-bold transition">💬 私訊</button>` 
-            : `<span class="text-gray-400 text-sm font-bold bg-gray-100 px-3 py-1 rounded-lg">🔒 未入選</span>`;
+      document.getElementById('btn-request-trade').onclick = () => {
+        if (!currentUser) {
+          switchView('login');
+          return;
+        }
+        if (currentUser.name === selectedItem.owner) {
+          customConfirm("無法申請", "您不能對自己刊登的物品提出交換申請喔！", "💡", "我知道了", "bg-gray-800 hover:bg-gray-700");
+          return;
         }
         
-        return `
-          <div class="p-4 border-2 border-gray-100 rounded-2xl flex flex-col gap-3 bg-white">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-sm text-gray-500 mb-1">申請人：<span class="font-bold text-gray-800">${app.applicant}</span></p>
-                <p class="font-bold text-lg text-skyblue">${app.myOffer}</p>
-                <p class="text-xs text-gray-500 mt-1">📦 ${app.method} / 🚚 ${app.shipping}</p>
-              </div>
-              <span class="text-xs text-gray-400">${app.date}</span>
-            </div>
-            <div class="flex justify-end pt-2 border-t border-gray-50">
-              ${actionBtn}
-            </div>
-          </div>
-        `;
-      }).join("") || `<div class="text-center py-8 text-gray-400">目前還沒有人提出申請哦！</div>`;
-      
-      openModal('applicants-modal');
-    };
-
-    window.acceptApplicant = function(appId, itemId) {
-      customConfirm("確定選擇這個交換提案嗎？確認後其他申請將會被關閉。", function(isConfirmed) {
-        if (!isConfirmed) return;
-        
-        const item = itemsData.find(i => i.id === itemId);
-        item.status = 'trading';
-        item.selectedAppId = appId;
-        
-        userApplications.forEach(a => {
-          if (a.targetItemId === itemId) {
-            if (a.id === appId) {
-              a.status = '已成交';
-              addNotification(a.applicant, "🎉 換物申請成功！", `您對「${item.title}」的申請已被接受，快去聯絡對方吧！`);
-            } else {
-              a.status = '未入選';
-              addNotification(a.applicant, "換物結果通知", `很抱歉，您對「${item.title}」的申請未入選。`);
-            }
-          }
-        });
-        openApplicantsModal(itemId);
-        renderGrid();
-      });
-    };
-
-    window.openChat = function(appId) {
-      currentChatAppId = appId;
-      renderChat();
-      openModal('chat-modal');
-    };
-
-    function renderChat() {
-      const box = document.getElementById("chat-history");
-      box.innerHTML = chatDB.filter(m => m.appId === currentChatAppId).map(m => {
-        let isMe = m.sender === currentUser.name;
-        return `
-          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-            <span class="text-xs text-gray-400 mb-1 ml-1">${isMe ? '我' : m.sender}</span>
-            <div class="px-4 py-2 rounded-2xl max-w-[80%] ${isMe ? 'bg-skyblue text-white rounded-br-sm' : 'bg-gray-100 text-gray-800 rounded-bl-sm'}">
-              ${m.text}
-            </div>
-          </div>
-        `;
-      }).join("") || `<div class="text-center py-10 text-gray-400 text-sm">這裡是雙方的專屬留言板，快打個招呼吧！</div>`;
-      box.scrollTop = box.scrollHeight;
+        // 打開新的提出交換 Modal
+        document.getElementById('trade-offer-desc').value = '';
+        document.getElementById('trade-method').value = '面交';
+        toggleShippingFee();
+        openModal('trade-modal');
+      };
     }
 
-    window.sendChatMessage = function() {
-      const t = document.getElementById("chat-input-text").value.trim();
-      if (!t) return;
-      chatDB.push({ appId: currentChatAppId, sender: currentUser.name, text: t });
-      document.getElementById("chat-input-text").value = "";
-      renderChat();
+    // 提出交換視窗邏輯
+    window.toggleShippingFee = function() {
+      const method = document.getElementById('trade-method').value;
+      const feeContainer = document.getElementById('shipping-fee-container');
+      if (method === '寄送') {
+        feeContainer.classList.remove('hidden');
+      } else {
+        feeContainer.classList.add('hidden');
+      }
+    }
+
+    window.submitTradeOffer = function() {
+      const desc = document.getElementById('trade-offer-desc').value.trim();
+      if (!desc) {
+        alert("請填寫您想用來交換的物品內容！");
+        return;
+      }
+      
+      const method = document.getElementById('trade-method').value;
+      let shippingInfo = "";
+      if (method === '寄送') {
+        shippingInfo = ` (運費: ${document.getElementById('trade-shipping-fee').value})`;
+      }
+
+      // 儲存申請
+      userTrades.push({ 
+        id: Date.now(), 
+        itemTitle: selectedItem.title, 
+        itemOwner: selectedItem.owner,
+        applicant: currentUser.name,
+        offerDesc: `${desc} [${method}${shippingInfo}]`,
+        status: '待審核',
+        type: 'applied'
+      });
+      
+      // 通知物主
+      sendNotification(selectedItem.owner, '有人對您的物品提出交換', `${currentUser.name} 想要用他的物品和您交換「${selectedItem.title}」，快去錢包查看吧！`);
+
+      closeModal('trade-modal');
+      
+      // 送出成功提示
+      customConfirm("申請已送出！", "我們已通知物品主人，若對方同意交換，將會透過通知中心與您聯繫。", "🎉", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
+        switchView('profile');
+        switchProfileSidebar('wallet');
+        switchWalletTab('applied');
+      });
+    }
+
+    // --- 檢舉系統 ---
+    window.openReportModal = function() {
+      if (!currentUser) {
+        switchView('login');
+        return;
+      }
+      document.getElementById('report-reason').value = '';
+      document.getElementById('report-desc').value = '';
+      document.getElementById('report-agree').checked = false;
+      openModal('report-modal');
     };
 
-    // --- STREAMING_CHUNK: User Reporting Flow... ---
     window.submitReport = function() {
-      const reason = document.getElementById("report-reason-select").value;
-      const otherReason = document.getElementById("report-reason-text").value.trim();
-      const confirmCheck = document.getElementById("report-confirm-check").checked;
-      
-      if (!reason && !otherReason) {
-        customAlert("請選擇或填寫檢舉原因！");
-        return;
-      }
-      if (!confirmCheck) {
-        customAlert("請勾選確認條款，以示為此檢舉負責！");
+      const reason = document.getElementById('report-reason').value;
+      const desc = document.getElementById('report-desc').value;
+      const agree = document.getElementById('report-agree').checked;
+
+      if (!reason || !desc || !agree) {
+        alert("請完整填寫必填欄位並勾選同意。");
         return;
       }
 
-      reportsDB.unshift({
-        id: "rep-" + Date.now(),
+      // 寫入 DB
+      reportsDB.push({
+        id: 'r' + Date.now(),
+        itemTitle: selectedItem.title,
+        itemOwner: selectedItem.owner,
         reporter: currentUser.name,
-        targetItemId: currentSelectedItem.id,
-        targetItemTitle: currentSelectedItem.title,
-        targetOwner: currentSelectedItem.owner,
-        reason: reason || "自訂原因",
-        details: otherReason,
-        status: "pending",
-        date: new Date().toLocaleString()
+        reason: reason,
+        desc: desc,
+        status: 'pending',
+        date: new Date().toLocaleDateString()
       });
 
       updateAdminBadges();
-
-      customAlert(`✅ 檢舉已送出！\n平台管理員將進行人工複核。\n(目標物品：${currentSelectedItem.title})`);
       closeModal('report-modal');
       
-      document.getElementById("report-reason-select").value = "";
-      document.getElementById("report-reason-text").value = "";
-      document.getElementById("report-file").value = "";
-      document.getElementById("report-confirm-check").checked = false;
+      customConfirm("檢舉已送出", "感謝您的回報，我們的管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
     };
 
-    // --- STREAMING_CHUNK: Admin Dashboard and Moderation... ---
-    window.switchAdminTab = function(tab) {
-      document.getElementById('admin-tab-items').classList.toggle('border-b-2', tab === 'items');
-      document.getElementById('admin-tab-items').classList.toggle('text-gray-800', tab === 'items');
-      document.getElementById('admin-tab-items').classList.toggle('text-gray-500', tab !== 'items');
+    // --- 會員中心 ---
+    window.switchProfileSidebar = function(tab) {
+      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
       
-      document.getElementById('admin-tab-reports').classList.toggle('border-b-2', tab === 'reports');
-      document.getElementById('admin-tab-reports').classList.toggle('text-gray-800', tab === 'reports');
-      document.getElementById('admin-tab-reports').classList.toggle('text-gray-500', tab !== 'reports');
+      document.querySelectorAll('.profile-tab').forEach(el => {
+        el.classList.remove('text-skyblue', 'bg-skyblue-light');
+        el.classList.add('text-gray-600', 'hover:bg-gray-50');
+      });
+      const activeTab = document.getElementById(`tab-${tab}`);
+      activeTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
+      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
 
-      document.querySelectorAll('.admin-sec').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`admin-sec-${tab}`).classList.remove('hidden');
+      if (tab === 'wallet') renderWallet();
+      if (tab === 'notifications') renderNotifications();
+      if (tab === 'points') renderPoints();
+    };
 
-      if(tab === 'items') renderAdminList();
+    window.switchWalletTab = function(type) {
+      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
+
+      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => {
+        el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue');
+        el.classList.add('text-gray-500');
+      });
+      const activeTab = document.getElementById(`wallet-tab-${type}`);
+      activeTab.classList.remove('text-gray-500');
+      activeTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
+      
+      renderWallet();
+    };
+
+    function renderWallet() {
+      // 1. 我上架的
+      const listedContainer = document.getElementById('my-listed-items');
+      listedContainer.innerHTML = '';
+      const myItems = marketItems.filter(item => item.owner === currentUser.name);
+      
+      if (myItems.length === 0) {
+        listedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
+      } else {
+        myItems.forEach(item => {
+          // 找出申請這個物品的人
+          const applicants = userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === currentUser.name);
+          
+          let appHtml = '';
+          if (applicants.length > 0) {
+            appHtml = `<div class="mt-4 border-t border-gray-100 pt-3">
+              <p class="text-sm font-bold text-gray-700 mb-2">🎁 收到 ${applicants.length} 個交換提案：</p>
+              ${applicants.map(app => `
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
+                  <div>
+                    <span class="font-bold text-gray-800 text-sm">${app.applicant}</span>
+                    <p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p>
+                    <span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border border-gray-200 inline-block mt-1">${app.status}</span>
+                  </div>
+                  ${app.status === '待審核' ? `<button onclick="acceptTrade(${app.id})" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg transition shadow-sm">✅ 選擇他</button>` : ''}
+                  ${app.status === '已成交' ? `<button class="px-3 py-1.5 bg-gray-800 text-white text-xs font-bold rounded-lg transition shadow-sm">💬 私訊</button>` : ''}
+                </div>
+              `).join('')}
+            </div>`;
+          }
+
+          listedContainer.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div>
+                  <h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4>
+                  <p class="text-xs text-gray-400 mt-1">狀態: ${item.status === 'active' ? '刊登中' : item.status}</p>
+                </div>
+              </div>
+              ${appHtml}
+            </div>
+          `;
+        });
+      }
+
+      // 2. 我申請的
+      const appliedContainer = document.getElementById('my-applied-items');
+      appliedContainer.innerHTML = '';
+      const myApps = userTrades.filter(t => t.applicant === currentUser.name);
+      
+      if (myApps.length === 0) {
+        appliedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
+      } else {
+        myApps.forEach(app => {
+          let statusColor = 'text-orange-500';
+          let bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed'; // 預設按鈕不能按
+          let btnText = '⏳ 待審核';
+
+          if (app.status === '已成交') {
+            statusColor = 'text-green-500';
+            bgClass = 'bg-skyblue hover:bg-skyblue-hover text-white shadow-sm';
+            btnText = '💬 聯絡對方';
+          } else if (app.status === '已關閉') {
+            statusColor = 'text-gray-400';
+            bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50';
+            btnText = '🔒 已關閉';
+          }
+
+          appliedContainer.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p>
+                <h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4>
+                <p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p>
+                <div class="mt-2 text-xs font-bold ${statusColor}">${app.status}</div>
+              </div>
+              <button class="px-4 py-2 ${bgClass} text-sm font-bold rounded-xl transition w-full sm:w-auto text-center shrink-0">
+                ${btnText}
+              </button>
+            </div>
+          `;
+        });
+      }
+    }
+
+    window.acceptTrade = function(tradeId) {
+      customConfirm("確認選擇", "選擇此提案後，其他人的申請將會自動關閉，並為您雙方開啟聊天室。確定要交換嗎？", "🤝", "確定交換", "bg-green-500 hover:bg-green-600", () => {
+        const trade = userTrades.find(t => t.id === tradeId);
+        if (trade) {
+          trade.status = '已成交';
+          // 關閉其他同物品的申請
+          userTrades.forEach(t => {
+            if (t.itemTitle === trade.itemTitle && t.id !== tradeId) {
+              t.status = '已關閉';
+            }
+          });
+          // 將物品狀態下架
+          const item = marketItems.find(i => i.title === trade.itemTitle && i.owner === currentUser.name);
+          if (item) item.status = '已換出';
+
+          // 加分
+          currentUser.points += 50;
+          currentUser.level = getLevelByPoints(currentUser.points);
+          
+          sendNotification(trade.applicant, '🎉 您的交換提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的交換提案，快去私訊他吧！`);
+          updateNavUser();
+          renderWallet();
+        }
+      });
+    }
+
+    function renderPoints() {
+      document.getElementById('points-display').textContent = currentUser.points;
+      document.getElementById('level-display-box').textContent = currentUser.level;
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById('notification-list');
+      container.innerHTML = '';
+      const myNotifs = notificationsDB.filter(n => n.user === currentUser.name);
+
+      if (myNotifs.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有新通知</div>';
+      } else {
+        myNotifs.forEach(n => {
+          container.innerHTML += `
+            <div class="p-4 rounded-xl border ${n.isRead ? 'bg-white border-gray-100' : 'bg-blue-50 border-blue-100'}">
+              <div class="flex justify-between items-start mb-1">
+                <h5 class="font-bold text-gray-800 text-sm">${n.title}</h5>
+                <span class="text-[10px] text-gray-400">${n.date}</span>
+              </div>
+              <p class="text-xs text-gray-600">${n.content}</p>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderProfile() {
+      if (!currentUser) {
+        switchView('login');
+        return;
+      }
+      document.getElementById('profile-name').textContent = currentUser.name;
+      document.getElementById('profile-avatar-letter').textContent = currentUser.name.charAt(0);
+      document.getElementById('profile-level-badge').textContent = currentUser.level;
+      document.getElementById('setting-name').value = currentUser.name;
+      switchProfileSidebar('wallet');
+      updateNotificationBadges();
+    }
+
+    window.saveProfileSettings = function() {
+      const newName = document.getElementById('setting-name').value.trim();
+      if (!newName) {
+        alert("名稱不能為空！");
+        return;
+      }
+      const oldName = currentUser.name;
+      currentUser.name = newName;
+      
+      // 連動更新假資料庫中的名字
+      marketItems.forEach(i => { if(i.owner === oldName) i.owner = newName; });
+      userTrades.forEach(t => { 
+        if(t.applicant === oldName) t.applicant = newName; 
+        if(t.itemOwner === oldName) t.itemOwner = newName;
+      });
+      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
+      reportsDB.forEach(r => {
+        if(r.reporter === oldName) r.reporter = newName;
+        if(r.itemOwner === oldName) r.itemOwner = newName;
+      });
+
+      updateNavUser();
+      renderProfile();
+      customConfirm("儲存成功", "您的個人設定已經更新完畢。", "✅", "確認", "bg-gray-800 hover:bg-gray-700");
+    };
+
+    // 計算等級邏輯
+    function getLevelByPoints(points) {
+      if(points >= 500) return '💎 鑽石';
+      if(points >= 200) return '🥇 黃金';
+      if(points >= 50) return '🥈 白銀';
+      return '🥉 青銅';
+    }
+
+    // --- 管理後台 ---
+    window.switchAdminTab = function(tab) {
+      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
+
+      document.querySelectorAll('.admin-tab').forEach(el => {
+        el.classList.remove('text-skyblue', 'bg-skyblue-light');
+        el.classList.add('text-gray-600', 'bg-gray-50');
+      });
+      const activeTab = document.getElementById(`admin-tab-${tab}`);
+      activeTab.classList.remove('text-gray-600', 'bg-gray-50');
+      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
+
+      if(tab === 'stats') renderAdminStats();
       if(tab === 'reports') renderAdminReports();
+      if(tab === 'users') renderAdminUsers();
     };
 
     function updateAdminBadges() {
-      const pendingCount = reportsDB.filter(r => r.status === 'pending').length;
+      const pending = reportsDB.filter(r => r.status === 'pending').length;
+      
       const navBadge = document.getElementById('admin-badge');
       const tabBadge = document.getElementById('admin-tab-badge');
-      
-      if (pendingCount > 0) {
-        navBadge.textContent = pendingCount;
-        tabBadge.textContent = pendingCount;
+
+      if (pending > 0) {
+        navBadge.textContent = pending;
         navBadge.classList.remove('hidden');
+        tabBadge.textContent = pending;
         tabBadge.classList.remove('hidden');
       } else {
         navBadge.classList.add('hidden');
@@ -1166,219 +1133,319 @@
       }
     }
 
-    window.renderAdminList = function() {
-      document.getElementById("admin-items-list").innerHTML = itemsData.filter(i => i.status !== 'banned').map(item => `
-        <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-200">
-          <div>
-            <p class="font-bold text-gray-800">${item.title}</p>
-            <p class="text-xs text-gray-500">分類：${item.category} | 擁有者：${item.owner} | 狀態：${item.status==='trading'?'已成交/配對':'上架中'}</p>
-          </div>
-          <button onclick="forceBanItem('${item.id}')" class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-sm font-bold rounded-lg transition">強制下架</button>
+    function renderAdminStats() {
+      const c = document.getElementById('admin-content-stats');
+      c.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">總註冊人數</div>
+             <div class="text-4xl font-extrabold text-skyblue mt-2">${usersDB.length}</div>
+           </div>
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">上架物品總數</div>
+             <div class="text-4xl font-extrabold text-gray-800 mt-2">${marketItems.length}</div>
+           </div>
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">進行中交易</div>
+             <div class="text-4xl font-extrabold text-gray-800 mt-2">${userTrades.length}</div>
+           </div>
+           <div class="bg-red-50 p-4 rounded-2xl text-center border border-red-100">
+             <div class="text-red-500 text-sm font-bold">待處理檢舉</div>
+             <div class="text-4xl font-extrabold text-red-500 mt-2">${reportsDB.filter(r=>r.status==='pending').length}</div>
+           </div>
         </div>
-      `).join("") || `<p class="text-center text-gray-400 py-10">目前沒有上架物品。</p>`;
-    };
-
-    window.forceBanItem = function(id) {
-      customConfirm("確定要強制下架此物品嗎？", function(isConfirmed) {
-        if(!isConfirmed) return;
-        
-        const item = itemsData.find(i => i.id === id);
-        if(item) {
-          item.status = 'banned';
-          item.banReason = "管理員強制下架";
-          addNotification(item.owner, "🚨 物品下架通知", `您的物品「${item.title}」已遭管理員強制下架。`);
-        }
-        renderAdminList();
-        renderGrid();
-        customAlert("✅ 物品已成功強制下架。");
-      });
-    };
-
-    window.renderAdminReports = function() {
-      document.getElementById("admin-reports-list").innerHTML = reportsDB.map(r => `
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
-          ${r.status === 'pending' ? '<span class="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>' : ''}
-          <div class="flex justify-between items-start mb-2">
-            <span class="text-xs font-bold px-2 py-1 rounded-lg ${r.status==='pending'?'bg-red-100 text-red-700':r.status==='banned'?'bg-gray-800 text-white':'bg-gray-200 text-gray-600'}">
-              ${r.status==='pending'?'待審核':r.status==='banned'?'已下架處分':'已駁回'}
-            </span>
-            <span class="text-xs text-gray-400">${r.date}</span>
-          </div>
-          <p class="text-sm font-bold text-gray-800">目標物品：${r.targetItemTitle}</p>
-          <p class="text-sm text-gray-600 mt-1">檢舉原因：<span class="font-bold text-red-600">${r.reason}</span></p>
-          ${r.details ? `<p class="text-xs text-gray-500 mt-1 bg-white p-2 rounded border border-gray-100">💬 補充：${r.details}</p>` : ''}
-          <div class="mt-3 flex gap-4 text-xs text-gray-500">
-            <span>檢舉人：${r.reporter}</span>
-            <span>被檢舉人：${r.targetOwner}</span>
-          </div>
-          ${r.status === 'pending' ? `
-            <div class="mt-4 pt-4 border-t border-gray-200 flex justify-end">
-              <button onclick="openAdminReportModal('${r.id}')" class="px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-lg transition text-sm">進行審核</button>
-            </div>
-          ` : `
-            <div class="mt-4 pt-3 border-t border-gray-200 text-xs text-gray-500 font-bold">
-              處理備註：${r.adminNote || '無'}
-            </div>
-          `}
-        </div>
-      `).join("") || `<p class="text-center text-gray-400 py-10">目前沒有檢舉紀錄。</p>`;
-    };
-
-    window.openAdminReportModal = function(reportId) {
-      currentAdminReportId = reportId;
-      const r = reportsDB.find(x => x.id === reportId);
-      document.getElementById('admin-report-details').innerHTML = `
-        <p><strong>目標物品：</strong> ${r.targetItemTitle}</p>
-        <p><strong>被檢舉人：</strong> ${r.targetOwner}</p>
-        <p><strong>檢舉人：</strong> ${r.reporter}</p>
-        <p class="text-red-600"><strong>檢舉原因：</strong> ${r.reason}</p>
       `;
-      document.getElementById('admin-report-note').value = "";
+    }
+
+    function renderAdminUsers() {
+      const c = document.getElementById('admin-content-users');
+      c.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
+                <th class="p-3 font-bold">ID / 帳號</th>
+                <th class="p-3 font-bold">顯示名稱</th>
+                <th class="p-3 font-bold">貢獻值</th>
+                <th class="p-3 font-bold">目前等級</th>
+                <th class="p-3 font-bold text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${usersDB.map(u => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                  <td class="p-3 text-sm text-gray-400 font-mono">${u.id}</td>
+                  <td class="p-3 text-sm font-bold text-gray-800">${u.name} <span class="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded ml-1 ${u.role==='admin'?'text-red-500':''}">${u.role}</span></td>
+                  <td class="p-3 text-sm font-bold text-skyblue">${u.points}</td>
+                  <td class="p-3 text-sm font-bold text-gray-600">${u.level}</td>
+                  <td class="p-3 text-right">
+                    <button onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition shadow-sm">調整</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    window.openEditUserModal = function(userId) {
+      const user = usersDB.find(u => u.id === userId);
+      if(!user) return;
+      document.getElementById('edit-user-id').value = user.id;
+      document.getElementById('edit-user-name').textContent = `${user.name} (${user.level})`;
+      document.getElementById('edit-user-points').value = user.points;
+      openModal('admin-edit-user-modal');
+    }
+
+    window.saveAdminUserEdit = function() {
+      const userId = document.getElementById('edit-user-id').value;
+      const newPoints = parseInt(document.getElementById('edit-user-points').value, 10);
+      
+      if(isNaN(newPoints)) {
+        alert("請輸入有效的數字");
+        return;
+      }
+
+      const user = usersDB.find(u => u.id === userId);
+      if(user) {
+        user.points = newPoints;
+        user.level = getLevelByPoints(newPoints);
+        
+        // 如果改到自己，同步更新
+        if(currentUser && currentUser.id === user.id) {
+          currentUser.points = user.points;
+          currentUser.level = user.level;
+          updateNavUser();
+        }
+        
+        closeModal('admin-edit-user-modal');
+        renderAdminUsers();
+        customConfirm("儲存成功", `已將 ${user.name} 的貢獻值更新為 ${newPoints}。`, "✅", "確認", "bg-gray-800");
+      }
+    }
+
+    function renderAdminReports() {
+      const container = document.getElementById('admin-reports-list');
+      container.innerHTML = '';
+      const pending = reportsDB.filter(r => r.status === 'pending');
+
+      if (pending.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">太棒了！目前沒有待處理的檢舉</div>';
+      } else {
+        pending.forEach(r => {
+          container.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex justify-between items-center">
+              <div>
+                <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-md mb-2">檢舉單號: ${r.id}</span>
+                <h4 class="font-bold text-gray-800 text-sm">被檢舉物: ${r.itemTitle} (擁有者: ${r.itemOwner})</h4>
+                <p class="text-xs text-gray-500 mt-1"><span class="font-bold">原因:</span> ${r.reason}</p>
+                <p class="text-[10px] text-gray-400 mt-1">回報人: ${r.reporter} | ${r.date}</p>
+              </div>
+              <button onclick="reviewReport('${r.id}')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold rounded-xl transition shadow-md shrink-0">
+                進行審核
+              </button>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function renderAdmin() {
+      if (currentUser?.role !== 'admin') return;
+      updateAdminBadges();
+      switchAdminTab('stats');
+    }
+
+    window.reviewReport = function(id) {
+      const report = reportsDB.find(r => r.id === id);
+      if (!report) return;
+      currentReportId = id;
+      
+      document.getElementById('admin-report-details').innerHTML = `
+        <p><span class="font-bold">被檢舉人：</span>${report.itemOwner}</p>
+        <p><span class="font-bold">物品名稱：</span>${report.itemTitle}</p>
+        <p><span class="font-bold">檢舉人：</span>${report.reporter}</p>
+        <p><span class="font-bold">檢舉原因：</span>${report.reason}</p>
+        <p><span class="font-bold">說明：</span>${report.desc}</p>
+      `;
+      document.getElementById('admin-report-note').value = '';
       openModal('admin-report-modal');
     };
 
     window.processReport = function(action) {
-      const note = document.getElementById('admin-report-note').value.trim();
-      const report = reportsDB.find(x => x.id === currentAdminReportId);
-      if(!report) return;
-
-      report.adminNote = note;
-      const item = itemsData.find(i => i.id === report.targetItemId);
+      const report = reportsDB.find(r => r.id === currentReportId);
+      const note = document.getElementById('admin-report-note').value;
+      if (!report) return;
 
       if (action === 'ban') {
         report.status = 'banned';
-        if(item) {
-          item.status = 'banned';
-          item.banReason = note || `因涉及「${report.reason}」被檢舉且成立，由管理員下架。`;
-          addNotification(item.owner, "🚨 違規下架通知", `您的物品「${item.title}」經檢舉審核確認違規，已遭強制下架。\n管理員備註：${note||'無'}`);
+        // 下架物品
+        const item = marketItems.find(i => i.title === report.itemTitle && i.owner === report.itemOwner);
+        if (item) item.status = 'banned';
+        
+        // 扣分
+        const ownerUser = usersDB.find(u => u.name === report.itemOwner);
+        if(ownerUser) {
+           ownerUser.points = Math.max(0, ownerUser.points - 30);
+           ownerUser.level = getLevelByPoints(ownerUser.points);
         }
-        addNotification(report.reporter, "✅ 檢舉處理完成", `您對「${report.targetItemTitle}」的檢舉我們已審核成立，並下架該物品。感謝您協助維護平台環境！`);
-        customAlert("✅ 已將檢舉設為成立，物品已下架並發送通知。");
+
+        // 加分給檢舉人
+        const reporterUser = usersDB.find(u => u.name === report.reporter);
+        if(reporterUser) {
+           reporterUser.points += 5;
+           reporterUser.level = getLevelByPoints(reporterUser.points);
+        }
+
+        sendNotification(report.itemOwner, '⚠️ 物品下架通知', `您的物品「${report.itemTitle}」因違反社群守則已被管理員下架。備註: ${note}`);
+        sendNotification(report.reporter, '✅ 檢舉處理完成', `您檢舉的「${report.itemTitle}」已經由管理員處理完畢並下架，感謝您協助維護社群！`);
       } else {
         report.status = 'rejected';
-        addNotification(report.reporter, "ℹ️ 檢舉審核結果", `您對「${report.targetItemTitle}」的檢舉經審核後，暫查無明確違規，已予駁回。\n管理員備註：${note||'無'}`);
-        customAlert("ℹ️ 已駁回此檢舉，並發送通知給檢舉人。");
+        sendNotification(report.reporter, 'ℹ️ 檢舉審核結果', `您檢舉的「${report.itemTitle}」經審核未發現違規。備註: ${note}`);
       }
 
       closeModal('admin-report-modal');
       updateAdminBadges();
       renderAdminReports();
-      renderGrid();
+      customConfirm("審核完畢", `已處理此檢舉單。`, "✅", "確認", "bg-gray-800");
     };
 
-    // --- STREAMING_CHUNK: Legal Documents and Corporate Actions... ---
-    window.openDocument = function(type) {
-      const titleEl = document.getElementById('doc-modal-title');
-      const contentEl = document.getElementById('doc-modal-content');
-
+    // --- 文件與彈出視窗 (Modal) ---
+    window.showDocument = function(type) {
+      const titleEl = document.getElementById('document-title');
+      const contentEl = document.getElementById('document-content');
+      
       if (type === 'privacy') {
         titleEl.innerHTML = "🔒 隱私權政策";
         contentEl.innerHTML = `
-          <p class="font-bold text-gray-800">生效日期：2026 年 7 月 1 日</p>
-          <p>本隱私權政策（下稱「本政策」）說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務（下稱「本服務」）時， 如何蒐集、處理、利用及保護您的個人資料。本平台重視您的隱私，並依中華民國個人資料保護法及相關法令辦理。 當您使用本服務，即表示您已閱讀並同意本政策之內容。</p>
-          
+          <p class="mb-4">生效日期：2026 年 7 月 1 日</p>
+          <p>本隱私權政策說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務時， 如何蒐集、處理、利用及保護您的個人資料。當您使用本服務，即表示您已閱讀並同意本政策之內容。</p>
           <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、蒐集之個人資料類別</h4>
-          <p><strong>1.1 您主動提供之資料：</strong><br>
-          (a) 帳戶資料：當您以第三方帳號登入時，本平台將取得您的電子郵件地址、顯示名稱及大頭貼影像； 當您以電子郵件註冊時，將取得您的電子郵件及密碼（密碼經雜湊處理儲存，本平台無從還原為明文）。<br>
-          (b) 內容資料：您上傳之物品資訊、圖片、標題、品牌、說明， 以及您於申請、交換、評價、檢舉或申訴時所填寫之文字。<br>
-          (c) 選填資料：您於註冊時可自願提供出生年份，僅用於彙總性的年齡分布統計；此為非必填欄位，不提供不影響您使用本服務。</p>
-
-          <p><strong>1.2 系統自動蒐集之資料：</strong><br>
-          (a) 技術與連線資料：您的 IP 位址、瀏覽器類型、裝置資訊及作業系統。<br>
-          (b) 使用紀錄：您於本服務之瀏覽、申請、交易及登入等操作紀錄與時間。<br>
-          (c) Cookie：本平台使用必要性 Cookie 以維持您的登入狀態；本平台不使用第三方廣告追蹤 Cookie。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、蒐集目的與利用方式</h4>
-          <p>本平台基於下列目的蒐集及利用您的個人資料：<br>
-          (a) 提供、維運及改善本服務，包括物品媒合、內容顯示及貢獻值與等級之計算；<br>
-          (b) 建立、驗證及管理您的帳戶並提供登入功能；<br>
-          (c) 傳送與本服務相關之通知；<br>
-          (d) 偵測、預防及處理詐欺、濫用及其他違規或資安事件；<br>
-          (e) 處理檢舉、申訴及使用者間之爭議；<br>
-          (f) 履行法令所要求之義務。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、個人資料之提供與揭露</h4>
-          <p>3.1 本平台不會販售或出租您的個人資料。<br>
-          3.2 除下列情形外，本平台不會將您的個人資料揭露予第三人：經您同意、為提供本服務所必要、依法令要求或保護公眾權益。<br>
-          3.3 部分資訊（如物品標題、分享者之顯示名稱與信譽資訊）將於本服務中公開顯示，以達媒合之目的； 敏感資訊則僅於交易之必要範圍內，向您所選定之對象揭露。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">四、您的權利與聯絡方式</h4>
-          <p>依個人資料保護法，您得行使查詢、閱覽、補充、更正、 停止蒐集處理及刪除等權利。如對本政策有任何疑問，請來信： <a href="mailto:iamlazybear2023@gmail.com" class="text-skyblue hover:underline font-bold">iamlazybear2023@gmail.com</a></p>
+          <p>帳戶資料：包含您的顯示名稱與使用之資料。</p>
+          <p>內容資料：您上傳之物品說明， 以及您於申請、交換、評價、檢舉或申訴時所填寫之文字。</p>
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、資料安全</h4>
+          <p>本平台採取合理之技術與管理措施保護您的個人資料，確保無任何明文密碼被儲存。</p>
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、您的權利與聯絡方式</h4>
+          <p>依個人資料保護法，您得行使查詢、閱覽、刪除等權利。如對本政策有疑問，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>
         `;
       } else if (type === 'terms') {
         titleEl.innerHTML = "📜 使用條款";
         contentEl.innerHTML = `
-          <p>本使用條款（下稱「本條款」）係您（下稱「使用者」）與 TradeUp 小換大（下稱「本平台」）就使用本平台所提供之服務 （下稱「本服務」）所訂立之協議。當您註冊、存取或使用本服務時，即表示您已詳細閱讀、瞭解並同意接受本條款之全部內容。 若您不同意本條款之任何部分，請立即停止使用本服務。</p>
-
+          <p class="mb-4">當您註冊、存取或使用本服務時，即表示您已詳細閱讀、瞭解並同意接受本條款之全部內容。</p>
           <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、服務性質</h4>
-          <p>1.1 本平台為提供使用者間分享、贈與及交換閒置物品、票券等之網路媒合平台。 本平台僅提供資訊揭露與媒合之技術服務，並非任何交易之當事人、居間人或保證人。<br>
-          1.2 本平台與物品上所顯示之任何品牌、商家均無隸屬、代理、授權或合作關係，亦未經其審核或背書。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、使用者內容與分享者聲明</h4>
-          <p>2.1 本服務所刊登之一切資訊（下稱「使用者內容」），均由使用者自行提供並上傳， 本平台不主動審查其內容。<br>
-          2.2 使用者於上架物品時，即保證該物品為合法取得，未侵害第三人權利，且若有瑕疵或使用限制已如實揭露。<br>
-          2.3 使用者應就其上傳之內容自負全部法律責任，因內容所生之任何爭議與本平台無涉。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、無償分享原則與禁止刊登項目</h4>
-          <p>3.1 本服務僅供使用者無償分享、贈與及以物易物。禁止藉本服務向他人收取金錢或變相收費。<br>
-          3.2 禁止刊登：菸酒、藥品、醫療器材、博弈性質、成人商品，或其他依法令禁止販售、轉讓之物品。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">四、免責聲明與使用者間之爭議</h4>
-          <p>4.1 本平台不就使用者內容之真實性、有效性或品質作任何明示或默示之擔保。<br>
-          4.2 使用者間因交易所生之任何爭議、糾紛或損失，應由當事人自行協商解決。本平台無介入、調解或賠償之義務。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">五、內容移除與帳號管理</h4>
-          <p>5.1 使用者如有涉及侵權、詐欺、違法、標價出售、惡意放鳥、不實檢舉或騷擾他人等行為，本平台有權不經事先通知， 逕行移除內容，並得暫停或終止相關使用者之帳號。</p>
-
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">六、聯絡方式</h4>
-          <p>如對本條款有任何疑問，或需檢舉不當內容、洽談品牌合作，請來信： <a href="mailto:iamlazybear2023@gmail.com" class="text-skyblue hover:underline font-bold">iamlazybear2023@gmail.com</a></p>
+          <p>本平台為提供使用者間交換閒置物品之網路媒合平台。本平台僅提供資訊揭露與媒合之技術服務。</p>
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、無償分享與交換原則</h4>
+          <p>本服務僅供使用者交換或贈與物品。使用者不得藉本服務以任何形式向他人收取金錢對價（運費除外）。禁止刊登違禁品。</p>
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、聯絡方式</h4>
+          <p>如需檢舉不當內容、洽談品牌合作，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>
         `;
       } else if (type === 'coop') {
         titleEl.innerHTML = "🤝 企業合作與交流";
         contentEl.innerHTML = `
-          <div class="text-center py-10">
-            <div class="text-5xl mb-6">🏢</div>
-            <h4 class="text-xl font-extrabold text-gray-800 mb-3">歡迎各大品牌與商家進駐合作</h4>
-            <p class="text-gray-600 mb-8 max-w-md mx-auto">無論是行銷活動、官方福利券發放，或是永續 ESG 專案合作，我們都非常樂意與您交流！</p>
-            <a href="mailto:iamlazybear2023@gmail.com" class="inline-block px-8 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold rounded-xl transition shadow-lg transform hover:-translate-y-1">
-              ✉️ 寫信至 iamlazybear2023@gmail.com
-            </a>
+          <div class="text-left py-2 px-2 sm:px-6 max-w-3xl mx-auto">
+            <div class="text-center mb-8">
+              <h3 class="text-3xl font-extrabold text-gray-800 mb-2">Get in touch</h3>
+              <p class="text-gray-800 font-bold text-lg">留 Email，我寄你完整方案與範例報表</p>
+              <p class="text-gray-500 text-sm mt-2 max-w-xl mx-auto">填品牌與合作目標即可，一分鐘完成。我會依你的產業與目標，把量身的方案、報價與範例報表寄到你的信箱。</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); this.innerHTML = '<div class=\\'text-center py-16\\'><div class=\\'text-5xl mb-4\\'>🎉</div><h4 class=\\'text-2xl font-extrabold text-gray-800 mb-2\\'>表單已送出！</h4><p class=\\'text-gray-600\\'>我們將盡快把量身打造的方案與範例報表寄至您的信箱，請留意收件。</p><button type=\\'button\\' onclick=\\'closeModal(\\&quot;document-modal\\&quot;)\\' class=\\'mt-8 px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition\\'>關閉視窗</button></div>';" class="space-y-6">
+              
+              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                <label class="block text-gray-800 font-bold mb-3">你想了解的方案 <span class="text-gray-400 text-sm font-normal">（選填，可更改）</span></label>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="早鳥試用" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">早鳥試用</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="標準導流" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">標準導流</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="品牌專案" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">品牌專案</span></label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-gray-800 font-bold mb-1">公司 / 品牌名稱 <span class="text-red-500">*</span></label>
+                  <input type="text" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="輸入品牌名稱">
+                </div>
+                <div>
+                  <label class="block text-gray-800 font-bold mb-1">姓名 <span class="text-red-500">*</span></label>
+                  <input type="text" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="您的稱呼">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-gray-800 font-bold mb-1">Email <span class="text-red-500">*</span></label>
+                <p class="text-xs text-gray-500 mb-2">方案與範例報表會寄到這裡</p>
+                <input type="email" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="example@company.com">
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div>
+                  <label class="block text-gray-800 font-bold mb-1">職稱 <span class="text-gray-400 text-sm font-normal">選填</span></label>
+                  <input type="text" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="例如：行銷經理">
+                </div>
+                <div>
+                  <label class="block text-gray-800 font-bold mb-1">電話 <span class="text-gray-400 text-sm font-normal">選填</span></label>
+                  <input type="tel" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="聯絡電話">
+                </div>
+                <div>
+                  <label class="block text-gray-800 font-bold mb-1">LINE ID <span class="text-gray-400 text-sm font-normal">選填</span></label>
+                  <input type="text" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-gray-50 transition" placeholder="LINE 帳號">
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                <label class="block text-gray-800 font-bold mb-3">這次的合作目標 <span class="text-red-500">*</span> <span class="text-gray-400 text-sm font-normal">（可複選，必填）</span></label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">品牌曝光</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">導流到店 / 到站</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">新品試用</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">會員招募 / 名單</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">折扣碼推廣</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">活動報名</span></label>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                <label class="block text-gray-800 font-bold mb-3">你的產品分類 <span class="text-gray-400 text-sm font-normal">（可複選）</span></label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">超商</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">咖啡</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">手搖飲</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">甜點</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">速食</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">餐廳</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">零售 / 電商</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">課程 / 教育</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">App / 服務</span></label>
+                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="category" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">其他</span></label>
+                </div>
+              </div>
+
+              <div class="text-center pt-4">
+                <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-xl transition shadow-lg transform hover:-translate-y-1 mb-3">
+                  送出表單，索取方案
+                </button>
+                <p class="text-xs text-gray-500 font-medium">你留下的資料只會用於這次合作洽談的聯繫，不會作其他用途。</p>
+              </div>
+            </form>
+
+            <div class="text-center mt-12 border-t border-gray-200 pt-8 pb-4">
+              <p class="text-gray-600 mb-4 font-bold">或直接寫信與我們聯繫：</p>
+              <a href="mailto:rexofgod2@gmail.com" class="inline-block px-8 py-3 bg-white text-skyblue border-2 border-skyblue font-extrabold rounded-xl hover:bg-blue-50 transition shadow-sm">
+                ✉️ rexofgod2@gmail.com
+              </a>
+            </div>
           </div>
         `;
       }
       openModal('document-modal');
     };
 
-    // --- STREAMING_CHUNK: Global Modal and Alert Helpers... ---
-    window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
-    window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
-    
-    window.customAlert = function(msg, callback) {
-      document.getElementById('custom-alert-msg').innerText = msg;
-      document.getElementById('custom-alert').classList.add('active');
-      window.customAlertCallback = callback;
+    // 啟動初始化
+    window.onload = () => {
+      renderHome();
+      updateNavUser();
     };
-    window.closeAlert = function() {
-      document.getElementById('custom-alert').classList.remove('active');
-      if (typeof window.customAlertCallback === 'function') {
-        window.customAlertCallback();
-        window.customAlertCallback = null;
-      }
-    };
-
-    window.customConfirm = function(msg, callback) {
-      document.getElementById('custom-confirm-msg').innerText = msg;
-      document.getElementById('custom-confirm').classList.add('active');
-      window.customConfirmCallback = callback;
-    };
-    window.closeConfirm = function(isConfirmed) {
-      document.getElementById('custom-confirm').classList.remove('active');
-      if (typeof window.customConfirmCallback === 'function') {
-        window.customConfirmCallback(isConfirmed);
-        window.customConfirmCallback = null;
-      }
-    };
-
   </script>
 </body>
 </html>
