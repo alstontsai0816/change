@@ -7,8 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      /* 更深的奶茶色背景 */
-      --bg-milktea: #DCC7B5; 
+      /* 淺奶茶色背景 */
+      --bg-milktea: #f5ebe0; 
       /* 天空藍主色系 */
       --primary-skyblue: #0ea5e9;
       --primary-skyblue-hover: #0284c7;
@@ -26,7 +26,6 @@
     .border-skyblue { border-color: var(--primary-skyblue); }
     .focus\:border-skyblue:focus { border-color: var(--primary-skyblue); }
 
-    /* Modal / Popup 基礎樣式 */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -52,11 +51,9 @@
       transform: scale(1) translateY(0);
     }
     
-    /* 隱藏區塊 */
     .view-section { display: none; }
     .view-section.active { display: block; }
     
-    /* 純文字卡片樣式 */
     .item-card {
       background: #ffffff;
       border-radius: 1rem;
@@ -74,7 +71,6 @@
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
     
-    /* 側邊欄樣式 */
     .sidebar-menu-item {
       padding: 0.75rem 1rem;
       border-radius: 0.5rem;
@@ -232,10 +228,9 @@
       </div>
     </section>
 
-    <!-- 個人中心 (新版側邊欄) -->
+    <!-- 個人中心 (側邊欄) -->
     <section id="view-profile" class="view-section">
       <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
-        
         <!-- 左側邊欄 -->
         <div class="w-full md:w-64 shrink-0">
           <div class="bg-white rounded-3xl p-6 shadow-lg sticky top-20">
@@ -246,59 +241,42 @@
               <h3 id="profile-name" class="font-extrabold text-xl text-gray-800">User</h3>
               <p class="text-sm text-gray-500 mt-1">一般會員</p>
             </div>
-            
             <nav class="space-y-1">
-              <div onclick="switchProfileSidebar('wallet')" id="sidebar-wallet" class="sidebar-menu-item active">
-                💼 我的錢包
-              </div>
-              <div onclick="switchProfileSidebar('contribution')" id="sidebar-contribution" class="sidebar-menu-item">
-                🏆 貢獻值與等級
-              </div>
+              <div onclick="switchProfileSidebar('wallet')" id="sidebar-wallet" class="sidebar-menu-item active">💼 我的錢包</div>
+              <div onclick="switchProfileSidebar('contribution')" id="sidebar-contribution" class="sidebar-menu-item">🏆 貢獻值與等級</div>
               <div onclick="switchProfileSidebar('notifications')" id="sidebar-notifications" class="sidebar-menu-item relative">
                 🔔 通知中心
                 <span id="sidebar-notif-badge" class="absolute right-3 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">新</span>
               </div>
-              <div onclick="switchProfileSidebar('settings')" id="sidebar-settings" class="sidebar-menu-item">
-                ⚙️ 個人設定
-              </div>
-              <div onclick="switchProfileSidebar('contact')" id="sidebar-contact" class="sidebar-menu-item">
-                ✉️ 聯絡創作者
-              </div>
+              <div onclick="switchProfileSidebar('settings')" id="sidebar-settings" class="sidebar-menu-item">⚙️ 個人設定</div>
+              <div onclick="switchProfileSidebar('contact')" id="sidebar-contact" class="sidebar-menu-item">✉️ 聯絡創作者</div>
             </nav>
           </div>
         </div>
 
         <!-- 右側內容區 -->
         <div class="flex-1 bg-white rounded-3xl shadow-lg p-6 sm:p-8 min-h-[500px]">
-          
-          <!-- 我的錢包 內容 -->
+          <!-- 我的錢包 -->
           <div id="profile-content-wallet" class="profile-content-section block">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-2">My wallet 我的錢包</h2>
             <p class="text-gray-500 mb-6 border-b pb-4">管理你分享、申請與交換的所有物品。</p>
-            
             <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-xl w-fit">
               <button onclick="switchWalletTab('history')" id="tab-wallet-history" class="px-4 py-2 rounded-lg text-sm font-bold bg-white shadow text-gray-800 transition">交易紀錄</button>
               <button onclick="switchWalletTab('posted')" id="tab-wallet-posted" class="px-4 py-2 rounded-lg text-sm font-bold text-gray-500 hover:text-gray-800 transition">我上架的</button>
               <button onclick="switchWalletTab('applied')" id="tab-wallet-applied" class="px-4 py-2 rounded-lg text-sm font-bold text-gray-500 hover:text-gray-800 transition">我申請的</button>
             </div>
-
-            <!-- 交易紀錄 -->
             <div id="wallet-sec-history" class="wallet-sec block space-y-4">
               <div class="text-center py-10 text-gray-400">目前尚無完成的交易紀錄。</div>
             </div>
-
-            <!-- 我上架的 -->
             <div id="wallet-sec-posted" class="wallet-sec hidden space-y-4">
               <div id="user-posted-list" class="space-y-4"></div>
             </div>
-
-            <!-- 我申請的 -->
             <div id="wallet-sec-applied" class="wallet-sec hidden space-y-4">
               <div id="user-applications-list" class="space-y-4"></div>
             </div>
           </div>
 
-          <!-- 貢獻值與等級 內容 -->
+          <!-- 貢獻值與等級 -->
           <div id="profile-content-contribution" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">🏆 貢獻值與等級</h2>
             <div class="bg-gradient-to-br from-skyblue-light to-blue-50 p-6 rounded-2xl border border-blue-100 text-center mb-6">
@@ -314,39 +292,36 @@
             </ul>
           </div>
 
-          <!-- 通知中心 內容 -->
+          <!-- 通知中心 -->
           <div id="profile-content-notifications" class="profile-content-section hidden">
             <div class="flex justify-between items-center mb-6 border-b pb-4">
               <h2 class="text-2xl font-extrabold text-gray-800">🔔 通知中心</h2>
               <button onclick="clearNotifications()" class="text-sm text-gray-500 hover:text-red-500 transition font-bold">全部標為已讀</button>
             </div>
-            <div id="notifications-list" class="space-y-3">
-              <!-- JS 渲染通知 -->
-            </div>
+            <div id="notifications-list" class="space-y-3"></div>
           </div>
 
-          <!-- 個人設定 內容 -->
+          <!-- 個人設定 -->
           <div id="profile-content-settings" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">⚙️ 個人設定</h2>
             <div class="space-y-4 max-w-md">
               <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">顯示名稱</label>
-                <input type="text" id="setting-name" class="w-full border-2 border-gray-200 p-3 rounded-xl bg-gray-50" readonly>
+                <input type="text" id="setting-name" class="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-skyblue outline-none transition">
               </div>
-              <button onclick="customAlert('設定已儲存！')" class="px-6 py-3 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-900 transition">儲存設定</button>
+              <button onclick="saveProfileSettings()" class="px-6 py-3 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-900 transition">儲存設定</button>
             </div>
           </div>
 
-          <!-- 聯絡創作者 內容 -->
+          <!-- 聯絡創作者 -->
           <div id="profile-content-contact" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">✉️ 聯絡創作者</h2>
             <div class="bg-gray-50 p-6 rounded-2xl text-center">
               <p class="text-gray-600 mb-4">有任何問題、建議或是商業合作，歡迎與我們聯繫！</p>
-              <a href="mailto:hello@tradeup.com" class="inline-block px-6 py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow">寫信給我們</a>
-              <p class="mt-4 text-sm text-gray-400">合作信箱：hello@tradeup.com</p>
+              <a href="mailto:iamlazybear2023@gmail.com" class="inline-block px-6 py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow">寫信給我們</a>
+              <p class="mt-4 text-sm text-gray-400">合作信箱：iamlazybear2023@gmail.com</p>
             </div>
           </div>
-
         </div>
       </div>
     </section>
@@ -370,12 +345,9 @@
         </div>
 
         <div class="p-6">
-          <!-- 物品管理 -->
           <div id="admin-sec-items" class="admin-sec block space-y-4">
             <div id="admin-items-list" class="space-y-3"></div>
           </div>
-          
-          <!-- 檢舉審核 -->
           <div id="admin-sec-reports" class="admin-sec hidden space-y-4">
             <div id="admin-reports-list" class="space-y-3"></div>
           </div>
@@ -390,9 +362,9 @@
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="font-extrabold text-gray-400">TradeUp 小換大</div>
       <div class="flex gap-4">
-        <a href="#" class="hover:text-gray-800 transition">使用條款</a>
-        <a href="#" class="hover:text-gray-800 transition">隱私權政策</a>
-        <a href="#" class="hover:text-gray-800 transition">企業合作</a>
+        <button onclick="openDocument('terms')" class="hover:text-gray-800 transition">使用條款</button>
+        <button onclick="openDocument('privacy')" class="hover:text-gray-800 transition">隱私權政策</button>
+        <button onclick="openDocument('coop')" class="hover:text-gray-800 transition">企業合作</button>
       </div>
       <div>© 2026 TradeUp. All rights reserved.</div>
     </div>
@@ -454,7 +426,7 @@
           <label class="block text-sm font-bold text-gray-700 mb-2">檢舉原因 <span class="text-red-500">*</span></label>
           <select id="report-reason-select" class="w-full border-2 border-gray-200 focus:border-red-400 outline-none p-3 rounded-xl bg-white">
             <option value="" disabled selected>請選擇檢舉原因...</option>
-            <option value="無效券 / 無法使用">無效物品 / 無法使用</option>
+            <option value="無效物品 / 無法使用">無效物品 / 無法使用</option>
             <option value="與描述嚴重不符">與描述嚴重不符</option>
             <option value="不合理的交換要求">不合理的交換要求</option>
             <option value="持有者無回應 / 放鳥">持有者無回應 / 放鳥</option>
@@ -490,9 +462,7 @@
   <div class="modal-overlay" id="applicants-modal">
     <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-xl mx-4 shadow-2xl transform transition-all">
       <h3 class="text-2xl font-extrabold mb-4 text-gray-800 border-b pb-4">👥 申請者名單</h3>
-      <div id="applicants-list-body" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-        <!-- JS 渲染申請者 -->
-      </div>
+      <div id="applicants-list-body" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2"></div>
       <div class="mt-6 flex justify-end">
         <button onclick="closeModal('applicants-modal')" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">關閉</button>
       </div>
@@ -506,9 +476,7 @@
         <h3 class="text-lg font-extrabold text-gray-800">💬 交易留言板</h3>
         <button onclick="closeModal('chat-modal')" class="text-gray-500 hover:text-gray-800 text-xl font-bold">×</button>
       </div>
-      <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-        <!-- JS 渲染對話 -->
-      </div>
+      <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white"></div>
       <div class="p-4 border-t bg-gray-50 flex gap-2">
         <input type="text" id="chat-input-text" class="flex-1 border-2 border-gray-200 focus:border-skyblue outline-none p-2.5 rounded-xl" placeholder="輸入留言...">
         <button onclick="sendChatMessage()" class="px-6 bg-skyblue hover:bg-skyblue-hover text-white font-bold rounded-xl transition">送出</button>
@@ -520,9 +488,7 @@
   <div class="modal-overlay" id="admin-report-modal">
     <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-md mx-4 shadow-2xl transform transition-all">
       <h3 class="text-xl font-extrabold mb-4 text-gray-800 border-b pb-4">📋 審核檢舉單</h3>
-      <div id="admin-report-details" class="mb-4 text-sm space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
-        <!-- JS 渲染細節 -->
-      </div>
+      <div id="admin-report-details" class="mb-4 text-sm space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100"></div>
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-bold text-gray-700 mb-2">處理備註 (選填)</label>
@@ -533,6 +499,22 @@
         <button onclick="processReport('ban')" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow">選項 A：成立 (強制下架物品並警告)</button>
         <button onclick="processReport('reject')" class="w-full py-3.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition shadow">選項 B：駁回檢舉 (查無違規)</button>
         <button onclick="closeModal('admin-report-modal')" class="w-full py-3.5 bg-white text-gray-500 font-bold rounded-xl transition mt-2">取消並關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 長篇文件閱讀 Modal -->
+  <div class="modal-overlay" id="document-modal">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-2xl mx-4 shadow-2xl transform transition-all max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b pb-4 shrink-0">
+        <h3 class="text-2xl font-extrabold text-gray-800" id="doc-modal-title">文件標題</h3>
+        <button onclick="closeModal('document-modal')" class="text-gray-400 hover:text-gray-800 text-2xl font-bold transition">&times;</button>
+      </div>
+      <div class="overflow-y-auto flex-1 pr-2 space-y-4 text-sm text-gray-600 leading-relaxed" id="doc-modal-content">
+        <!-- 內容渲染區 -->
+      </div>
+      <div class="mt-6 pt-4 border-t shrink-0">
+        <button onclick="closeModal('document-modal')" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">關閉閱讀</button>
       </div>
     </div>
   </div>
@@ -584,7 +566,7 @@
     let currentChatAppId = null;
     let currentAdminReportId = null;
 
-    // --- 系統通知功能 ---
+    // --- STREAMING_CHUNK: Handling system notifications... ---
     function addNotification(username, title, message) {
       notificationsDB.unshift({
         id: "notif-" + Date.now(),
@@ -640,7 +622,7 @@
       `).join("") || `<div class="text-center py-10 text-gray-400">目前沒有任何通知。</div>`;
     }
 
-    // --- 初始化 ---
+    // --- STREAMING_CHUNK: DOM Initialization and Event Listeners... ---
     document.addEventListener("DOMContentLoaded", () => {
       renderGrid();
 
@@ -721,7 +703,7 @@
       if (actionType === 'report') openModal('report-modal');
     };
 
-    // --- 介面切換 ---
+    // --- STREAMING_CHUNK: View Switching and User Nav Updates... ---
     window.updateNavUser = function() {
       const displaySpan = document.getElementById("user-display");
       const loginBtn = document.getElementById("btn-login-nav");
@@ -788,7 +770,7 @@
       window.scrollTo(0, 0);
     };
 
-    // --- 大廳與詳細資訊 ---
+    // --- STREAMING_CHUNK: Rendering Home Grid and Details... ---
     window.renderGrid = function(categoryFilter = 'all') {
       const grid = document.getElementById("items-grid");
       let activeItems = itemsData.filter(i => i.status !== 'banned');
@@ -866,18 +848,15 @@
                 提供者：<span class="font-bold text-gray-700">${currentSelectedItem.owner}</span>
               </div>
             </div>
-            
             <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
               <h4 class="font-bold text-blue-800 flex items-center gap-2 mb-2">🎯 對方想換到的物品（願望清單）</h4>
               <p class="text-blue-900 leading-relaxed">${currentSelectedItem.wish}</p>
             </div>
-
             <div class="pt-6">
               ${btnHtml}
               ${reportHtml}
             </div>
           </div>
-
           <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-2xl border border-gray-100 h-fit">
             <h4 class="font-extrabold text-gray-800 mb-6 flex items-center gap-2">📈 小換大增值履歷</h4>
             <div class="space-y-1">
@@ -889,7 +868,7 @@
       switchView("detail");
     };
 
-    // --- 申請交換邏輯 ---
+    // --- STREAMING_CHUNK: Trade Application Logic... ---
     window.confirmTrade = function() {
       const offer = document.getElementById("offer-item-name").value.trim();
       const method = document.getElementById("offer-method").value;
@@ -915,18 +894,15 @@
           status: "等待回應"
         });
 
-        // 新增通知給物品擁有者
         addNotification(currentSelectedItem.owner, "新的交換申請！", `${currentUser.name} 想要用「${offer}」交換您的「${currentSelectedItem.title}」`);
 
-        // 清空輸入框
         document.getElementById("offer-item-name").value = "";
-        
         customAlert("✅ 申請成功！\n持有人將會收到您的申請，請靜候佳音。");
         closeModal('trade-modal');
       });
     };
 
-    // --- 會員中心 (左側邊欄版) ---
+    // --- STREAMING_CHUNK: Profile Settings and Wallet Sidebar... ---
     window.switchProfileSidebar = function(tab) {
       document.querySelectorAll('.sidebar-menu-item').forEach(el => el.classList.remove('active'));
       document.getElementById(`sidebar-${tab}`).classList.add('active');
@@ -934,9 +910,41 @@
       document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
       
-      if(tab === 'notifications') {
-        renderNotifications();
+      if(tab === 'notifications') renderNotifications();
+    };
+
+    window.saveProfileSettings = function() {
+      const newName = document.getElementById('setting-name').value.trim();
+      if (!newName) return customAlert("顯示名稱不能為空！");
+      
+      if (newName !== currentUser.name && usersDB.find(u => u.name === newName)) {
+        return customAlert("❌ 這個名稱已經有人使用囉，請換一個！");
       }
+
+      const oldName = currentUser.name;
+      currentUser.name = newName;
+
+      const userIndex = usersDB.findIndex(u => u.id === currentUser.id);
+      if(userIndex > -1) usersDB[userIndex].name = newName;
+
+      itemsData.forEach(i => { if(i.owner === oldName) i.owner = newName; });
+      userApplications.forEach(a => { 
+        if(a.applicant === oldName) a.applicant = newName; 
+        if(a.targetOwner === oldName) a.targetOwner = newName;
+      });
+      chatDB.forEach(c => { if(c.sender === oldName) c.sender = newName; });
+      reportsDB.forEach(r => {
+        if(r.reporter === oldName) r.reporter = newName;
+        if(r.targetOwner === oldName) r.targetOwner = newName;
+      });
+      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
+
+      document.getElementById('profile-name').textContent = newName;
+      updateNavUser();
+      if (document.getElementById('tab-wallet-posted').classList.contains('bg-white')) renderUserItems();
+      if (document.getElementById('tab-wallet-applied').classList.contains('bg-white')) renderUserApps();
+      
+      customAlert("✅ 設定已成功儲存！您的顯示名稱已更新。");
     };
 
     window.switchWalletTab = function(tab) {
@@ -1000,7 +1008,7 @@
       }).join("") || `<div class="text-center py-10 text-gray-400 font-medium">您目前沒有上架任何物品。</div>`;
     }
 
-    // --- 審核申請與聊天 ---
+    // --- STREAMING_CHUNK: Managing Applicants and Chat... ---
     window.openApplicantsModal = function(itemId) {
       const item = itemsData.find(i => i.id === itemId);
       document.getElementById("applicants-list-body").innerHTML = userApplications.filter(a => a.targetItemId === itemId).map(app => {
@@ -1087,14 +1095,14 @@
       renderChat();
     };
 
-    // --- 檢舉邏輯 ---
+    // --- STREAMING_CHUNK: User Reporting Flow... ---
     window.submitReport = function() {
       const reason = document.getElementById("report-reason-select").value;
       const otherReason = document.getElementById("report-reason-text").value.trim();
       const confirmCheck = document.getElementById("report-confirm-check").checked;
       
-      if (!reason) {
-        customAlert("請選擇檢舉原因！");
+      if (!reason && !otherReason) {
+        customAlert("請選擇或填寫檢舉原因！");
         return;
       }
       if (!confirmCheck) {
@@ -1102,14 +1110,13 @@
         return;
       }
 
-      // 將檢舉資料寫入資料庫
       reportsDB.unshift({
         id: "rep-" + Date.now(),
         reporter: currentUser.name,
         targetItemId: currentSelectedItem.id,
         targetItemTitle: currentSelectedItem.title,
         targetOwner: currentSelectedItem.owner,
-        reason: reason,
+        reason: reason || "自訂原因",
         details: otherReason,
         status: "pending",
         date: new Date().toLocaleString()
@@ -1120,14 +1127,13 @@
       customAlert(`✅ 檢舉已送出！\n平台管理員將進行人工複核。\n(目標物品：${currentSelectedItem.title})`);
       closeModal('report-modal');
       
-      // 清空表單
       document.getElementById("report-reason-select").value = "";
       document.getElementById("report-reason-text").value = "";
       document.getElementById("report-file").value = "";
       document.getElementById("report-confirm-check").checked = false;
     };
 
-    // --- 管理員專區 ---
+    // --- STREAMING_CHUNK: Admin Dashboard and Moderation... ---
     window.switchAdminTab = function(tab) {
       document.getElementById('admin-tab-items').classList.toggle('border-b-2', tab === 'items');
       document.getElementById('admin-tab-items').classList.toggle('text-gray-800', tab === 'items');
@@ -1180,93 +1186,170 @@
         if(item) {
           item.status = 'banned';
           item.banReason = "管理員強制下架";
-          addNotification(item.owner, "⚠️ 物品下架通知", `您的物品「${item.title}」已由管理員強制下架。`);
+          addNotification(item.owner, "🚨 物品下架通知", `您的物品「${item.title}」已遭管理員強制下架。`);
         }
-        switchAdminTab('items');
+        renderAdminList();
         renderGrid();
+        customAlert("✅ 物品已成功強制下架。");
       });
     };
 
     window.renderAdminReports = function() {
-      document.getElementById("admin-reports-list").innerHTML = reportsDB.map(r => {
-        let statusBadge = "";
-        let actionBtn = "";
-        if(r.status === 'pending') {
-          statusBadge = `<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold">待審核</span>`;
-          actionBtn = `<button onclick="openAdminReportModal('${r.id}')" class="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-bold hover:bg-gray-900 transition">進行審核</button>`;
-        } else if (r.status === 'banned') {
-          statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">已成立(下架)</span>`;
-        } else {
-          statusBadge = `<span class="bg-gray-200 text-gray-600 px-2 py-1 rounded text-xs font-bold">已駁回</span>`;
-        }
-
-        return `
-          <div class="bg-white p-4 rounded-xl border-2 border-gray-100 flex flex-col gap-3 shadow-sm">
-            <div class="flex justify-between items-start">
-              <div>
-                <div class="flex items-center gap-2 mb-1">
-                  ${statusBadge}
-                  <span class="text-xs text-gray-400">${r.date}</span>
-                </div>
-                <p class="font-bold text-red-600">檢舉原因：${r.reason}</p>
-                <p class="text-sm text-gray-600 mt-1">補充說明：${r.details || '無'}</p>
-              </div>
-              ${actionBtn}
-            </div>
-            <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded-lg mt-2">
-              檢舉人：<span class="font-bold text-gray-700">${r.reporter}</span> | 
-              目標物品：<span class="font-bold text-gray-700">${r.targetItemTitle}</span> | 
-              被檢舉人：<span class="font-bold text-gray-700">${r.targetOwner}</span>
-            </div>
+      document.getElementById("admin-reports-list").innerHTML = reportsDB.map(r => `
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
+          ${r.status === 'pending' ? '<span class="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>' : ''}
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-bold px-2 py-1 rounded-lg ${r.status==='pending'?'bg-red-100 text-red-700':r.status==='banned'?'bg-gray-800 text-white':'bg-gray-200 text-gray-600'}">
+              ${r.status==='pending'?'待審核':r.status==='banned'?'已下架處分':'已駁回'}
+            </span>
+            <span class="text-xs text-gray-400">${r.date}</span>
           </div>
-        `;
-      }).join("") || `<p class="text-center text-gray-400 py-10">目前沒有檢舉單。</p>`;
+          <p class="text-sm font-bold text-gray-800">目標物品：${r.targetItemTitle}</p>
+          <p class="text-sm text-gray-600 mt-1">檢舉原因：<span class="font-bold text-red-600">${r.reason}</span></p>
+          ${r.details ? `<p class="text-xs text-gray-500 mt-1 bg-white p-2 rounded border border-gray-100">💬 補充：${r.details}</p>` : ''}
+          <div class="mt-3 flex gap-4 text-xs text-gray-500">
+            <span>檢舉人：${r.reporter}</span>
+            <span>被檢舉人：${r.targetOwner}</span>
+          </div>
+          ${r.status === 'pending' ? `
+            <div class="mt-4 pt-4 border-t border-gray-200 flex justify-end">
+              <button onclick="openAdminReportModal('${r.id}')" class="px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-lg transition text-sm">進行審核</button>
+            </div>
+          ` : `
+            <div class="mt-4 pt-3 border-t border-gray-200 text-xs text-gray-500 font-bold">
+              處理備註：${r.adminNote || '無'}
+            </div>
+          `}
+        </div>
+      `).join("") || `<p class="text-center text-gray-400 py-10">目前沒有檢舉紀錄。</p>`;
     };
 
     window.openAdminReportModal = function(reportId) {
       currentAdminReportId = reportId;
       const r = reportsDB.find(x => x.id === reportId);
-      
-      document.getElementById("admin-report-details").innerHTML = `
-        <p><span class="text-gray-500">檢舉原因：</span> <span class="font-bold text-red-600">${r.reason}</span></p>
-        <p><span class="text-gray-500">檢舉人：</span> ${r.reporter}</p>
-        <p><span class="text-gray-500">被檢舉人：</span> ${r.targetOwner}</p>
-        <p><span class="text-gray-500">目標物品：</span> ${r.targetItemTitle}</p>
+      document.getElementById('admin-report-details').innerHTML = `
+        <p><strong>目標物品：</strong> ${r.targetItemTitle}</p>
+        <p><strong>被檢舉人：</strong> ${r.targetOwner}</p>
+        <p><strong>檢舉人：</strong> ${r.reporter}</p>
+        <p class="text-red-600"><strong>檢舉原因：</strong> ${r.reason}</p>
       `;
-      document.getElementById("admin-report-note").value = "";
+      document.getElementById('admin-report-note').value = "";
       openModal('admin-report-modal');
     };
 
     window.processReport = function(action) {
-      const r = reportsDB.find(x => x.id === currentAdminReportId);
-      const note = document.getElementById("admin-report-note").value || "無備註";
-      
-      if(action === 'ban') {
-        r.status = 'banned';
-        const item = itemsData.find(i => i.id === r.targetItemId);
+      const note = document.getElementById('admin-report-note').value.trim();
+      const report = reportsDB.find(x => x.id === currentAdminReportId);
+      if(!report) return;
+
+      report.adminNote = note;
+      const item = itemsData.find(i => i.id === report.targetItemId);
+
+      if (action === 'ban') {
+        report.status = 'banned';
         if(item) {
           item.status = 'banned';
-          item.banReason = `因遭檢舉違規下架 (管理員備註：${note})`;
+          item.banReason = note || `因涉及「${report.reason}」被檢舉且成立，由管理員下架。`;
+          addNotification(item.owner, "🚨 違規下架通知", `您的物品「${item.title}」經檢舉審核確認違規，已遭強制下架。\n管理員備註：${note||'無'}`);
         }
-        // 通知被檢舉人
-        addNotification(r.targetOwner, "🚨 嚴重違規通知：物品已下架", `您的物品「${r.targetItemTitle}」因違反社群守則，已被管理員強制下架。\n管理員備註：${note}`);
-        // 通知檢舉人
-        addNotification(r.reporter, "✅ 檢舉處理結果：成立", `您檢舉的「${r.targetItemTitle}」經審核確認違規，目前已將該物品下架。感謝您維護社群環境！`);
-        customAlert("✅ 檢舉已成立，物品已下架並通知雙方。");
+        addNotification(report.reporter, "✅ 檢舉處理完成", `您對「${report.targetItemTitle}」的檢舉我們已審核成立，並下架該物品。感謝您協助維護平台環境！`);
+        customAlert("✅ 已將檢舉設為成立，物品已下架並發送通知。");
       } else {
-        r.status = 'rejected';
-        // 通知檢舉人
-        addNotification(r.reporter, "ℹ️ 檢舉處理結果：駁回", `您檢舉的「${r.targetItemTitle}」經審核後，未發現明顯違規行為，因此駁回此檢舉。\n管理員備註：${note}`);
-        customAlert("✅ 檢舉已駁回，並已通知檢舉人。");
+        report.status = 'rejected';
+        addNotification(report.reporter, "ℹ️ 檢舉審核結果", `您對「${report.targetItemTitle}」的檢舉經審核後，暫查無明確違規，已予駁回。\n管理員備註：${note||'無'}`);
+        customAlert("ℹ️ 已駁回此檢舉，並發送通知給檢舉人。");
       }
-      
+
       closeModal('admin-report-modal');
-      switchAdminTab('reports');
       updateAdminBadges();
+      renderAdminReports();
       renderGrid();
     };
 
-    // --- 共用 UI 控制 ---
+    // --- STREAMING_CHUNK: Legal Documents and Corporate Actions... ---
+    window.openDocument = function(type) {
+      const titleEl = document.getElementById('doc-modal-title');
+      const contentEl = document.getElementById('doc-modal-content');
+
+      if (type === 'privacy') {
+        titleEl.innerHTML = "🔒 隱私權政策";
+        contentEl.innerHTML = `
+          <p class="font-bold text-gray-800">生效日期：2026 年 7 月 1 日</p>
+          <p>本隱私權政策（下稱「本政策」）說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務（下稱「本服務」）時， 如何蒐集、處理、利用及保護您的個人資料。本平台重視您的隱私，並依中華民國個人資料保護法及相關法令辦理。 當您使用本服務，即表示您已閱讀並同意本政策之內容。</p>
+          
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、蒐集之個人資料類別</h4>
+          <p><strong>1.1 您主動提供之資料：</strong><br>
+          (a) 帳戶資料：當您以第三方帳號登入時，本平台將取得您的電子郵件地址、顯示名稱及大頭貼影像； 當您以電子郵件註冊時，將取得您的電子郵件及密碼（密碼經雜湊處理儲存，本平台無從還原為明文）。<br>
+          (b) 內容資料：您上傳之物品資訊、圖片、標題、品牌、說明， 以及您於申請、交換、評價、檢舉或申訴時所填寫之文字。<br>
+          (c) 選填資料：您於註冊時可自願提供出生年份，僅用於彙總性的年齡分布統計；此為非必填欄位，不提供不影響您使用本服務。</p>
+
+          <p><strong>1.2 系統自動蒐集之資料：</strong><br>
+          (a) 技術與連線資料：您的 IP 位址、瀏覽器類型、裝置資訊及作業系統。<br>
+          (b) 使用紀錄：您於本服務之瀏覽、申請、交易及登入等操作紀錄與時間。<br>
+          (c) Cookie：本平台使用必要性 Cookie 以維持您的登入狀態；本平台不使用第三方廣告追蹤 Cookie。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、蒐集目的與利用方式</h4>
+          <p>本平台基於下列目的蒐集及利用您的個人資料：<br>
+          (a) 提供、維運及改善本服務，包括物品媒合、內容顯示及貢獻值與等級之計算；<br>
+          (b) 建立、驗證及管理您的帳戶並提供登入功能；<br>
+          (c) 傳送與本服務相關之通知；<br>
+          (d) 偵測、預防及處理詐欺、濫用及其他違規或資安事件；<br>
+          (e) 處理檢舉、申訴及使用者間之爭議；<br>
+          (f) 履行法令所要求之義務。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、個人資料之提供與揭露</h4>
+          <p>3.1 本平台不會販售或出租您的個人資料。<br>
+          3.2 除下列情形外，本平台不會將您的個人資料揭露予第三人：經您同意、為提供本服務所必要、依法令要求或保護公眾權益。<br>
+          3.3 部分資訊（如物品標題、分享者之顯示名稱與信譽資訊）將於本服務中公開顯示，以達媒合之目的； 敏感資訊則僅於交易之必要範圍內，向您所選定之對象揭露。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">四、您的權利與聯絡方式</h4>
+          <p>依個人資料保護法，您得行使查詢、閱覽、補充、更正、 停止蒐集處理及刪除等權利。如對本政策有任何疑問，請來信： <a href="mailto:iamlazybear2023@gmail.com" class="text-skyblue hover:underline font-bold">iamlazybear2023@gmail.com</a></p>
+        `;
+      } else if (type === 'terms') {
+        titleEl.innerHTML = "📜 使用條款";
+        contentEl.innerHTML = `
+          <p>本使用條款（下稱「本條款」）係您（下稱「使用者」）與 TradeUp 小換大（下稱「本平台」）就使用本平台所提供之服務 （下稱「本服務」）所訂立之協議。當您註冊、存取或使用本服務時，即表示您已詳細閱讀、瞭解並同意接受本條款之全部內容。 若您不同意本條款之任何部分，請立即停止使用本服務。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、服務性質</h4>
+          <p>1.1 本平台為提供使用者間分享、贈與及交換閒置物品、票券等之網路媒合平台。 本平台僅提供資訊揭露與媒合之技術服務，並非任何交易之當事人、居間人或保證人。<br>
+          1.2 本平台與物品上所顯示之任何品牌、商家均無隸屬、代理、授權或合作關係，亦未經其審核或背書。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、使用者內容與分享者聲明</h4>
+          <p>2.1 本服務所刊登之一切資訊（下稱「使用者內容」），均由使用者自行提供並上傳， 本平台不主動審查其內容。<br>
+          2.2 使用者於上架物品時，即保證該物品為合法取得，未侵害第三人權利，且若有瑕疵或使用限制已如實揭露。<br>
+          2.3 使用者應就其上傳之內容自負全部法律責任，因內容所生之任何爭議與本平台無涉。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、無償分享原則與禁止刊登項目</h4>
+          <p>3.1 本服務僅供使用者無償分享、贈與及以物易物。禁止藉本服務向他人收取金錢或變相收費。<br>
+          3.2 禁止刊登：菸酒、藥品、醫療器材、博弈性質、成人商品，或其他依法令禁止販售、轉讓之物品。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">四、免責聲明與使用者間之爭議</h4>
+          <p>4.1 本平台不就使用者內容之真實性、有效性或品質作任何明示或默示之擔保。<br>
+          4.2 使用者間因交易所生之任何爭議、糾紛或損失，應由當事人自行協商解決。本平台無介入、調解或賠償之義務。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">五、內容移除與帳號管理</h4>
+          <p>5.1 使用者如有涉及侵權、詐欺、違法、標價出售、惡意放鳥、不實檢舉或騷擾他人等行為，本平台有權不經事先通知， 逕行移除內容，並得暫停或終止相關使用者之帳號。</p>
+
+          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">六、聯絡方式</h4>
+          <p>如對本條款有任何疑問，或需檢舉不當內容、洽談品牌合作，請來信： <a href="mailto:iamlazybear2023@gmail.com" class="text-skyblue hover:underline font-bold">iamlazybear2023@gmail.com</a></p>
+        `;
+      } else if (type === 'coop') {
+        titleEl.innerHTML = "🤝 企業合作與交流";
+        contentEl.innerHTML = `
+          <div class="text-center py-10">
+            <div class="text-5xl mb-6">🏢</div>
+            <h4 class="text-xl font-extrabold text-gray-800 mb-3">歡迎各大品牌與商家進駐合作</h4>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">無論是行銷活動、官方福利券發放，或是永續 ESG 專案合作，我們都非常樂意與您交流！</p>
+            <a href="mailto:iamlazybear2023@gmail.com" class="inline-block px-8 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold rounded-xl transition shadow-lg transform hover:-translate-y-1">
+              ✉️ 寫信至 iamlazybear2023@gmail.com
+            </a>
+          </div>
+        `;
+      }
+      openModal('document-modal');
+    };
+
+    // --- STREAMING_CHUNK: Global Modal and Alert Helpers... ---
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
     
