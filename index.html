@@ -97,7 +97,6 @@
     </div>
   </header>
 
-  <!-- 主要內容區塊 -->
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
     
     <!-- 首頁 (瀏覽物品) -->
@@ -214,7 +213,6 @@
       </div>
     </section>
 
-    <!-- 刊登物品頁面 -->
     <section id="view-upload" class="view-section hidden max-w-2xl mx-auto">
       <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
         <h2 class="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-4">＋ 刊登新物品</h2>
@@ -249,7 +247,6 @@
       </div>
     </section>
 
-    <!-- 個人中心 (含側邊欄) -->
     <section id="view-profile" class="view-section hidden">
       <div class="flex flex-col md:flex-row gap-6">
         <!-- 側邊欄 -->
@@ -273,9 +270,6 @@
               <button onclick="switchProfileSidebar('notifications')" id="tab-notifications" class="profile-tab w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
                 <span class="flex items-center gap-3">🔔 通知中心</span>
                 <span id="sidebar-notif-badge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">新</span>
-              </button>
-              <button onclick="switchProfileSidebar('contact')" id="tab-contact" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
-                ✉️ 聯絡創作者
               </button>
             </nav>
           </div>
@@ -337,7 +331,7 @@
             <div class="max-w-md space-y-5">
               <div>
                 <label class="block text-gray-700 font-bold mb-2">顯示名稱</label>
-                <input type="text" id="setting-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
+                <input type="text" id="setting-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-skyblue focus:ring-2 focus:ring-blue-100 transition font-medium">
               </div>
               <div>
                 <label class="block text-gray-700 font-bold mb-2">聯絡 Email</label>
@@ -358,15 +352,6 @@
             </div>
           </div>
 
-          <!-- 聯絡創作者 -->
-          <div id="profile-content-contact" class="profile-content-section hidden">
-            <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">✉️ 聯絡創作者</h2>
-            <div class="bg-gray-50 p-6 rounded-2xl text-center">
-              <p class="text-gray-600 mb-4 font-bold">有任何問題、建議或是商業合作，歡迎與我們聯繫！</p>
-              <a href="mailto:rexofgod2@gmail.com" class="inline-block px-6 py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow">寫信給我們</a>
-              <p class="mt-4 text-sm text-gray-400 font-bold">合作信箱：rexofgod2@gmail.com</p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -383,15 +368,12 @@
         <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
           <button onclick="switchAdminTab('stats')" id="admin-tab-stats" class="admin-tab px-5 py-2 rounded-full font-bold transition text-skyblue bg-skyblue-light shrink-0">📊 系統概況</button>
           <button onclick="switchAdminTab('users')" id="admin-tab-users" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0">👥 會員管理</button>
-          
           <button onclick="switchAdminTab('items')" id="admin-tab-items" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
-            📦 物品審核與管理 <span id="admin-tab-items-badge" class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+            📦 物品管理 <span id="admin-tab-items-badge" class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
           </button>
-          
           <button onclick="switchAdminTab('reports')" id="admin-tab-reports" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
             🚨 檢舉審核 <span id="admin-tab-reports-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
           </button>
-
           <button onclick="switchAdminTab('coop')" id="admin-tab-coop" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
             🤝 合作申請 <span id="admin-tab-coop-badge" class="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
           </button>
@@ -400,22 +382,18 @@
         <div id="admin-content-stats" class="admin-content-section block">
           <!-- JS 填入系統數據 -->
         </div>
-
         <div id="admin-content-users" class="admin-content-section hidden">
            <!-- JS 填入會員清單 -->
         </div>
-
         <div id="admin-content-items" class="admin-content-section hidden">
           <!-- JS 填入物品清單 -->
         </div>
-
         <div id="admin-content-reports" class="admin-content-section hidden">
           <div class="mb-4 text-gray-600 font-bold">待處理檢舉清單：</div>
           <div id="admin-reports-list" class="space-y-4">
              <!-- JS 填入檢舉 -->
           </div>
         </div>
-
         <div id="admin-content-coop" class="admin-content-section hidden">
           <div class="mb-4 text-gray-600 font-bold">企業合作申請清單：</div>
           <div id="admin-coop-list" class="space-y-4">
@@ -441,7 +419,7 @@
         <span>·</span>
         <button onclick="showDocument('coop')" class="flex items-center gap-1 hover:text-skyblue transition">🤝 企業合作</button>
       </div>
-      <p class="text-xs text-gray-400 font-medium">© 2026 TradeUp · 歡迎品牌合作</p>
+      <p class="text-xs text-gray-400 font-medium">© 2026 TradeUp · <a href="mailto:rexofgod2@gmail.com" class="hover:text-gray-600 transition">聯絡信箱</a></p>
     </div>
   </footer>
 
@@ -514,67 +492,7 @@
     </div>
   </div>
 
-  <!-- 3. 管理員審核檢舉對話框 -->
-  <div id="admin-report-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
-      <button onclick="closeModal('admin-report-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
-      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">檢舉審核單</h2>
-      
-      <div id="admin-report-details" class="text-sm space-y-2 mb-6 bg-gray-50 p-4 rounded-xl text-gray-700">
-        <!-- JS 填入 -->
-      </div>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-bold mb-2 text-sm">處理備註 (即下架原因/通知信) <span class="text-red-500">*</span></label>
-          <textarea id="admin-report-note" placeholder="例如：確認違規，予以警告並下架..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
-        </div>
-      </div>
-
-      <div class="flex gap-3 mt-6">
-        <button onclick="processReport('reject')" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 transition">駁回檢舉</button>
-        <button onclick="processReport('ban')" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">檢舉成立 (強制下架)</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 管理員駁回物品對話框 -->
-  <div id="admin-reject-item-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
-      <button onclick="closeModal('admin-reject-item-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
-      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">駁回物品審核</h2>
-      
-      <input type="hidden" id="reject-item-id">
-      
-      <div class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-bold mb-2 text-sm">請輸入駁回原因 (將通知使用者) <span class="text-red-500">*</span></label>
-          <textarea id="reject-item-reason" placeholder="例如：商品描述過於簡略、疑似違禁品..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-24 text-sm resize-none"></textarea>
-        </div>
-      </div>
-
-      <div class="flex gap-3 mt-6">
-        <button onclick="closeModal('admin-reject-item-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 transition">取消</button>
-        <button onclick="confirmRejectItem()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定駁回</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. 自訂確認提示對話框 (Custom Confirm) -->
-  <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter text-center">
-      <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-gray-100">❓</div>
-      <h2 id="confirm-title" class="text-xl font-extrabold text-gray-800 mb-2">確認操作</h2>
-      <p id="confirm-message" class="text-gray-600 mb-8 text-sm">您確定要執行此操作嗎？</p>
-      
-      <div class="flex gap-3">
-        <button onclick="closeConfirmModal(false)" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
-        <button id="confirm-btn-yes" onclick="closeConfirmModal(true)" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">確定</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. 提出交換選項對話框 -->
+  <!-- 3. 提出交換選項對話框 -->
   <div id="trade-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
     <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
       <button onclick="closeModal('trade-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
@@ -621,6 +539,51 @@
     </div>
   </div>
 
+  <!-- 4. 自訂確認提示對話框 (Custom Confirm) -->
+  <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter text-center">
+      <div id="confirm-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-gray-100">❓</div>
+      <h2 id="confirm-title" class="text-xl font-extrabold text-gray-800 mb-2">確認操作</h2>
+      <p id="confirm-message" class="text-gray-600 mb-8 text-sm">您確定要執行此操作嗎？</p>
+      
+      <div class="flex gap-3">
+        <button onclick="closeConfirmModal(false)" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button id="confirm-btn-yes" onclick="closeConfirmModal(true)" class="flex-1 py-3 rounded-xl font-bold text-white bg-skyblue hover:bg-skyblue-hover transition shadow-md">確定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 下架物品確認與原因對話框 (一般會員用) -->
+  <div id="takedown-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('takedown-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">🗑️ 確認下架物品</h2>
+      <p class="text-sm text-gray-600 mb-4">下架後，該物品將不再顯示於探索列表，且進行中的申請將會自動關閉。</p>
+      
+      <input type="hidden" id="takedown-item-id">
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">請選擇下架原因 <span class="text-red-500">*</span></label>
+          <select id="takedown-reason" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 font-medium text-sm">
+            <option value="">請選擇...</option>
+            <option value="已在其他平台換出">已在其他平台換出</option>
+            <option value="不想換了/自用">不想換了/決定自用</option>
+            <option value="物品損壞或遺失">物品損壞或遺失</option>
+            <option value="重新刊登調整內容">需要重新刊登調整內容</option>
+            <option value="其他原因">其他原因</option>
+          </select>
+          <textarea id="takedown-reason-desc" placeholder="補充說明 (選填)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 h-20 text-sm resize-none mt-2"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="closeModal('takedown-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="confirmTakedown()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定下架</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 6. 管理員調整會員資料對話框 -->
   <div id="admin-edit-user-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
     <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter">
@@ -647,91 +610,251 @@
     </div>
   </div>
 
-  <!-- 7. 下架物品確認與原因對話框 -->
-  <div id="takedown-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/50 backdrop-blur-sm px-4">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-8 shadow-2xl relative modal-enter">
-      <button onclick="closeModal('takedown-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
-      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">🗑️ 確認下架物品</h2>
-      <p class="text-sm text-gray-600 mb-4">下架後，該物品將不再顯示於探索列表，且進行中的申請將會自動關閉。</p>
+  <!-- 7. 管理員審核檢舉對話框 -->
+  <div id="admin-report-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('admin-report-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">檢舉審核單</h2>
       
-      <input type="hidden" id="takedown-item-id">
+      <div id="admin-report-details" class="text-sm space-y-2 mb-6 bg-gray-50 p-4 rounded-xl text-gray-700">
+        <!-- JS 填入 -->
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">處理結果 / 下架原因 <span class="text-red-500">*</span></label>
+          <select id="admin-report-reason-select" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 font-medium text-sm mb-2">
+              <option value="">請選擇...</option>
+              <option value="確認違規，予以警告並強制下架">確認違規，予以警告並強制下架</option>
+              <option value="經查證並未違規，駁回檢舉">經查證並未違規，駁回檢舉</option>
+              <option value="其他">其他</option>
+          </select>
+          <textarea id="admin-report-note" placeholder="補充說明備註 (選填)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button onclick="processReport('reject')" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 transition">駁回檢舉</button>
+        <button onclick="processReport('ban')" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">檢舉成立 (強制下架)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. 管理員駁回物品審核對話框 -->
+  <div id="admin-reject-item-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('admin-reject-item-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">駁回物品審核</h2>
+      
+      <input type="hidden" id="reject-item-id">
       
       <div class="space-y-4">
         <div>
-          <label class="block text-gray-700 font-bold mb-2 text-sm">請選擇下架原因 <span class="text-red-500">*</span></label>
-          <select id="takedown-reason" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 font-medium text-sm">
+          <label class="block text-gray-700 font-bold mb-2 text-sm">請選擇駁回原因 (將通知使用者) <span class="text-red-500">*</span></label>
+          <select id="reject-item-reason-select" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 font-medium text-sm mb-2">
             <option value="">請選擇...</option>
-            <option value="已在其他平台換出">已在其他平台換出</option>
-            <option value="不想換了/自用">不想換了/決定自用</option>
-            <option value="物品損壞或遺失">物品損壞或遺失</option>
-            <option value="重新刊登調整內容">需要重新刊登調整內容</option>
-            <option value="其他原因">其他原因</option>
+            <option value="商品描述過於簡略">商品描述過於簡略</option>
+            <option value="照片不清楚或缺乏實體照">照片不清楚或缺乏實體照</option>
+            <option value="物品分類錯誤">物品分類錯誤</option>
+            <option value="疑似包含違禁品">疑似包含違禁品</option>
+            <option value="其他">其他</option>
           </select>
+          <textarea id="reject-item-reason" placeholder="補充說明 (選填)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeModal('admin-reject-item-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 transition">取消</button>
+        <button onclick="confirmRejectItem()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定駁回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. 管理員強制下架物品對話框 -->
+  <div id="admin-force-takedown-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative modal-enter">
+      <button onclick="closeModal('admin-force-takedown-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 font-bold transition">✕</button>
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">🚨</div>
+        <h2 class="text-xl font-extrabold text-gray-800">強制下架物品</h2>
+        <p class="text-sm text-gray-500 mt-1">此物品將被永久移除並發送警告通知</p>
+      </div>
+      
+      <input type="hidden" id="force-takedown-item-id">
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-bold mb-2 text-sm">請選擇強制下架原因 <span class="text-red-500">*</span></label>
+          <select id="force-takedown-reason-select" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 font-medium text-sm mb-2">
+            <option value="">請選擇...</option>
+            <option value="經查證包含違禁品">經查證包含違禁品</option>
+            <option value="要求金錢交易或變相收費">要求金錢交易或變相收費</option>
+            <option value="物品資訊造假或圖文不符">物品資訊造假或圖文不符</option>
+            <option value="濫發廣告或推薦碼">濫發廣告或推薦碼</option>
+            <option value="其他">其他</option>
+          </select>
+          <textarea id="force-takedown-reason" placeholder="補充說明 (選填)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 h-20 text-sm resize-none"></textarea>
         </div>
       </div>
 
       <div class="flex gap-3 mt-8">
-        <button onclick="closeModal('takedown-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
-        <button onclick="confirmTakedown()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定下架</button>
+        <button onclick="closeModal('admin-force-takedown-modal')" class="flex-1 py-3 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">取消</button>
+        <button onclick="confirmForceTakedown()" class="flex-1 py-3 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition shadow-md">確定強制下架</button>
       </div>
     </div>
   </div>
 
   <!-- ==================== JavaScript 區塊 ==================== -->
-  <script>
-    // --- 假資料庫 (State) ---
-    // 所有會員名單 (擴充欄位)
-    let usersDB = [
-      { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '' },
-      { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995' },
-      { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000' }
-    ];
+  <script type="module">
+    // --- Firebase 雲端資料庫初始化 ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    let currentUser = null; // 當前登入者
-    let selectedItem = null; // 目前查看的物品
-    let currentReportId = null; // 管理員正在審核的檢舉單 ID
-
-    // 物品資料庫 (狀態包含: active, pending_approval, banned, 已下架...)
-    let marketItems = [
-      { id: 1, title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active' },
-      { id: 2, title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active' },
-      { id: 3, title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '阿傑', type: '戶外與休閒', status: 'active' },
-      { id: 4, title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '林阿姨', type: '居家與生活', status: 'pending_approval' } // 待審核測試資料
-    ];
-
-    let userTrades = []; // 交易申請資料庫
-    let notificationsDB = []; // 系統通知資料庫
+    // 使用全域變數設定 Firebase
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'tradeup-app';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
     
-    // 檢舉資料庫
-    let reportsDB = [
-      { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: '2026-08-01' }
-    ];
+    // 初始化 Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    let fbUser = null;
 
-    // 企業合作申請資料庫
-    let coopApplicationsDB = [];
+    // 取得公開集合的參考路徑 (符合資安規則)
+    const getPublicRef = (colName) => collection(db, 'artifacts', appId, 'public', 'data', colName);
 
-    let confirmCallback = null; // 自訂 Confirm 的 Callback
+    // 雲端資料寫入封裝函數
+    window.fbSet = async (col, id, data) => { if (fbUser) await setDoc(doc(getPublicRef(col), id.toString()), data); };
+    window.fbUpdate = async (col, id, data) => { if (fbUser) await updateDoc(doc(getPublicRef(col), id.toString()), data); };
+    window.fbDelete = async (col, id) => { if (fbUser) await deleteDoc(doc(getPublicRef(col), id.toString())); };
 
-    // --- 共用 UI 控制 ---
-    function switchView(viewId) {
+    // --- 全域資料狀態 (同步 Firebase 用) ---
+    window.usersDB = [];
+    window.marketItems = [];
+    window.userTrades = [];
+    window.reportsDB = [];
+    window.notificationsDB = [];
+    window.coopApplicationsDB = [];
+    
+    window.currentUser = null;
+    window.selectedItem = null;
+    window.currentReportId = null;
+    window.confirmCallback = null;
+
+    // 初始化身分驗證與雲端連線
+    async function initFirebase() {
+        try {
+            if (typeof __initial_auth_token !== 'undefined') {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+            fbUser = auth.currentUser;
+            setupRealtimeSync();
+        } catch (e) {
+            console.error("Firebase 初始化失敗:", e);
+        }
+    }
+
+    // --- STREAMING_CHUNK:初始化雲端即時同步... ---
+    function setupRealtimeSync() {
+        // 1. 同步會員資料
+        onSnapshot(getPublicRef('users'), snap => {
+            if (snap.empty) { seedMockUsers(); return; }
+            window.usersDB = snap.docs.map(d => d.data());
+            
+            // 更新目前登入者的最新狀態 (如貢獻值)
+            if (window.currentUser) {
+                const updatedMe = window.usersDB.find(u => u.id === window.currentUser.id);
+                if (updatedMe) window.currentUser = { ...updatedMe };
+                window.updateNavUser();
+                if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderProfile();
+            }
+            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminUsers();
+        }, e => console.error(e));
+
+        // 2. 同步物品資料
+        onSnapshot(getPublicRef('marketItems'), snap => {
+            if (snap.empty) { seedMockItems(); return; }
+            window.marketItems = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+            
+            if (!document.getElementById('view-home').classList.contains('hidden')) window.renderHome();
+            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderWallet();
+            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminItems();
+            window.updateAdminBadges();
+        }, e => console.error(e));
+
+        // 3. 同步交易申請
+        onSnapshot(getPublicRef('userTrades'), snap => {
+            window.userTrades = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderWallet();
+            window.updateAdminBadges();
+        }, e => console.error(e));
+
+        // 4. 同步檢舉單
+        onSnapshot(getPublicRef('reports'), snap => {
+            if (snap.empty) { seedMockReports(); return; }
+            window.reportsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminReports();
+            window.updateAdminBadges();
+        }, e => console.error(e));
+
+        // 5. 同步系統通知
+        onSnapshot(getPublicRef('notifications'), snap => {
+            window.notificationsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+            window.updateNotificationBadges();
+            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderNotifications();
+        }, e => console.error(e));
+
+        // 6. 同步企業合作申請
+        onSnapshot(getPublicRef('coops'), snap => {
+            window.coopApplicationsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
+            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminCoop();
+            window.updateAdminBadges();
+        }, e => console.error(e));
+    }
+
+    // --- 填充初始假資料 (只在第一次啟動時執行) ---
+    async function seedMockUsers() {
+        const mockUsers = [
+            { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
+            { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
+            { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
+        ];
+        mockUsers.forEach(u => window.fbSet('users', u.id, u));
+    }
+
+    async function seedMockItems() {
+        const mockItems = [
+            { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
+            { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
+            { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
+            { id: '4', title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
+        ];
+        mockItems.forEach(i => window.fbSet('marketItems', i.id, i));
+    }
+
+    async function seedMockReports() {
+        const mockReport = { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() };
+        window.fbSet('reports', mockReport.id, mockReport);
+    }
+
+    // --- STREAMING_CHUNK:共用 UI 邏輯... ---
+    window.switchView = function(viewId) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById('view-' + viewId).classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       
-      if (viewId === 'home') renderHome();
-      if (viewId === 'profile') renderProfile();
-      if (viewId === 'admin' && currentUser?.role === 'admin') renderAdmin();
+      if (viewId === 'home') window.renderHome();
+      if (viewId === 'profile') window.renderProfile();
+      if (viewId === 'admin' && window.currentUser?.role === 'admin') window.renderAdmin();
     }
 
-    function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
-    }
+    window.openModal = function(id) { document.getElementById(id).classList.remove('hidden'); }
+    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    function customConfirm(title, message, icon, btnText, btnClass, callback) {
+    window.customConfirm = function(title, message, icon, btnText, btnClass, callback) {
       document.getElementById('confirm-title').textContent = title;
       document.getElementById('confirm-message').textContent = message;
       document.getElementById('confirm-icon').textContent = icon;
@@ -740,34 +863,34 @@
       yesBtn.textContent = btnText;
       yesBtn.className = `flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${btnClass}`;
       
-      confirmCallback = callback;
-      openModal('custom-confirm-modal');
+      window.confirmCallback = callback;
+      window.openModal('custom-confirm-modal');
     }
 
     window.closeConfirmModal = function(result) {
-      closeModal('custom-confirm-modal');
-      if (result && typeof confirmCallback === 'function') {
-        confirmCallback();
+      window.closeModal('custom-confirm-modal');
+      if (result && typeof window.confirmCallback === 'function') {
+        window.confirmCallback();
       }
-      confirmCallback = null;
+      window.confirmCallback = null;
     }
 
-    // --- STREAMING_CHUNK:通知與權限系統... ---
-    function sendNotification(targetUser, title, content) {
-      notificationsDB.unshift({
-        id: Date.now(),
+    window.sendNotification = async function(targetUser, title, content) {
+      const nId = Date.now().toString();
+      await window.fbSet('notifications', nId, {
+        id: nId,
         user: targetUser,
         title: title,
         content: content,
         date: new Date().toLocaleDateString(),
-        isRead: false
+        isRead: false,
+        createdAt: Date.now()
       });
-      updateNotificationBadges();
     }
 
-    function updateNotificationBadges() {
-      if (!currentUser) return;
-      const myNotifs = notificationsDB.filter(n => n.user === currentUser.name && !n.isRead);
+    window.updateNotificationBadges = function() {
+      if (!window.currentUser) return;
+      const myNotifs = window.notificationsDB.filter(n => n.user === window.currentUser.name && !n.isRead);
       const count = myNotifs.length;
       
       const navBadge = document.getElementById('nav-notif-badge');
@@ -783,924 +906,16 @@
     }
 
     window.clearNotifications = function() {
-      if (!currentUser) return;
-      notificationsDB.forEach(n => {
-        if (n.user === currentUser.name) n.isRead = true;
-      });
-      updateNotificationBadges();
-      renderNotifications();
-    }
-
-    // --- 身分驗證 (Auth) ---
-    window.switchAuthMode = function(mode) {
-      document.getElementById('auth-login-form').classList.toggle('hidden', mode !== 'login');
-      document.getElementById('auth-register-form').classList.toggle('hidden', mode !== 'register');
-      
-      document.getElementById('auth-tab-login').className = mode === 'login' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
-      document.getElementById('auth-tab-register').className = mode === 'register' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
-    };
-
-    window.fastLogin = function(userId) {
-      const user = usersDB.find(u => u.id === userId);
-      if (user) {
-        currentUser = { ...user };
-        updateNavUser();
-        switchView('home');
-      }
-    };
-
-    window.submitAuth = function(mode) {
-      if (mode === 'login') {
-        const email = document.getElementById('login-email').value.trim();
-        const pwd = document.getElementById('login-password').value.trim();
-        if (!email || !pwd) {
-          customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
-          return;
-        }
-        const user = usersDB.find(u => u.email === email && u.password === pwd);
-        if (!user) {
-          customConfirm("登入失敗", "❌ 帳號或密碼錯誤！", "❌", "確認", "bg-red-500 hover:bg-red-600");
-          return;
-        }
-        currentUser = { ...user };
-        customConfirm("歡迎回來", "登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
-      } 
-      else if (mode === 'register') {
-        const email = document.getElementById('reg-email').value.trim();
-        const pwd = document.getElementById('reg-password').value.trim();
-        const name = document.getElementById('reg-name').value.trim();
-        const phone = document.getElementById('reg-phone').value.trim();
-        const birth = document.getElementById('reg-birth').value.trim();
-
-        if (!email || !pwd || !name) {
-          customConfirm("資訊不完整", "請填寫必填欄位 (Email、密碼、顯示名稱)！", "⚠️", "確認", "bg-gray-800");
-          return;
-        }
-        if (usersDB.find(u => u.email === email)) {
-          customConfirm("註冊失敗", "此 Email 已經被註冊過囉！", "❌", "確認", "bg-red-500 hover:bg-red-600");
-          return;
-        }
-
-        const newUser = { id: 'u' + Date.now(), email: email, password: pwd, name: name, phone: phone, birth: birth, role: 'user', points: 10, level: '🥉 青銅' };
-        usersDB.push(newUser);
-        currentUser = { ...newUser };
-        customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
-      }
-      
-      updateNavUser();
-      switchView('home');
-      
-      // 清空表單
-      ['login-email', 'login-password', 'reg-email', 'reg-password', 'reg-name', 'reg-phone', 'reg-birth'].forEach(id => document.getElementById(id).value = '');
-    };
-
-    window.forgotPassword = function() {
-      const email = document.getElementById('login-email').value.trim();
-      if (!email) {
-        customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件，我們才能將密碼重設信件寄給您！", "💡", "確認", "bg-gray-800");
-        return;
-      }
-      customConfirm("重設信已寄出", `我們已將密碼重設連結寄至 ${email}，請至信箱收取並依指示重設密碼。`, "✉️", "我知道了", "bg-skyblue hover:bg-skyblue-hover");
-    };
-
-    window.updateNavUser = function() {
-      const displaySpan = document.getElementById("user-display");
-      const loginBtn = document.getElementById("btn-login-nav");
-      const adminBtn = document.getElementById("btn-admin-nav");
-      const profileBtn = document.getElementById("btn-user-profile");
-      const notifBtn = document.getElementById("btn-nav-notif");
-      
-      if (currentUser) {
-        displaySpan.textContent = `👤 ${currentUser.name}`;
-        displaySpan.classList.remove('hidden');
-        loginBtn.textContent = "登出";
-        loginBtn.onclick = logout;
-        loginBtn.classList.replace('bg-skyblue', 'bg-gray-200');
-        loginBtn.classList.replace('text-white', 'text-gray-800');
-        
-        notifBtn.style.display = "flex";
-        
-        if (currentUser.role === "admin") {
-          adminBtn.style.display = "inline-flex";
-          profileBtn.style.display = "none";
-          updateAdminBadges();
-        } else {
-          adminBtn.style.display = "none";
-          profileBtn.style.display = "inline-flex";
-          document.getElementById('setting-name').value = currentUser.name;
-          document.getElementById('setting-email').value = currentUser.email;
-          document.getElementById('profile-name').textContent = currentUser.name;
-          document.getElementById('profile-level-badge').textContent = currentUser.level;
-        }
-        updateNotificationBadges();
-      } else {
-        displaySpan.classList.add('hidden');
-        loginBtn.textContent = "登入 / 註冊";
-        loginBtn.onclick = () => switchView('login');
-        loginBtn.classList.replace('bg-gray-200', 'bg-skyblue');
-        loginBtn.classList.replace('text-gray-800', 'text-white');
-        adminBtn.style.display = "none";
-        profileBtn.style.display = "none";
-        notifBtn.style.display = "none";
-      }
-    };
-
-    window.logout = function() {
-      customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認登出", "bg-red-500 hover:bg-red-600", () => {
-        currentUser = null;
-        updateNavUser();
-        switchView('home');
-      });
-    };
-
-    // --- STREAMING_CHUNK:渲染首頁與物品... ---
-    // 首頁
-    function renderHome() {
-      const grid = document.getElementById('items-grid');
-      grid.innerHTML = '';
-      
-      const activeItems = marketItems.filter(item => item.status === 'active');
-
-      activeItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
-        card.onclick = () => {
-          selectedItem = item;
-          renderDetail();
-          switchView('detail');
-        };
-
-        card.innerHTML = `
-          <div class="flex-1">
-            <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
-              ${item.type}
-            </div>
-            <h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3>
-            <p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p>
-          </div>
-          <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-            <span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span>
-            <span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // 物品詳情
-    function renderDetail() {
-      const c = document.getElementById('detail-content');
-      if (!selectedItem) return;
-
-      c.innerHTML = `
-        <div class="mb-8">
-          <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
-            ${selectedItem.type}
-          </div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${selectedItem.title}</h2>
-          <div class="flex items-center gap-2 mb-6">
-            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">
-              ${selectedItem.owner.charAt(0)}
-            </div>
-            <span class="text-gray-600 font-bold">${selectedItem.owner}</span>
-            <span class="text-gray-300 mx-2">|</span>
-            <span class="text-gray-400 text-sm font-medium">發布於 1 小時前</span>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100">
-          <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4>
-          <p class="text-gray-600 leading-relaxed">${selectedItem.desc}</p>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8">
-          <button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md transform hover:-translate-y-1 flex items-center justify-center gap-2">
-            <span>🎁</span> 提出交換申請
-          </button>
-          <button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">
-            🚨 檢舉此物品
-          </button>
-        </div>
-      `;
-
-      document.getElementById('btn-request-trade').onclick = () => {
-        if (!currentUser) {
-          switchView('login');
-          return;
-        }
-        if (currentUser.name === selectedItem.owner) {
-          customConfirm("無法申請", "您不能對自己刊登的物品提出交換申請喔！", "💡", "我知道了", "bg-gray-800 hover:bg-gray-700");
-          return;
-        }
-        
-        document.getElementById('trade-offer-desc').value = '';
-        document.getElementById('trade-method').value = '面交';
-        toggleShippingFee();
-        openModal('trade-modal');
-      };
-    }
-
-    // 刊登新物品 (需審核)
-    window.submitUpload = function() {
-      if (!currentUser) {
-        switchView('login');
-        return;
-      }
-      
-      const title = document.getElementById('upload-title').value.trim();
-      const type = document.getElementById('upload-type').value;
-      const desc = document.getElementById('upload-desc').value.trim();
-      
-      if (!title || !desc) {
-        alert("請完整填寫物品名稱與描述！");
-        return;
-      }
-
-      marketItems.unshift({
-        id: Date.now(),
-        title: title,
-        desc: desc,
-        owner: currentUser.name,
-        type: type,
-        status: 'pending_approval' // 改為待審核
-      });
-      
-      document.getElementById('upload-title').value = '';
-      document.getElementById('upload-desc').value = '';
-      
-      updateAdminBadges();
-
-      customConfirm("已送出審核！", "您的物品已送交管理員審核，審核通過後即會顯示於探索列表中。", "⏳", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
-        switchView('profile');
-        switchProfileSidebar('wallet');
-        switchWalletTab('listed');
-      });
-    };
-
-    // --- STREAMING_CHUNK:申請與交易處理... ---
-    window.toggleShippingFee = function() {
-      const method = document.getElementById('trade-method').value;
-      const feeContainer = document.getElementById('shipping-fee-container');
-      if (method === '寄送') feeContainer.classList.remove('hidden');
-      else feeContainer.classList.add('hidden');
-    }
-
-    window.submitTradeOffer = function() {
-      const desc = document.getElementById('trade-offer-desc').value.trim();
-      if (!desc) {
-        alert("請填寫您想用來交換的物品內容！");
-        return;
-      }
-      
-      const method = document.getElementById('trade-method').value;
-      let shippingInfo = method === '寄送' ? ` (運費: ${document.getElementById('trade-shipping-fee').value})` : "";
-
-      userTrades.push({ 
-        id: Date.now(), 
-        itemTitle: selectedItem.title, 
-        itemOwner: selectedItem.owner,
-        applicant: currentUser.name,
-        offerDesc: `${desc} [${method}${shippingInfo}]`,
-        status: '待審核',
-        type: 'applied'
-      });
-      
-      sendNotification(selectedItem.owner, '有人對您的物品提出交換', `${currentUser.name} 想要用他的物品和您交換「${selectedItem.title}」，快去錢包查看吧！`);
-
-      closeModal('trade-modal');
-      customConfirm("申請已送出！", "我們已通知物品主人，若對方同意交換，將會透過通知中心與您聯繫。", "🎉", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
-        switchView('profile');
-        switchProfileSidebar('wallet');
-        switchWalletTab('applied');
-      });
-    }
-
-    // --- 檢舉系統 ---
-    window.openReportModal = function() {
-      if (!currentUser) { switchView('login'); return; }
-      document.getElementById('report-reason').value = '';
-      document.getElementById('report-desc').value = '';
-      document.getElementById('report-agree').checked = false;
-      openModal('report-modal');
-    };
-
-    window.submitReport = function() {
-      const reason = document.getElementById('report-reason').value;
-      const desc = document.getElementById('report-desc').value;
-      const agree = document.getElementById('report-agree').checked;
-
-      if (!reason || !desc || !agree) {
-        alert("請完整填寫必填欄位並勾選同意。");
-        return;
-      }
-
-      reportsDB.push({
-        id: 'r' + Date.now(),
-        itemTitle: selectedItem.title,
-        itemOwner: selectedItem.owner,
-        reporter: currentUser.name,
-        reason: reason,
-        desc: desc,
-        status: 'pending',
-        date: new Date().toLocaleDateString()
-      });
-
-      updateAdminBadges();
-      closeModal('report-modal');
-      customConfirm("檢舉已送出", "感謝您的回報，我們的管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
-    };
-
-    // --- STREAMING_CHUNK:會員中心邏輯... ---
-    window.switchProfileSidebar = function(tab) {
-      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
-      
-      document.querySelectorAll('.profile-tab').forEach(el => {
-        el.classList.remove('text-skyblue', 'bg-skyblue-light');
-        el.classList.add('text-gray-600', 'hover:bg-gray-50');
-      });
-      const activeTab = document.getElementById(`tab-${tab}`);
-      activeTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
-      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
-
-      if (tab === 'wallet') renderWallet();
-      if (tab === 'notifications') renderNotifications();
-      if (tab === 'points') renderPoints();
-    };
-
-    window.saveProfileSettings = function() {
-      const newName = document.getElementById('setting-name').value.trim();
-      if (!newName) {
-        alert("顯示名稱不能為空！");
-        return;
-      }
-      const oldName = currentUser.name;
-      currentUser.name = newName;
-      
-      // 同步更新所有相關資料庫
-      marketItems.forEach(i => { if(i.owner === oldName) i.owner = newName; });
-      userTrades.forEach(t => { 
-        if(t.applicant === oldName) t.applicant = newName; 
-        if(t.itemOwner === oldName) t.itemOwner = newName;
-      });
-      notificationsDB.forEach(n => { if(n.user === oldName) n.user = newName; });
-      reportsDB.forEach(r => {
-        if(r.reporter === oldName) r.reporter = newName;
-        if(r.itemOwner === oldName) r.itemOwner = newName;
-      });
-
-      updateNavUser();
-      renderProfile();
-      customConfirm("儲存成功", "您的個人設定已經更新完畢。", "✅", "確認", "bg-gray-800 hover:bg-gray-700");
-    };
-
-    window.switchWalletTab = function(type) {
-      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
-
-      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => {
-        el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue');
-        el.classList.add('text-gray-500');
-      });
-      const activeTab = document.getElementById(`wallet-tab-${type}`);
-      activeTab.classList.remove('text-gray-500');
-      activeTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
-      
-      renderWallet();
-    };
-
-    function renderWallet() {
-      // 1. 我上架的
-      const listedContainer = document.getElementById('my-listed-items');
-      listedContainer.innerHTML = '';
-      const myItems = marketItems.filter(item => item.owner === currentUser.name && item.status !== 'banned');
-      
-      if (myItems.length === 0) {
-        listedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
-      } else {
-        myItems.forEach(item => {
-          const applicants = userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === currentUser.name);
-          let appHtml = '';
-          if (applicants.length > 0) {
-            appHtml = `<div class="mt-4 border-t border-gray-100 pt-3">
-              <p class="text-sm font-bold text-gray-700 mb-2">🎁 收到 ${applicants.length} 個交換提案：</p>
-              ${applicants.map(app => `
-                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
-                  <div>
-                    <span class="font-bold text-gray-800 text-sm">${app.applicant}</span>
-                    <p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p>
-                    <span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border border-gray-200 inline-block mt-1">${app.status}</span>
-                  </div>
-                  ${app.status === '待審核' ? `<button onclick="acceptTrade(${app.id})" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg transition shadow-sm">✅ 選擇他</button>` : ''}
-                  ${app.status === '已成交' ? `<button class="px-3 py-1.5 bg-gray-800 text-white text-xs font-bold rounded-lg transition shadow-sm">💬 私訊</button>` : ''}
-                </div>
-              `).join('')}
-            </div>`;
-          }
-
-          let takedownBtn = '';
-          if (item.status === 'active' || item.status === 'pending_approval') {
-             takedownBtn = `<button onclick="openTakedownModal(${item.id})" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 rounded transition">🗑️ 下架</button>`;
-          }
-          
-          let statusText = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
-          let statusColor = item.status === 'pending_approval' ? 'text-orange-500' : 'text-gray-400';
-
-          listedContainer.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <div class="flex justify-between items-start">
-                <div>
-                  <div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div>
-                  <h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4>
-                  <p class="text-xs ${statusColor} font-bold mt-1">狀態: ${statusText}</p>
-                </div>
-                ${takedownBtn}
-              </div>
-              ${appHtml}
-            </div>
-          `;
-        });
-      }
-
-      // 2. 我申請的
-      const appliedContainer = document.getElementById('my-applied-items');
-      appliedContainer.innerHTML = '';
-      const myApps = userTrades.filter(t => t.applicant === currentUser.name);
-      
-      if (myApps.length === 0) {
-        appliedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
-      } else {
-        myApps.forEach(app => {
-          let statusColor = 'text-orange-500';
-          let bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed'; // 預設不能按
-          let btnText = '⏳ 待審核';
-
-          if (app.status === '已成交') {
-            statusColor = 'text-green-500';
-            bgClass = 'bg-skyblue hover:bg-skyblue-hover text-white shadow-sm cursor-pointer';
-            btnText = '💬 聯絡對方';
-          } else if (app.status === '已關閉') {
-            statusColor = 'text-gray-400';
-            bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50';
-            btnText = '🔒 已關閉';
-          }
-
-          appliedContainer.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p>
-                <h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4>
-                <p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p>
-                <div class="mt-2 text-xs font-bold ${statusColor}">${app.status}</div>
-              </div>
-              <button class="px-4 py-2 ${bgClass} text-sm font-bold rounded-xl transition w-full sm:w-auto text-center shrink-0">
-                ${btnText}
-              </button>
-            </div>
-          `;
-        });
-      }
-    }
-
-    window.openTakedownModal = function(itemId) {
-      document.getElementById('takedown-item-id').value = itemId;
-      document.getElementById('takedown-reason').value = '';
-      openModal('takedown-modal');
-    }
-
-    window.confirmTakedown = function() {
-      const itemId = document.getElementById('takedown-item-id').value;
-      const reason = document.getElementById('takedown-reason').value;
-      if (!reason) { alert("請選擇下架原因！"); return; }
-
-      const item = marketItems.find(i => i.id == itemId);
-      if (item) {
-        item.status = '已下架 (' + reason + ')';
-        userTrades.forEach(t => {
-          if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
-            t.status = '已關閉';
-            sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架 (原因: ${reason})，申請已自動關閉。`);
-          }
-        });
-        closeModal('takedown-modal');
-        renderWallet();
-        customConfirm("下架完成", "該物品已從列表中移除。", "✅", "確認", "bg-gray-800");
-      }
-    }
-
-    window.acceptTrade = function(tradeId) {
-      customConfirm("確認選擇", "選擇此提案後，其他人的申請將會自動關閉，並為您雙方開啟聊天室。確定要交換嗎？", "🤝", "確定交換", "bg-green-500 hover:bg-green-600", () => {
-        const trade = userTrades.find(t => t.id === tradeId);
-        if (trade) {
-          trade.status = '已成交';
-          userTrades.forEach(t => { if (t.itemTitle === trade.itemTitle && t.id !== tradeId) t.status = '已關閉'; });
-          const item = marketItems.find(i => i.title === trade.itemTitle && i.owner === currentUser.name);
-          if (item) item.status = '已換出';
-
-          currentUser.points += 50;
-          currentUser.level = getLevelByPoints(currentUser.points);
-          sendNotification(trade.applicant, '🎉 您的交換提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的交換提案，快去私訊他吧！`);
-          updateNavUser();
-          renderWallet();
+      if (!window.currentUser) return;
+      window.notificationsDB.forEach(n => {
+        if (n.user === window.currentUser.name && !n.isRead) {
+            window.fbUpdate('notifications', n.id, { isRead: true });
         }
       });
+      window.customConfirm("通知已清除", "所有通知已標示為已讀。", "🧹", "確認", "bg-gray-800");
     }
 
-    function renderPoints() {
-      document.getElementById('points-display').textContent = currentUser.points;
-      document.getElementById('level-display-box').textContent = currentUser.level;
-    }
-
-    function renderNotifications() {
-      const container = document.getElementById('notification-list');
-      container.innerHTML = '';
-      const myNotifs = notificationsDB.filter(n => n.user === currentUser.name);
-
-      if (myNotifs.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有新通知</div>';
-      } else {
-        myNotifs.forEach(n => {
-          container.innerHTML += `
-            <div class="p-4 rounded-xl border ${n.isRead ? 'bg-white border-gray-100' : 'bg-blue-50 border-blue-100'}">
-              <div class="flex justify-between items-start mb-1">
-                <h5 class="font-bold text-gray-800 text-sm">${n.title}</h5>
-                <span class="text-[10px] text-gray-400">${n.date}</span>
-              </div>
-              <p class="text-xs text-gray-600">${n.content}</p>
-            </div>
-          `;
-        });
-      }
-    }
-
-    function renderProfile() {
-      if (!currentUser) { switchView('login'); return; }
-      document.getElementById('profile-name').textContent = currentUser.name;
-      document.getElementById('profile-avatar-letter').textContent = currentUser.name.charAt(0);
-      document.getElementById('profile-level-badge').textContent = currentUser.level;
-      document.getElementById('setting-name').value = currentUser.name;
-      document.getElementById('setting-email').value = currentUser.email;
-      switchProfileSidebar('wallet');
-      updateNotificationBadges();
-    }
-
-    function getLevelByPoints(points) {
-      if(points >= 500) return '💎 鑽石';
-      if(points >= 200) return '🥇 黃金';
-      if(points >= 50) return '🥈 白銀';
-      return '🥉 青銅';
-    }
-
-    // --- STREAMING_CHUNK:管理後台與審核系統... ---
-    window.switchAdminTab = function(tab) {
-      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
-
-      document.querySelectorAll('.admin-tab').forEach(el => {
-        el.classList.remove('text-skyblue', 'bg-skyblue-light');
-        el.classList.add('text-gray-600', 'bg-gray-50');
-      });
-      const activeTab = document.getElementById(`admin-tab-${tab}`);
-      activeTab.classList.remove('text-gray-600', 'bg-gray-50');
-      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
-
-      if(tab === 'stats') renderAdminStats();
-      if(tab === 'reports') renderAdminReports();
-      if(tab === 'users') renderAdminUsers();
-      if(tab === 'items') renderAdminItems();
-      if(tab === 'coop') renderAdminCoop();
-    };
-
-    function updateAdminBadges() {
-      const pendingReports = reportsDB.filter(r => r.status === 'pending').length;
-      const pendingItems = marketItems.filter(i => i.status === 'pending_approval').length;
-      const pendingCoops = coopApplicationsDB.filter(c => c.status === '未處理').length;
-      const totalPending = pendingReports + pendingItems + pendingCoops;
-      
-      const navBadge = document.getElementById('admin-badge');
-      if (totalPending > 0) { navBadge.textContent = totalPending; navBadge.classList.remove('hidden'); } 
-      else navBadge.classList.add('hidden');
-
-      const repBadge = document.getElementById('admin-tab-reports-badge');
-      if(pendingReports > 0) { repBadge.textContent = pendingReports; repBadge.classList.remove('hidden'); } else repBadge.classList.add('hidden');
-
-      const itmBadge = document.getElementById('admin-tab-items-badge');
-      if(pendingItems > 0) { itmBadge.textContent = pendingItems; itmBadge.classList.remove('hidden'); } else itmBadge.classList.add('hidden');
-
-      const coopBadge = document.getElementById('admin-tab-coop-badge');
-      if(pendingCoops > 0) { coopBadge.textContent = pendingCoops; coopBadge.classList.remove('hidden'); } else coopBadge.classList.add('hidden');
-    }
-
-    function renderAdminStats() {
-      const c = document.getElementById('admin-content-stats');
-      c.innerHTML = `
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
-             <div class="text-gray-500 text-sm font-bold">總註冊人數</div>
-             <div class="text-4xl font-extrabold text-skyblue mt-2">${usersDB.length}</div>
-           </div>
-           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
-             <div class="text-gray-500 text-sm font-bold">已上架物品</div>
-             <div class="text-4xl font-extrabold text-gray-800 mt-2">${marketItems.filter(i=>i.status==='active').length}</div>
-           </div>
-           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
-             <div class="text-gray-500 text-sm font-bold">進行中交易</div>
-             <div class="text-4xl font-extrabold text-gray-800 mt-2">${userTrades.length}</div>
-           </div>
-           <div class="bg-red-50 p-4 rounded-2xl text-center border border-red-100">
-             <div class="text-red-500 text-sm font-bold">待審核/檢舉總計</div>
-             <div class="text-4xl font-extrabold text-red-500 mt-2">${reportsDB.filter(r=>r.status==='pending').length + marketItems.filter(i=>i.status==='pending_approval').length}</div>
-           </div>
-        </div>
-      `;
-    }
-
-    function renderAdminUsers() {
-      const c = document.getElementById('admin-content-users');
-      c.innerHTML = `
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse min-w-[600px]">
-            <thead>
-              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
-                <th class="p-3 font-bold">ID / 信箱</th>
-                <th class="p-3 font-bold">顯示名稱</th>
-                <th class="p-3 font-bold">貢獻值</th>
-                <th class="p-3 font-bold">目前等級</th>
-                <th class="p-3 font-bold text-right">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${usersDB.map(u => `
-                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
-                  <td class="p-3 text-sm text-gray-500"><div class="font-mono text-xs text-gray-400">${u.id}</div>${u.email}</td>
-                  <td class="p-3 text-sm font-bold text-gray-800">${u.name} <span class="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded ml-1 ${u.role==='admin'?'text-red-500':''}">${u.role}</span></td>
-                  <td class="p-3 text-sm font-bold text-skyblue">${u.points}</td>
-                  <td class="p-3 text-sm font-bold text-gray-600">${u.level}</td>
-                  <td class="p-3 text-right">
-                    <button onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition shadow-sm">調整</button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function renderAdminItems() {
-      const c = document.getElementById('admin-content-items');
-      
-      // 排序: 待審核在最上面
-      const sortedItems = [...marketItems].sort((a, b) => {
-        if(a.status === 'pending_approval' && b.status !== 'pending_approval') return -1;
-        if(a.status !== 'pending_approval' && b.status === 'pending_approval') return 1;
-        return b.id - a.id;
-      });
-
-      c.innerHTML = `
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse min-w-[600px]">
-            <thead>
-              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
-                <th class="p-3 font-bold">物品名稱</th>
-                <th class="p-3 font-bold">擁有者</th>
-                <th class="p-3 font-bold">狀態</th>
-                <th class="p-3 font-bold text-right">管理操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${sortedItems.map(item => {
-                let statusHtml = item.status === 'active' ? '<span class="text-green-500 font-bold">刊登中</span>' : 
-                                 (item.status === 'pending_approval' ? '<span class="text-orange-500 font-bold">⏳ 待審核</span>' : 
-                                 `<span class="text-red-500 font-bold">${item.status}</span>`);
-                
-                let actionsHtml = '';
-                if(item.status === 'pending_approval') {
-                   actionsHtml = `
-                    <button onclick="approveItem(${item.id})" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition shadow-sm mr-1">通過</button>
-                    <button onclick="openRejectItemModal(${item.id})" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition shadow-sm">駁回</button>
-                   `;
-                } else if(item.status === 'active') {
-                   actionsHtml = `<button onclick="forceTakedownItem(${item.id})" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-lg transition shadow-sm border border-red-200">強制下架</button>`;
-                } else {
-                   actionsHtml = `<span class="text-xs text-gray-400">已結案</span>`;
-                }
-
-                return `
-                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
-                  <td class="p-3 text-sm font-bold text-gray-800">${item.title}</td>
-                  <td class="p-3 text-sm font-bold text-gray-600">${item.owner}</td>
-                  <td class="p-3 text-sm">${statusHtml}</td>
-                  <td class="p-3 text-right whitespace-nowrap">${actionsHtml}</td>
-                </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    // 物品審核邏輯
-    window.approveItem = function(itemId) {
-      const item = marketItems.find(i => i.id == itemId);
-      if(item) {
-        item.status = 'active';
-        sendNotification(item.owner, '✅ 物品審核通過', `您刊登的「${item.title}」已通過審核並正式上架囉！`);
-        updateAdminBadges();
-        renderAdminItems();
-        if(document.getElementById('view-home').classList.contains('hidden') === false) renderHome();
-      }
-    }
-
-    window.openRejectItemModal = function(itemId) {
-      document.getElementById('reject-item-id').value = itemId;
-      document.getElementById('reject-item-reason').value = '';
-      openModal('admin-reject-item-modal');
-    }
-
-    window.confirmRejectItem = function() {
-      const itemId = document.getElementById('reject-item-id').value;
-      const reason = document.getElementById('reject-item-reason').value.trim();
-      if(!reason) { alert("請填寫駁回原因！"); return; }
-
-      const item = marketItems.find(i => i.id == itemId);
-      if(item) {
-        item.status = '被駁回';
-        sendNotification(item.owner, '❌ 物品審核未通過', `您刊登的「${item.title}」未通過審核。原因：${reason}`);
-        closeModal('admin-reject-item-modal');
-        updateAdminBadges();
-        renderAdminItems();
-      }
-    }
-
-    window.forceTakedownItem = function(itemId) {
-       customConfirm("強制下架", "確定要強制下架此物品嗎？", "🚨", "強制下架", "bg-red-500 hover:bg-red-600", () => {
-          const item = marketItems.find(i => i.id == itemId);
-          if(item) {
-             item.status = 'banned';
-             userTrades.forEach(t => {
-               if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') t.status = '已關閉';
-             });
-             sendNotification(item.owner, '⚠️ 物品強制下架', `您的物品「${item.title}」因違反守則，已被管理員強制下架。`);
-             renderAdminItems();
-          }
-       });
-    }
-
-    // 會員調整邏輯
-    window.openEditUserModal = function(userId) {
-      const user = usersDB.find(u => u.id === userId);
-      if(!user) return;
-      document.getElementById('edit-user-id').value = user.id;
-      document.getElementById('edit-user-name').textContent = `${user.name} (${user.level})`;
-      document.getElementById('edit-user-points').value = user.points;
-      openModal('admin-edit-user-modal');
-    }
-
-    window.saveAdminUserEdit = function() {
-      const userId = document.getElementById('edit-user-id').value;
-      const newPoints = parseInt(document.getElementById('edit-user-points').value, 10);
-      if(isNaN(newPoints)) { alert("請輸入有效的數字"); return; }
-
-      const user = usersDB.find(u => u.id === userId);
-      if(user) {
-        user.points = newPoints;
-        user.level = getLevelByPoints(newPoints);
-        if(currentUser && currentUser.id === user.id) {
-          currentUser.points = user.points;
-          currentUser.level = user.level;
-          updateNavUser();
-        }
-        closeModal('admin-edit-user-modal');
-        renderAdminUsers();
-        customConfirm("儲存成功", `已將 ${user.name} 的貢獻值更新為 ${newPoints}。`, "✅", "確認", "bg-gray-800");
-      }
-    }
-
-    // 檢舉審核邏輯
-    function renderAdminReports() {
-      const container = document.getElementById('admin-reports-list');
-      container.innerHTML = '';
-      const pending = reportsDB.filter(r => r.status === 'pending');
-
-      if (pending.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有待處理的檢舉</div>';
-      } else {
-        pending.forEach(r => {
-          container.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-md mb-2">單號: ${r.id}</span>
-                <h4 class="font-bold text-gray-800 text-sm">被檢舉: ${r.itemTitle} (擁有者: ${r.itemOwner})</h4>
-                <p class="text-xs text-gray-500 mt-1"><span class="font-bold">原因:</span> ${r.reason}</p>
-              </div>
-              <button onclick="reviewReport('${r.id}')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold rounded-xl transition shadow-md shrink-0">進行審核</button>
-            </div>
-          `;
-        });
-      }
-    }
-
-    window.reviewReport = function(id) {
-      const report = reportsDB.find(r => r.id === id);
-      if (!report) return;
-      currentReportId = id;
-      document.getElementById('admin-report-details').innerHTML = `
-        <p><span class="font-bold">被檢舉人：</span>${report.itemOwner}</p>
-        <p><span class="font-bold">物品名稱：</span>${report.itemTitle}</p>
-        <p><span class="font-bold">檢舉人：</span>${report.reporter}</p>
-        <p><span class="font-bold">檢舉原因：</span>${report.reason}</p>
-        <p><span class="font-bold">說明：</span>${report.desc}</p>
-      `;
-      document.getElementById('admin-report-note').value = '';
-      openModal('admin-report-modal');
-    };
-
-    window.processReport = function(action) {
-      const report = reportsDB.find(r => r.id === currentReportId);
-      const note = document.getElementById('admin-report-note').value.trim();
-      if (!report) return;
-
-      if (action === 'ban' && !note) {
-          alert("請填寫處理備註 (即強制下架原因)，以便通知使用者！");
-          return;
-      }
-
-      if (action === 'ban') {
-        report.status = 'banned';
-        const item = marketItems.find(i => i.title === report.itemTitle && i.owner === report.itemOwner);
-        if (item) item.status = 'banned';
-        
-        const ownerUser = usersDB.find(u => u.name === report.itemOwner);
-        if(ownerUser) { ownerUser.points = Math.max(0, ownerUser.points - 30); ownerUser.level = getLevelByPoints(ownerUser.points); }
-        
-        const reporterUser = usersDB.find(u => u.name === report.reporter);
-        if(reporterUser) { reporterUser.points += 5; reporterUser.level = getLevelByPoints(reporterUser.points); }
-
-        sendNotification(report.itemOwner, '⚠️ 物品下架通知', `您的物品「${report.itemTitle}」因違反社群守則已被管理員下架。備註: ${note}`);
-        sendNotification(report.reporter, '✅ 檢舉處理完成', `您檢舉的「${report.itemTitle}」已處理完畢並下架，感謝維護社群！`);
-      } else {
-        report.status = 'rejected';
-        sendNotification(report.reporter, 'ℹ️ 檢舉審核結果', `您檢舉的「${report.itemTitle}」經審核未發現違規。備註: ${note}`);
-      }
-
-      closeModal('admin-report-modal');
-      updateAdminBadges();
-      renderAdminReports();
-      customConfirm("審核完畢", `已處理此檢舉單。`, "✅", "確認", "bg-gray-800");
-    };
-
-    // 合作申請邏輯
-    function renderAdminCoop() {
-      const container = document.getElementById('admin-coop-list');
-      container.innerHTML = '';
-      const list = coopApplicationsDB;
-
-      if (list.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有收到合作申請</div>';
-      } else {
-        list.forEach(c => {
-          container.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm mb-4">
-              <div class="flex justify-between items-start mb-3">
-                <div>
-                  <span class="inline-block px-2 py-0.5 ${c.status==='未處理'?'bg-blue-100 text-blue-600':'bg-gray-100 text-gray-500'} text-[10px] font-bold rounded-md mb-2">${c.status}</span>
-                  <h4 class="font-bold text-gray-800 text-lg">${c.brandName} <span class="text-sm font-normal text-gray-500">(${c.plan})</span></h4>
-                </div>
-                <span class="text-xs text-gray-400">${c.date}</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-xl">
-                <p><span class="font-bold">聯絡人：</span>${c.contactName} ${c.jobTitle}</p>
-                <p><span class="font-bold">信箱：</span><a href="mailto:${c.email}" class="text-skyblue hover:underline">${c.email}</a></p>
-                <p><span class="font-bold">電話：</span>${c.phone||'未提供'}</p>
-                <p><span class="font-bold">LINE：</span>${c.lineId||'未提供'}</p>
-                <p class="md:col-span-2"><span class="font-bold">合作目標：</span>${c.goals}</p>
-                <p class="md:col-span-2"><span class="font-bold">產業分類：</span>${c.categories}</p>
-              </div>
-              ${c.status === '未處理' ? `<button onclick="markCoopDone('${c.id}')" class="mt-3 text-xs font-bold text-skyblue hover:text-skyblue-hover transition">標記為已處理</button>` : ''}
-            </div>
-          `;
-        });
-      }
-    }
-
-    window.markCoopDone = function(id) {
-      const app = coopApplicationsDB.find(c => c.id === id);
-      if(app) {
-        app.status = '已處理';
-        updateAdminBadges();
-        renderAdminCoop();
-      }
-    }
-
-    function renderAdmin() {
-      if (currentUser?.role !== 'admin') return;
-      updateAdminBadges();
-      switchAdminTab('stats');
-    }
-
-    // --- STREAMING_CHUNK:文件與表單 Modal... ---
+    // --- 文件與表單視窗 ---
     window.showDocument = function(type) {
       const titleEl = document.getElementById('document-title');
       const contentEl = document.getElementById('document-content');
@@ -1827,14 +1042,15 @@
           </div>
         `;
       }
-      openModal('document-modal');
+      window.openModal('document-modal');
     };
 
-    window.submitCoopForm = function(e, form) {
+    window.submitCoopForm = async function(e, form) {
       e.preventDefault();
       const formData = new FormData(form);
+      const dataId = 'C' + Date.now();
       const data = {
-          id: 'C' + Date.now(),
+          id: dataId,
           plan: formData.get('plan') || '未選擇',
           brandName: formData.get('brandName'),
           contactName: formData.get('contactName'),
@@ -1845,18 +1061,961 @@
           goals: formData.getAll('goal').join(', ') || '未選擇',
           categories: formData.getAll('category').join(', ') || '未選擇',
           date: new Date().toLocaleDateString(),
-          status: '未處理'
+          status: '未處理',
+          createdAt: Date.now()
       };
-      coopApplicationsDB.unshift(data);
-      updateAdminBadges();
+      
+      await window.fbSet('coops', dataId, data);
 
       form.innerHTML = `<div class='text-center py-16'><div class='text-5xl mb-4'>🎉</div><h4 class='text-2xl font-extrabold text-gray-800 mb-2'>表單已送出！</h4><p class='text-gray-600'>我們將盡快把量身打造的方案與範例報表寄至您的信箱，請留意收件。</p><button type='button' onclick='closeModal("document-modal")' class='mt-8 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition'>關閉視窗</button></div>`;
     }
 
-    // 啟動初始化
-    window.onload = () => {
-      renderHome();
-      updateNavUser();
+    // --- STREAMING_CHUNK:身分驗證與登入邏輯... ---
+    window.switchAuthMode = function(mode) {
+      document.getElementById('auth-login-form').classList.toggle('hidden', mode !== 'login');
+      document.getElementById('auth-register-form').classList.toggle('hidden', mode !== 'register');
+      
+      document.getElementById('auth-tab-login').className = mode === 'login' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
+      document.getElementById('auth-tab-register').className = mode === 'register' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
+    };
+
+    window.fastLogin = function(userId) {
+      const user = window.usersDB.find(u => u.id === userId);
+      if (user) {
+        window.currentUser = { ...user };
+        window.updateNavUser();
+        window.switchView('home');
+        window.customConfirm("歡迎回來", "快速登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+      }
+    };
+
+    window.submitAuth = async function(mode) {
+      if (mode === 'login') {
+        const email = document.getElementById('login-email').value.trim();
+        const pwd = document.getElementById('login-password').value.trim();
+        if (!email || !pwd) {
+          window.customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
+          return;
+        }
+        const user = window.usersDB.find(u => u.email === email && u.password === pwd);
+        if (!user) {
+          const namePrefix = email.split('@')[0];
+          const nId = 'u' + Date.now();
+          const newUser = { id: nId, email: email, password: pwd, name: namePrefix, phone: '', birth: '', role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
+          await window.fbSet('users', nId, newUser);
+          window.currentUser = { ...newUser };
+          window.customConfirm("自動註冊成功", `找不到該帳號，已自動為您以「${namePrefix}」註冊並登入，並贈送 10 點新手貢獻值！`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+        } else {
+          window.currentUser = { ...user };
+          window.customConfirm("歡迎回來", "登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+        }
+      } 
+      else if (mode === 'register') {
+        const email = document.getElementById('reg-email').value.trim();
+        const pwd = document.getElementById('reg-password').value.trim();
+        const name = document.getElementById('reg-name').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+        const birth = document.getElementById('reg-birth').value.trim();
+
+        if (!email || !pwd || !name) {
+          window.customConfirm("資訊不完整", "請填寫必填欄位 (Email、密碼、顯示名稱)！", "⚠️", "確認", "bg-gray-800");
+          return;
+        }
+        if (window.usersDB.find(u => u.email === email)) {
+          window.customConfirm("註冊失敗", "此 Email 已經被註冊過囉！", "❌", "確認", "bg-red-500 hover:bg-red-600");
+          return;
+        }
+
+        const nId = 'u' + Date.now();
+        const newUser = { id: nId, email: email, password: pwd, name: name, phone: phone, birth: birth, role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
+        await window.fbSet('users', nId, newUser);
+        window.currentUser = { ...newUser };
+        window.customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+      }
+      
+      window.updateNavUser();
+      window.switchView('home');
+      
+      ['login-email', 'login-password', 'reg-email', 'reg-password', 'reg-name', 'reg-phone', 'reg-birth'].forEach(id => document.getElementById(id).value = '');
+    };
+
+    window.forgotPassword = function() {
+      const email = document.getElementById('login-email').value.trim();
+      if (!email) {
+        window.customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件，我們才能將密碼重設信件寄給您！", "💡", "確認", "bg-gray-800");
+        return;
+      }
+      window.customConfirm("重設信已寄出", `我們已將密碼重設連結寄至 ${email}，請至信箱收取並依指示重設密碼。`, "✉️", "我知道了", "bg-skyblue hover:bg-skyblue-hover");
+    };
+
+    window.updateNavUser = function() {
+      const displaySpan = document.getElementById("user-display");
+      const loginBtn = document.getElementById("btn-login-nav");
+      const adminBtn = document.getElementById("btn-admin-nav");
+      const profileBtn = document.getElementById("btn-user-profile");
+      const notifBtn = document.getElementById("btn-nav-notif");
+      
+      if (window.currentUser) {
+        displaySpan.textContent = `👤 ${window.currentUser.name}`;
+        displaySpan.classList.remove('hidden');
+        loginBtn.textContent = "登出";
+        loginBtn.onclick = window.logout;
+        loginBtn.classList.replace('bg-skyblue', 'bg-gray-200');
+        loginBtn.classList.replace('text-white', 'text-gray-800');
+        
+        notifBtn.style.display = "flex";
+        
+        if (window.currentUser.role === "admin") {
+          adminBtn.style.display = "inline-flex";
+          profileBtn.style.display = "none";
+          window.updateAdminBadges();
+        } else {
+          adminBtn.style.display = "none";
+          profileBtn.style.display = "inline-flex";
+          document.getElementById('setting-name').value = window.currentUser.name;
+          document.getElementById('setting-email').value = window.currentUser.email;
+          document.getElementById('profile-name').textContent = window.currentUser.name;
+          document.getElementById('profile-level-badge').textContent = window.currentUser.level;
+        }
+        window.updateNotificationBadges();
+      } else {
+        displaySpan.classList.add('hidden');
+        loginBtn.textContent = "登入 / 註冊";
+        loginBtn.onclick = () => window.switchView('login');
+        loginBtn.classList.replace('bg-gray-200', 'bg-skyblue');
+        loginBtn.classList.replace('text-gray-800', 'text-white');
+        adminBtn.style.display = "none";
+        profileBtn.style.display = "none";
+        notifBtn.style.display = "none";
+      }
+    };
+
+    window.logout = function() {
+      window.customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認登出", "bg-red-500 hover:bg-red-600", () => {
+        window.currentUser = null;
+        window.updateNavUser();
+        window.switchView('home');
+      });
+    };
+
+    // --- STREAMING_CHUNK:探索頁面與詳情... ---
+    window.renderHome = function() {
+      const grid = document.getElementById('items-grid');
+      grid.innerHTML = '';
+      
+      const activeItems = window.marketItems.filter(item => item.status === 'active');
+
+      activeItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
+        card.onclick = () => {
+          window.selectedItem = item;
+          window.renderDetail();
+          window.switchView('detail');
+        };
+
+        card.innerHTML = `
+          <div class="flex-1">
+            <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
+              ${item.type}
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3>
+            <p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p>
+          </div>
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+            <span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span>
+            <span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    window.renderDetail = function() {
+      const c = document.getElementById('detail-content');
+      if (!window.selectedItem) return;
+
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">
+            ${window.selectedItem.type}
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${window.selectedItem.title}</h2>
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">
+              ${window.selectedItem.owner.charAt(0)}
+            </div>
+            <span class="text-gray-600 font-bold">${window.selectedItem.owner}</span>
+            <span class="text-gray-300 mx-2">|</span>
+            <span class="text-gray-400 text-sm font-medium">發布於近期</span>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100">
+          <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4>
+          <p class="text-gray-600 leading-relaxed">${window.selectedItem.desc}</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8">
+          <button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md transform hover:-translate-y-1 flex items-center justify-center gap-2">
+            <span>🎁</span> 提出交換申請
+          </button>
+          <button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">
+            🚨 檢舉此物品
+          </button>
+        </div>
+      `;
+
+      document.getElementById('btn-request-trade').onclick = () => {
+        if (!window.currentUser) {
+          window.switchView('login');
+          return;
+        }
+        if (window.currentUser.name === window.selectedItem.owner) {
+          window.customConfirm("無法申請", "您不能對自己刊登的物品提出交換申請喔！", "💡", "我知道了", "bg-gray-800 hover:bg-gray-700");
+          return;
+        }
+        
+        document.getElementById('trade-offer-desc').value = '';
+        document.getElementById('trade-method').value = '面交';
+        window.toggleShippingFee();
+        window.openModal('trade-modal');
+      };
+    }
+
+    // --- STREAMING_CHUNK:雲端資料寫入與狀態更新... ---
+    window.submitUpload = async function() {
+      if (!window.currentUser) { window.switchView('login'); return; }
+      
+      const title = document.getElementById('upload-title').value.trim();
+      const type = document.getElementById('upload-type').value;
+      const desc = document.getElementById('upload-desc').value.trim();
+      
+      if (!title || !desc) {
+        window.customConfirm("提示", "請完整填寫物品名稱與描述！", "⚠️", "確認", "bg-gray-800");
+        return;
+      }
+
+      const id = Date.now().toString();
+      await window.fbSet('marketItems', id, {
+        id: id,
+        title: title,
+        desc: desc,
+        owner: window.currentUser.name,
+        type: type,
+        status: 'pending_approval',
+        createdAt: Date.now()
+      });
+      
+      document.getElementById('upload-title').value = '';
+      document.getElementById('upload-desc').value = '';
+
+      window.customConfirm("已送出審核！", "您的物品已同步至雲端並送交審核，審核通過後即會顯示於探索列表中。", "⏳", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
+        window.switchView('profile');
+        window.switchProfileSidebar('wallet');
+        window.switchWalletTab('listed');
+      });
+    };
+
+    window.toggleShippingFee = function() {
+      const method = document.getElementById('trade-method').value;
+      const feeContainer = document.getElementById('shipping-fee-container');
+      if (method === '寄送') feeContainer.classList.remove('hidden');
+      else feeContainer.classList.add('hidden');
+    }
+
+    window.submitTradeOffer = async function() {
+      const desc = document.getElementById('trade-offer-desc').value.trim();
+      if (!desc) {
+        window.customConfirm("提示", "請填寫您想用來交換的物品內容！", "⚠️", "確認", "bg-gray-800");
+        return;
+      }
+      
+      const method = document.getElementById('trade-method').value;
+      let shippingInfo = method === '寄送' ? ` (運費: ${document.getElementById('trade-shipping-fee').value})` : "";
+
+      const id = Date.now().toString();
+      await window.fbSet('userTrades', id, {
+        id: id, 
+        itemTitle: window.selectedItem.title, 
+        itemOwner: window.selectedItem.owner,
+        applicant: window.currentUser.name,
+        offerDesc: `${desc} [${method}${shippingInfo}]`,
+        status: '待審核',
+        type: 'applied',
+        createdAt: Date.now()
+      });
+      
+      await window.sendNotification(window.selectedItem.owner, '有人對您的物品提出交換', `${window.currentUser.name} 想要用他的物品和您交換「${window.selectedItem.title}」，快去錢包查看吧！`);
+
+      window.closeModal('trade-modal');
+      window.customConfirm("申請已送出！", "已同步至雲端並通知物品主人，若對方同意交換，將會透過通知中心與您聯繫。", "🎉", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
+        window.switchView('profile');
+        window.switchProfileSidebar('wallet');
+        window.switchWalletTab('applied');
+      });
+    }
+
+    window.openReportModal = function() {
+      if (!window.currentUser) { window.switchView('login'); return; }
+      document.getElementById('report-reason').value = '';
+      document.getElementById('report-desc').value = '';
+      document.getElementById('report-agree').checked = false;
+      window.openModal('report-modal');
+    };
+
+    window.submitReport = async function() {
+      const reason = document.getElementById('report-reason').value;
+      const desc = document.getElementById('report-desc').value;
+      const agree = document.getElementById('report-agree').checked;
+
+      if (!reason || !desc || !agree) {
+        window.customConfirm("提示", "請完整填寫必填欄位並勾選同意。", "⚠️", "確認", "bg-gray-800");
+        return;
+      }
+
+      const id = 'r' + Date.now().toString();
+      await window.fbSet('reports', id, {
+        id: id,
+        itemTitle: window.selectedItem.title,
+        itemOwner: window.selectedItem.owner,
+        reporter: window.currentUser.name,
+        reason: reason,
+        desc: desc,
+        status: 'pending',
+        date: new Date().toLocaleDateString(),
+        createdAt: Date.now()
+      });
+
+      window.closeModal('report-modal');
+      window.customConfirm("檢舉已送出", "感謝您的回報，我們的管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
+    };
+
+    // --- STREAMING_CHUNK:個人設定與雲端連動更新... ---
+    window.switchProfileSidebar = function(tab) {
+      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
+      
+      document.querySelectorAll('.profile-tab').forEach(el => {
+        el.classList.remove('text-skyblue', 'bg-skyblue-light');
+        el.classList.add('text-gray-600', 'hover:bg-gray-50');
+      });
+      const activeTab = document.getElementById(`tab-${tab}`);
+      activeTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
+      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
+
+      if (tab === 'wallet') window.renderWallet();
+      if (tab === 'notifications') window.renderNotifications();
+      if (tab === 'points') window.renderPoints();
+    };
+
+    window.saveProfileSettings = async function() {
+      const newName = document.getElementById('setting-name').value.trim();
+      if (!newName) {
+        window.customConfirm("提示", "顯示名稱不能為空！", "⚠️", "確認", "bg-gray-800");
+        return;
+      }
+      const oldName = window.currentUser.name;
+      window.currentUser.name = newName;
+      
+      // 同步更新使用者名稱到雲端
+      await window.fbUpdate('users', window.currentUser.id, { name: newName });
+      
+      // 批次連動更新其他相關雲端紀錄
+      window.marketItems.forEach(i => { 
+        if(i.owner === oldName) window.fbUpdate('marketItems', i.id, { owner: newName }); 
+      });
+      window.userTrades.forEach(t => { 
+        let updates = {};
+        if(t.applicant === oldName) updates.applicant = newName; 
+        if(t.itemOwner === oldName) updates.itemOwner = newName;
+        if(Object.keys(updates).length > 0) window.fbUpdate('userTrades', t.id, updates);
+      });
+      window.reportsDB.forEach(r => {
+        let updates = {};
+        if(r.reporter === oldName) updates.reporter = newName;
+        if(r.itemOwner === oldName) updates.itemOwner = newName;
+        if(Object.keys(updates).length > 0) window.fbUpdate('reports', r.id, updates);
+      });
+
+      window.updateNavUser();
+      window.renderProfile();
+      window.customConfirm("儲存成功", "您的個人設定已經更新至雲端並全站同步完畢。", "✅", "確認", "bg-gray-800 hover:bg-gray-700");
+    };
+
+    window.switchWalletTab = function(type) {
+      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
+
+      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => {
+        el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue');
+        el.classList.add('text-gray-500');
+      });
+      const activeTab = document.getElementById(`wallet-tab-${type}`);
+      activeTab.classList.remove('text-gray-500');
+      activeTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
+      
+      window.renderWallet();
+    };
+
+    window.renderWallet = function() {
+      // 1. 我上架的
+      const listedContainer = document.getElementById('my-listed-items');
+      listedContainer.innerHTML = '';
+      const myItems = window.marketItems.filter(item => item.owner === window.currentUser.name && item.status !== 'banned');
+      
+      if (myItems.length === 0) {
+        listedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
+      } else {
+        myItems.forEach(item => {
+          const applicants = window.userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === window.currentUser.name);
+          let appHtml = '';
+          if (applicants.length > 0) {
+            appHtml = `<div class="mt-4 border-t border-gray-100 pt-3">
+              <p class="text-sm font-bold text-gray-700 mb-2">🎁 收到 ${applicants.length} 個交換提案：</p>
+              ${applicants.map(app => `
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
+                  <div>
+                    <span class="font-bold text-gray-800 text-sm">${app.applicant}</span>
+                    <p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p>
+                    <span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border border-gray-200 inline-block mt-1">${app.status}</span>
+                  </div>
+                  ${app.status === '待審核' ? `<button onclick="acceptTrade('${app.id}')" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg transition shadow-sm">✅ 選擇他</button>` : ''}
+                  ${app.status === '已成交' ? `<button class="px-3 py-1.5 bg-gray-800 text-white text-xs font-bold rounded-lg transition shadow-sm">💬 私訊</button>` : ''}
+                </div>
+              `).join('')}
+            </div>`;
+          }
+
+          let takedownBtn = '';
+          if (item.status === 'active' || item.status === 'pending_approval') {
+             takedownBtn = `<button onclick="openTakedownModal('${item.id}')" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 rounded transition">🗑️ 下架</button>`;
+          }
+          
+          let statusText = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
+          let statusColor = item.status === 'pending_approval' ? 'text-orange-500' : 'text-gray-400';
+
+          listedContainer.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div>
+                  <h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4>
+                  <p class="text-xs ${statusColor} font-bold mt-1">狀態: ${statusText}</p>
+                </div>
+                ${takedownBtn}
+              </div>
+              ${appHtml}
+            </div>
+          `;
+        });
+      }
+
+      // 2. 我申請的
+      const appliedContainer = document.getElementById('my-applied-items');
+      appliedContainer.innerHTML = '';
+      const myApps = window.userTrades.filter(t => t.applicant === window.currentUser.name);
+      
+      if (myApps.length === 0) {
+        appliedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
+      } else {
+        myApps.forEach(app => {
+          let statusColor = 'text-orange-500';
+          let bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed'; // 預設不能按
+          let btnText = '⏳ 待審核';
+
+          if (app.status === '已成交') {
+            statusColor = 'text-green-500';
+            bgClass = 'bg-skyblue hover:bg-skyblue-hover text-white shadow-sm cursor-pointer';
+            btnText = '💬 聯絡對方';
+          } else if (app.status === '已關閉') {
+            statusColor = 'text-gray-400';
+            bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50';
+            btnText = '🔒 已關閉';
+          }
+
+          appliedContainer.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p>
+                <h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4>
+                <p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p>
+                <div class="mt-2 text-xs font-bold ${statusColor}">${app.status}</div>
+              </div>
+              <button class="px-4 py-2 ${bgClass} text-sm font-bold rounded-xl transition w-full sm:w-auto text-center shrink-0">
+                ${btnText}
+              </button>
+            </div>
+          `;
+        });
+      }
+    }
+
+    window.openTakedownModal = function(itemId) {
+      document.getElementById('takedown-item-id').value = itemId;
+      document.getElementById('takedown-reason').value = '';
+      document.getElementById('takedown-reason-desc').value = '';
+      window.openModal('takedown-modal');
+    }
+
+    window.confirmTakedown = async function() {
+      const itemId = document.getElementById('takedown-item-id').value;
+      const reason = document.getElementById('takedown-reason').value;
+      const desc = document.getElementById('takedown-reason-desc').value.trim();
+      
+      if (!reason) { window.customConfirm("提示", "請選擇下架原因！", "⚠️", "確認", "bg-gray-800"); return; }
+      const finalReason = desc ? `${reason} (${desc})` : reason;
+
+      const item = window.marketItems.find(i => i.id === itemId);
+      if (item) {
+        await window.fbUpdate('marketItems', item.id, { status: '已下架 (' + finalReason + ')' });
+        
+        // 關閉相關申請並通知
+        for (let t of window.userTrades) {
+          if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
+            await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
+            await window.sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架 (原因: ${finalReason})，申請已自動關閉。`);
+          }
+        }
+        
+        window.closeModal('takedown-modal');
+        window.customConfirm("下架完成", "該物品已同步從雲端列表中移除。", "✅", "確認", "bg-gray-800");
+      }
+    }
+
+    window.acceptTrade = function(tradeId) {
+      window.customConfirm("確認選擇", "選擇此提案後，其他人的申請將會自動關閉，並為您雙方開啟聊天室。確定要交換嗎？", "🤝", "確定交換", "bg-green-500 hover:bg-green-600", async () => {
+        const trade = window.userTrades.find(t => t.id === tradeId);
+        if (trade) {
+          await window.fbUpdate('userTrades', trade.id, { status: '已成交' });
+          
+          for (let t of window.userTrades) {
+            if (t.itemTitle === trade.itemTitle && t.id !== tradeId) {
+              await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
+            }
+          }
+          
+          const item = window.marketItems.find(i => i.title === trade.itemTitle && i.owner === window.currentUser.name);
+          if (item) await window.fbUpdate('marketItems', item.id, { status: '已換出' });
+
+          const newPoints = window.currentUser.points + 50;
+          await window.fbUpdate('users', window.currentUser.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
+          
+          await window.sendNotification(trade.applicant, '🎉 您的交換提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的交換提案，快去私訊他吧！`);
+        }
+      });
+    }
+
+    window.renderPoints = function() {
+      document.getElementById('points-display').textContent = window.currentUser.points;
+      document.getElementById('level-display-box').textContent = window.currentUser.level;
+    }
+
+    window.renderNotifications = function() {
+      const container = document.getElementById('notification-list');
+      container.innerHTML = '';
+      const myNotifs = window.notificationsDB.filter(n => n.user === window.currentUser.name);
+
+      if (myNotifs.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有新通知</div>';
+      } else {
+        myNotifs.forEach(n => {
+          container.innerHTML += `
+            <div class="p-4 rounded-xl border ${n.isRead ? 'bg-white border-gray-100' : 'bg-blue-50 border-blue-100'}">
+              <div class="flex justify-between items-start mb-1">
+                <h5 class="font-bold text-gray-800 text-sm">${n.title}</h5>
+                <span class="text-[10px] text-gray-400">${n.date}</span>
+              </div>
+              <p class="text-xs text-gray-600">${n.content}</p>
+            </div>
+          `;
+        });
+      }
+    }
+
+    window.renderProfile = function() {
+      if (!window.currentUser) { window.switchView('login'); return; }
+      document.getElementById('profile-name').textContent = window.currentUser.name;
+      document.getElementById('profile-avatar-letter').textContent = window.currentUser.name.charAt(0);
+      document.getElementById('profile-level-badge').textContent = window.currentUser.level;
+      document.getElementById('setting-name').value = window.currentUser.name;
+      document.getElementById('setting-email').value = window.currentUser.email;
+      window.switchProfileSidebar('wallet');
+      window.updateNotificationBadges();
+    }
+
+    window.getLevelByPoints = function(points) {
+      if(points >= 500) return '💎 鑽石';
+      if(points >= 200) return '🥇 黃金';
+      if(points >= 50) return '🥈 白銀';
+      return '🥉 青銅';
+    }
+
+    // --- STREAMING_CHUNK:管理員後台同步操作... ---
+    window.switchAdminTab = function(tab) {
+      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
+
+      document.querySelectorAll('.admin-tab').forEach(el => {
+        el.classList.remove('text-skyblue', 'bg-skyblue-light');
+        el.classList.add('text-gray-600', 'bg-gray-50');
+      });
+      const activeTab = document.getElementById(`admin-tab-${tab}`);
+      activeTab.classList.remove('text-gray-600', 'bg-gray-50');
+      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
+
+      if(tab === 'stats') window.renderAdminStats();
+      if(tab === 'reports') window.renderAdminReports();
+      if(tab === 'users') window.renderAdminUsers();
+      if(tab === 'items') window.renderAdminItems();
+      if(tab === 'coop') window.renderAdminCoop();
+    };
+
+    window.updateAdminBadges = function() {
+      const pendingReports = window.reportsDB.filter(r => r.status === 'pending').length;
+      const pendingItems = window.marketItems.filter(i => i.status === 'pending_approval').length;
+      const pendingCoops = window.coopApplicationsDB.filter(c => c.status === '未處理').length;
+      const totalPending = pendingReports + pendingItems + pendingCoops;
+      
+      const navBadge = document.getElementById('admin-badge');
+      if (totalPending > 0) { navBadge.textContent = totalPending; navBadge.classList.remove('hidden'); } 
+      else navBadge.classList.add('hidden');
+
+      const repBadge = document.getElementById('admin-tab-reports-badge');
+      if(pendingReports > 0) { repBadge.textContent = pendingReports; repBadge.classList.remove('hidden'); } else repBadge.classList.add('hidden');
+
+      const itmBadge = document.getElementById('admin-tab-items-badge');
+      if(pendingItems > 0) { itmBadge.textContent = pendingItems; itmBadge.classList.remove('hidden'); } else itmBadge.classList.add('hidden');
+
+      const coopBadge = document.getElementById('admin-tab-coop-badge');
+      if(pendingCoops > 0) { coopBadge.textContent = pendingCoops; coopBadge.classList.remove('hidden'); } else coopBadge.classList.add('hidden');
+    }
+
+    window.renderAdminStats = function() {
+      const c = document.getElementById('admin-content-stats');
+      c.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">總註冊人數</div>
+             <div class="text-4xl font-extrabold text-skyblue mt-2">${window.usersDB.length}</div>
+           </div>
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">已上架物品</div>
+             <div class="text-4xl font-extrabold text-gray-800 mt-2">${window.marketItems.filter(i=>i.status==='active').length}</div>
+           </div>
+           <div class="bg-gray-50 p-4 rounded-2xl text-center border border-gray-100">
+             <div class="text-gray-500 text-sm font-bold">進行中交易</div>
+             <div class="text-4xl font-extrabold text-gray-800 mt-2">${window.userTrades.length}</div>
+           </div>
+           <div class="bg-red-50 p-4 rounded-2xl text-center border border-red-100">
+             <div class="text-red-500 text-sm font-bold">待審核/檢舉總計</div>
+             <div class="text-4xl font-extrabold text-red-500 mt-2">${window.reportsDB.filter(r=>r.status==='pending').length + window.marketItems.filter(i=>i.status==='pending_approval').length}</div>
+           </div>
+        </div>
+      `;
+    }
+
+    window.renderAdminUsers = function() {
+      const c = document.getElementById('admin-content-users');
+      c.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
+                <th class="p-3 font-bold">ID / 信箱</th>
+                <th class="p-3 font-bold">顯示名稱</th>
+                <th class="p-3 font-bold">貢獻值</th>
+                <th class="p-3 font-bold">目前等級</th>
+                <th class="p-3 font-bold text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${window.usersDB.map(u => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                  <td class="p-3 text-sm text-gray-500"><div class="font-mono text-xs text-gray-400">${u.id}</div>${u.email}</td>
+                  <td class="p-3 text-sm font-bold text-gray-800">${u.name} <span class="text-[10px] bg-gray-200 px-1.5 py-0.5 rounded ml-1 ${u.role==='admin'?'text-red-500':''}">${u.role}</span></td>
+                  <td class="p-3 text-sm font-bold text-skyblue">${u.points}</td>
+                  <td class="p-3 text-sm font-bold text-gray-600">${u.level}</td>
+                  <td class="p-3 text-right">
+                    <button onclick="openEditUserModal('${u.id}')" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition shadow-sm">調整</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    window.renderAdminItems = function() {
+      const c = document.getElementById('admin-content-items');
+      
+      const sortedItems = [...window.marketItems].sort((a, b) => {
+        if(a.status === 'pending_approval' && b.status !== 'pending_approval') return -1;
+        if(a.status !== 'pending_approval' && b.status === 'pending_approval') return 1;
+        return b.createdAt - a.createdAt;
+      });
+
+      c.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr class="border-b-2 border-gray-100 text-gray-500 text-sm">
+                <th class="p-3 font-bold">物品名稱</th>
+                <th class="p-3 font-bold">擁有者</th>
+                <th class="p-3 font-bold">狀態</th>
+                <th class="p-3 font-bold text-right">管理操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedItems.map(item => {
+                let statusHtml = item.status === 'active' ? '<span class="text-green-500 font-bold">刊登中</span>' : 
+                                 (item.status === 'pending_approval' ? '<span class="text-orange-500 font-bold">⏳ 待審核</span>' : 
+                                 `<span class="text-red-500 font-bold">${item.status}</span>`);
+                
+                let actionsHtml = '';
+                if(item.status === 'pending_approval') {
+                   actionsHtml = `
+                    <button onclick="approveItem('${item.id}')" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition shadow-sm mr-1">通過</button>
+                    <button onclick="openRejectItemModal('${item.id}')" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition shadow-sm">駁回</button>
+                   `;
+                } else if(item.status === 'active') {
+                   actionsHtml = `<button onclick="forceTakedownItem('${item.id}')" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-500 text-xs font-bold rounded-lg transition shadow-sm border border-red-200">強制下架</button>`;
+                } else {
+                   actionsHtml = `<span class="text-xs text-gray-400">已結案</span>`;
+                }
+
+                return `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                  <td class="p-3 text-sm font-bold text-gray-800">${item.title}</td>
+                  <td class="p-3 text-sm font-bold text-gray-600">${item.owner}</td>
+                  <td class="p-3 text-sm">${statusHtml}</td>
+                  <td class="p-3 text-right whitespace-nowrap">${actionsHtml}</td>
+                </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    window.approveItem = async function(itemId) {
+      const item = window.marketItems.find(i => i.id === itemId);
+      if(item) {
+        await window.fbUpdate('marketItems', item.id, { status: 'active' });
+        await window.sendNotification(item.owner, '✅ 物品審核通過', `您刊登的「${item.title}」已同步通過審核並正式上架囉！`);
+      }
+    }
+
+    window.openRejectItemModal = function(itemId) {
+      document.getElementById('reject-item-id').value = itemId;
+      document.getElementById('reject-item-reason-select').value = '';
+      document.getElementById('reject-item-reason').value = '';
+      window.openModal('admin-reject-item-modal');
+    }
+
+    window.confirmRejectItem = async function() {
+      const itemId = document.getElementById('reject-item-id').value;
+      const selectReason = document.getElementById('reject-item-reason-select').value;
+      const textReason = document.getElementById('reject-item-reason').value.trim();
+      
+      if(!selectReason) { window.customConfirm("提示", "請選擇駁回原因！", "⚠️", "確認", "bg-gray-800"); return; }
+      const finalReason = textReason ? `${selectReason} - ${textReason}` : selectReason;
+
+      const item = window.marketItems.find(i => i.id === itemId);
+      if(item) {
+        await window.fbUpdate('marketItems', item.id, { status: '被駁回' });
+        await window.sendNotification(item.owner, '❌ 物品審核未通過', `您刊登的「${item.title}」未通過審核。原因：${finalReason}`);
+        window.closeModal('admin-reject-item-modal');
+      }
+    }
+
+    window.forceTakedownItem = function(itemId) {
+       document.getElementById('force-takedown-item-id').value = itemId;
+       document.getElementById('force-takedown-reason-select').value = '';
+       document.getElementById('force-takedown-reason').value = '';
+       window.openModal('admin-force-takedown-modal');
+    }
+
+    window.confirmForceTakedown = async function() {
+       const itemId = document.getElementById('force-takedown-item-id').value;
+       const selectReason = document.getElementById('force-takedown-reason-select').value;
+       const textReason = document.getElementById('force-takedown-reason').value.trim();
+       
+       if(!selectReason) { 
+           window.customConfirm("提示", "請選擇強制下架原因！", "⚠️", "確認", "bg-gray-800"); 
+           return; 
+       }
+       const finalReason = textReason ? `${selectReason} - ${textReason}` : selectReason;
+
+       const item = window.marketItems.find(i => i.id === itemId);
+       if(item) {
+          await window.fbUpdate('marketItems', item.id, { status: 'banned' });
+          
+          for(let t of window.userTrades) {
+            if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
+                await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
+            }
+          }
+          await window.sendNotification(item.owner, '⚠️ 物品強制下架', `您的物品「${item.title}」因違反守則已被雲端強制下架。原因：${finalReason}`);
+          window.closeModal('admin-force-takedown-modal');
+          window.customConfirm("強制下架完成", "該物品已被下架，並已發送違規通知給使用者。", "🚨", "確認", "bg-gray-800");
+       }
+    }
+
+    window.openEditUserModal = function(userId) {
+      const user = window.usersDB.find(u => u.id === userId);
+      if(!user) return;
+      document.getElementById('edit-user-id').value = user.id;
+      document.getElementById('edit-user-name').textContent = `${user.name} (${user.level})`;
+      document.getElementById('edit-user-points').value = user.points;
+      window.openModal('admin-edit-user-modal');
+    }
+
+    window.saveAdminUserEdit = async function() {
+      const userId = document.getElementById('edit-user-id').value;
+      const newPoints = parseInt(document.getElementById('edit-user-points').value, 10);
+      if(isNaN(newPoints)) { window.customConfirm("提示", "請輸入有效的數字", "⚠️", "確認", "bg-gray-800"); return; }
+
+      const user = window.usersDB.find(u => u.id === userId);
+      if(user) {
+        await window.fbUpdate('users', user.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
+        window.closeModal('admin-edit-user-modal');
+        window.customConfirm("雲端同步成功", `已將 ${user.name} 的貢獻值更新為 ${newPoints}。`, "✅", "確認", "bg-gray-800");
+      }
+    }
+
+    window.renderAdminReports = function() {
+      const container = document.getElementById('admin-reports-list');
+      container.innerHTML = '';
+      const pending = window.reportsDB.filter(r => r.status === 'pending');
+
+      if (pending.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有待處理的檢舉</div>';
+      } else {
+        pending.forEach(r => {
+          container.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-md mb-2">單號: ${r.id}</span>
+                <h4 class="font-bold text-gray-800 text-sm">被檢舉: ${r.itemTitle} (擁有者: ${r.itemOwner})</h4>
+                <p class="text-xs text-gray-500 mt-1"><span class="font-bold">原因:</span> ${r.reason}</p>
+              </div>
+              <button onclick="reviewReport('${r.id}')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold rounded-xl transition shadow-md shrink-0">進行審核</button>
+            </div>
+          `;
+        });
+      }
+    }
+
+    window.reviewReport = function(id) {
+      const report = window.reportsDB.find(r => r.id === id);
+      if (!report) return;
+      window.currentReportId = id;
+      document.getElementById('admin-report-details').innerHTML = `
+        <p><span class="font-bold">被檢舉人：</span>${report.itemOwner}</p>
+        <p><span class="font-bold">物品名稱：</span>${report.itemTitle}</p>
+        <p><span class="font-bold">檢舉人：</span>${report.reporter}</p>
+        <p><span class="font-bold">檢舉原因：</span>${report.reason}</p>
+        <p><span class="font-bold">說明：</span>${report.desc}</p>
+      `;
+      document.getElementById('admin-report-reason-select').value = '';
+      document.getElementById('admin-report-note').value = '';
+      window.openModal('admin-report-modal');
+    };
+
+    window.processReport = async function(action) {
+      const report = window.reportsDB.find(r => r.id === window.currentReportId);
+      const selectReason = document.getElementById('admin-report-reason-select').value;
+      const note = document.getElementById('admin-report-note').value.trim();
+      if (!report) return;
+
+      if (!selectReason) {
+          window.customConfirm("提示", "請選擇處理結果/下架原因！", "⚠️", "確認", "bg-gray-800");
+          return;
+      }
+      
+      const finalNote = note ? `${selectReason} - ${note}` : selectReason;
+
+      if (action === 'ban') {
+        await window.fbUpdate('reports', report.id, { status: 'banned' });
+        
+        const item = window.marketItems.find(i => i.title === report.itemTitle && i.owner === report.itemOwner);
+        if (item) await window.fbUpdate('marketItems', item.id, { status: 'banned' });
+        
+        const ownerUser = window.usersDB.find(u => u.name === report.itemOwner);
+        if(ownerUser) { 
+            let np = Math.max(0, ownerUser.points - 30);
+            await window.fbUpdate('users', ownerUser.id, { points: np, level: window.getLevelByPoints(np) });
+        }
+        
+        const reporterUser = window.usersDB.find(u => u.name === report.reporter);
+        if(reporterUser) { 
+            let np2 = reporterUser.points + 5;
+            await window.fbUpdate('users', reporterUser.id, { points: np2, level: window.getLevelByPoints(np2) }); 
+        }
+
+        await window.sendNotification(report.itemOwner, '⚠️ 物品下架通知', `您的物品「${report.itemTitle}」因違反社群守則已被管理員下架。備註: ${finalNote}`);
+        await window.sendNotification(report.reporter, '✅ 檢舉處理完成', `您檢舉的「${report.itemTitle}」已處理完畢並下架，感謝維護社群！`);
+      } else {
+        await window.fbUpdate('reports', report.id, { status: 'rejected' });
+        await window.sendNotification(report.reporter, 'ℹ️ 檢舉審核結果', `您檢舉的「${report.itemTitle}」經審核未發現違規。備註: ${finalNote}`);
+      }
+
+      window.closeModal('admin-report-modal');
+      window.customConfirm("雲端審核完畢", `已處理此檢舉單。`, "✅", "確認", "bg-gray-800");
+    };
+
+    window.renderAdminCoop = function() {
+      const container = document.getElementById('admin-coop-list');
+      container.innerHTML = '';
+      const list = window.coopApplicationsDB;
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有收到合作申請</div>';
+      } else {
+        list.forEach(c => {
+          container.innerHTML += `
+            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm mb-4">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <span class="inline-block px-2 py-0.5 ${c.status==='未處理'?'bg-blue-100 text-blue-600':'bg-gray-100 text-gray-500'} text-[10px] font-bold rounded-md mb-2">${c.status}</span>
+                  <h4 class="font-bold text-gray-800 text-lg">${c.brandName} <span class="text-sm font-normal text-gray-500">(${c.plan})</span></h4>
+                </div>
+                <span class="text-xs text-gray-400">${c.date}</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-xl">
+                <p><span class="font-bold">聯絡人：</span>${c.contactName} ${c.jobTitle}</p>
+                <p><span class="font-bold">信箱：</span><a href="mailto:${c.email}" class="text-skyblue hover:underline">${c.email}</a></p>
+                <p><span class="font-bold">電話：</span>${c.phone||'未提供'}</p>
+                <p><span class="font-bold">LINE：</span>${c.lineId||'未提供'}</p>
+                <p class="md:col-span-2"><span class="font-bold">合作目標：</span>${c.goals}</p>
+                <p class="md:col-span-2"><span class="font-bold">產業分類：</span>${c.categories}</p>
+              </div>
+              ${c.status === '未處理' ? `<button onclick="markCoopDone('${c.id}')" class="mt-3 text-xs font-bold text-skyblue hover:text-skyblue-hover transition">標記為已處理</button>` : ''}
+            </div>
+          `;
+        });
+      }
+    }
+
+    window.markCoopDone = async function(id) {
+      const app = window.coopApplicationsDB.find(c => c.id === id);
+      if(app) {
+        await window.fbUpdate('coops', app.id, { status: '已處理' });
+      }
+    }
+
+    window.renderAdmin = function() {
+      if (window.currentUser?.role !== 'admin') return;
+      window.updateAdminBadges();
+      window.switchAdminTab('stats');
+    }
+
+    // 啟動應用程式與雲端即時連線
+    window.onload = function() {
+      initFirebase();
     };
   </script>
 </body>
