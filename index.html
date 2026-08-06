@@ -711,9 +711,19 @@
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, updateDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // 使用全域變數設定 Firebase
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'tradeup-app';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    // 換成您專屬的 Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgFm7Ub_Ap0AvQoxgLPZhVm9oS3zOc3HY",
+      authDomain: "change-536b7.firebaseapp.com",
+      projectId: "change-536b7",
+      storageBucket: "change-536b7.firebasestorage.app",
+      messagingSenderId: "390235402158",
+      appId: "1:390235402158:web:c42ac04c4ff7866205623f",
+      measurementId: "G-1ZNCXSV5V6"
+    };
+    
+    // 使用固定的專案 ID 來建立資料夾路徑
+    const appId = 'tradeup-app';
     
     // 初始化 Firebase
     const app = initializeApp(firebaseConfig);
@@ -745,16 +755,43 @@
     // 初始化身分驗證與雲端連線
     async function initFirebase() {
         try {
-            if (typeof __initial_auth_token !== 'undefined') {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
+            // 因為您現在綁定的是您自己的 Firebase 專案
+            // 我們直接使用匿名登入 (Anonymous Auth) 來獲取讀寫權限
+            await signInAnonymously(auth);
             fbUser = auth.currentUser;
             setupRealtimeSync();
         } catch (e) {
             console.error("Firebase 初始化失敗:", e);
+            // 降級為本地端單機模式
+            setupLocalMode();
+            window.customConfirm(
+                "尚未啟用 Authentication", 
+                "偵測到您的 Firebase 專案尚未啟用「匿名登入 (Anonymous)」。\n\n系統已自動為您降級為「單機體驗模式」，您可以先正常操作與測試所有功能（重新整理網頁後資料會重置）。", 
+                "⚠️", 
+                "我知道了", 
+                "bg-orange-500 hover:bg-orange-600"
+            );
         }
+    }
+
+    // 啟動單機體驗模式 (在 Firebase 發生錯誤時使用)
+    function setupLocalMode() {
+        window.usersDB = [
+            { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
+            { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
+            { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
+        ];
+        window.marketItems = [
+            { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
+            { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
+            { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
+            { id: '4', title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
+        ];
+        window.reportsDB = [
+            { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() }
+        ];
+        window.renderHome();
+        window.updateAdminBadges();
     }
 
     // --- STREAMING_CHUNK:初始化雲端即時同步... ---
