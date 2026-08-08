@@ -898,9 +898,20 @@
       else myApps.forEach(app => {
         let sc = app.status === '已成交' ? 'text-green-500' : 'text-orange-500', bc = app.status === '已成交' ? 'bg-skyblue text-white' : 'bg-gray-100 text-gray-400', bt = app.status === '已成交' ? '💬 聯絡對方' : (app.status === '已關閉' ? '🔒 已關閉' : '⏳ 待審核');
         if (app.status === '已關閉') sc = 'text-gray-400';
-        aC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p><h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4><p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p><div class="mt-2 text-xs font-bold ${sc}">${app.status}</div></div><button class="px-4 py-2 ${bc} text-sm font-bold rounded-xl w-full sm:w-auto">${bt}</button></div>`;
+        let onClickHandler = app.status === '已成交' ? `onclick="contactUser('${app.itemOwner}')"` : '';
+        aC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p><h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4><p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p><div class="mt-2 text-xs font-bold ${sc}">${app.status}</div></div><button ${onClickHandler} class="px-4 py-2 ${bc} text-sm font-bold rounded-xl w-full sm:w-auto">${bt}</button></div>`;
       });
     }
+
+    window.contactUser = function(userName) {
+      window.customConfirm(
+        "💬 聯絡對方", 
+        `即將開啟與 ${userName} 的聊天室。由於此為展示版本，暫時無法傳送真實訊息，請見諒！`, 
+        "📬", 
+        "我知道了", 
+        "bg-skyblue"
+      );
+    };
 
     window.openTakedownModal = function(itemId) { document.getElementById('takedown-item-id').value = itemId; document.getElementById('takedown-reason').value = ''; document.getElementById('takedown-reason-desc').value = ''; window.openModal('takedown-modal'); }
 
