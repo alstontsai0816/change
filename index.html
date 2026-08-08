@@ -29,31 +29,18 @@
   </script>
 
   <style>
-    body {
-      background-color: #ebe3db;
-      color: #333;
-      font-family: 'Inter', system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    body { background-color: #ebe3db; color: #333; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
     .card-hover { transition: all 0.2s ease; }
-    .card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      border-color: #0ea5e9;
-    }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); border-color: #0ea5e9; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .modal-enter { animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    @keyframes modalFadeIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
   </style>
 </head>
 <body class="antialiased">
 
+  <!-- ==================== 導覽列 ==================== -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <a href="#" onclick="switchView('home')" class="flex items-center gap-2">
@@ -63,6 +50,7 @@
       <div class="flex items-center gap-3 sm:gap-4">
         <span id="user-display" class="text-sm font-semibold text-gray-600 hidden sm:block">未登入</span>
         
+        <!-- 獨立的通知按鈕 -->
         <button id="btn-nav-notif" onclick="switchView('profile'); switchProfileSidebar('notifications');" class="hidden items-center justify-center w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 transition relative">
           🔔 <span id="nav-notif-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">新</span>
         </button>
@@ -82,6 +70,7 @@
 
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
     
+    <!-- 探索首頁 -->
     <section id="view-home" class="view-section">
       <div class="flex justify-between items-end mb-6">
         <div>
@@ -92,26 +81,22 @@
           <span>＋</span> 刊登物品
         </button>
       </div>
-
       <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
         <button class="px-4 py-1.5 rounded-full bg-gray-800 text-white font-bold text-sm shrink-0">全部</button>
         <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">3C與數位</button>
         <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">居家與生活</button>
         <button class="px-4 py-1.5 rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 font-bold text-sm shrink-0 transition">戶外與休閒</button>
       </div>
-
-      <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        <!-- JS 動態生成物品卡片 -->
-      </div>
+      <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
     </section>
 
+    <!-- 物品詳情 -->
     <section id="view-detail" class="view-section hidden max-w-3xl mx-auto">
-      <button onclick="switchView('home')" class="text-gray-500 hover:text-skyblue font-bold mb-4 flex items-center gap-1 transition">
-        ← 回到探索
-      </button>
+      <button onclick="switchView('home')" class="text-gray-500 hover:text-skyblue font-bold mb-4 flex items-center gap-1 transition">← 回到探索</button>
       <div id="detail-content" class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 relative"></div>
     </section>
 
+    <!-- 登入頁面 -->
     <section id="view-login" class="view-section hidden max-w-md mx-auto mt-10">
       <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
         <div class="w-16 h-16 rounded-2xl bg-skyblue text-white flex items-center justify-center font-bold text-3xl shadow-lg mx-auto mb-6">T</div>
@@ -135,9 +120,7 @@
             </label>
             <input type="password" id="login-password" placeholder="輸入密碼" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
           </div>
-          <button onclick="submitAuth('login')" class="w-full py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-md mt-2">
-            登入
-          </button>
+          <button onclick="submitAuth('login')" class="w-full py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-md mt-2">登入</button>
         </div>
 
         <div id="auth-register-form" class="space-y-4 text-left mb-8 hidden">
@@ -163,9 +146,7 @@
               <input type="number" id="reg-birth" placeholder="例如: 1995" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
             </div>
           </div>
-          <button onclick="submitAuth('register')" class="w-full py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-md mt-4">
-            註冊並登入
-          </button>
+          <button onclick="submitAuth('register')" class="w-full py-3 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-md mt-4">註冊並登入</button>
         </div>
 
         <div class="relative flex py-2 items-center mb-6">
@@ -173,35 +154,24 @@
           <span class="flex-shrink-0 mx-4 text-gray-400 text-sm font-bold">或使用測試帳號</span>
           <div class="flex-grow border-t border-gray-200"></div>
         </div>
-
         <div class="space-y-3">
-          <button onclick="fastLogin('user1')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">
-            👤 快速登入 (一般會員: 王小明)
-          </button>
-          <button onclick="fastLogin('user2')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">
-            👤 快速登入 (一般會員: 陳小華)
-          </button>
-          <button onclick="fastLogin('admin')" class="w-full flex items-center justify-center gap-3 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition font-bold shadow-md text-sm">
-            🛡️ 快速登入 (最高管理員)
-          </button>
+          <button onclick="fastLogin('user1')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">👤 快速登入 (一般會員: 王小明)</button>
+          <button onclick="fastLogin('user2')" class="w-full flex items-center justify-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-xl hover:border-skyblue hover:bg-skyblue-light transition font-bold text-gray-700 text-sm">👤 快速登入 (一般會員: 陳小華)</button>
+          <button onclick="fastLogin('admin')" class="w-full flex items-center justify-center gap-3 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition font-bold shadow-md text-sm">🛡️ 快速登入 (最高管理員)</button>
         </div>
       </div>
     </section>
 
+    <!-- 刊登物品 -->
     <section id="view-upload" class="view-section hidden max-w-2xl mx-auto">
       <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
         <h2 class="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-4">＋ 刊登新物品</h2>
-        
         <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-xl mb-6">
           <p class="text-sm text-orange-800 font-bold">⚠️ 上架審核機制：</p>
           <p class="text-xs text-orange-700 mt-1">為維護社群品質，您刊登的物品將在**管理員審核通過後**，才會顯示於探索列表中供其他人申請交換。</p>
         </div>
-
         <div class="space-y-5">
-          <div>
-            <label class="block text-gray-700 font-bold mb-2">物品名稱</label>
-            <input type="text" id="upload-title" placeholder="例如：九成新 Sony 藍牙耳機" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
-          </div>
+          <div><label class="block text-gray-700 font-bold mb-2">物品名稱</label><input type="text" id="upload-title" placeholder="例如：九成新 Sony 藍牙耳機" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium"></div>
           <div>
             <label class="block text-gray-700 font-bold mb-2">分類</label>
             <select id="upload-type" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium">
@@ -211,19 +181,16 @@
               <option value="其他">其他</option>
             </select>
           </div>
-          <div>
-            <label class="block text-gray-700 font-bold mb-2">物品描述與狀態</label>
-            <textarea id="upload-desc" placeholder="詳細描述物品的使用狀況、想換的類型..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium h-32 resize-none"></textarea>
-          </div>
-          <button onclick="submitUpload()" class="w-full py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md mt-4">
-            送出審核
-          </button>
+          <div><label class="block text-gray-700 font-bold mb-2">物品描述與狀態</label><textarea id="upload-desc" placeholder="詳細描述物品的使用狀況、想換的類型..." class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium h-32 resize-none"></textarea></div>
+          <button onclick="submitUpload()" class="w-full py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md mt-4">送出審核</button>
         </div>
       </div>
     </section>
 
+    <!-- 個人中心 -->
     <section id="view-profile" class="view-section hidden">
       <div class="flex flex-col md:flex-row gap-6">
+        <!-- 側邊欄 -->
         <div class="w-full md:w-64 shrink-0">
           <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 sticky top-24">
             <div class="text-center mb-6 pb-6 border-b border-gray-100">
@@ -232,15 +199,9 @@
               <p class="text-sm text-gray-500 font-medium mt-1" id="profile-level-badge">青銅會員</p>
             </div>
             <nav class="space-y-1">
-              <button onclick="switchProfileSidebar('wallet')" id="tab-wallet" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-skyblue bg-skyblue-light">
-                💼 我的錢包
-              </button>
-              <button onclick="switchProfileSidebar('points')" id="tab-points" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
-                ⭐ 貢獻值與等級
-              </button>
-              <button onclick="switchProfileSidebar('settings')" id="tab-settings" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
-                ⚙️ 個人設定
-              </button>
+              <button onclick="switchProfileSidebar('wallet')" id="tab-wallet" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-skyblue bg-skyblue-light">💼 我的錢包</button>
+              <button onclick="switchProfileSidebar('points')" id="tab-points" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">⭐ 貢獻值與等級</button>
+              <button onclick="switchProfileSidebar('settings')" id="tab-settings" class="profile-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">⚙️ 個人設定</button>
               <button onclick="switchProfileSidebar('notifications')" id="tab-notifications" class="profile-tab w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition text-left text-gray-600 hover:bg-gray-50">
                 <span class="flex items-center gap-3">🔔 通知中心</span>
                 <span id="sidebar-notif-badge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">新</span>
@@ -249,22 +210,20 @@
           </div>
         </div>
 
+        <!-- 主內容區 -->
         <div class="flex-1 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 min-h-[500px]">
+          <!-- 我的錢包 -->
           <div id="profile-content-wallet" class="profile-content-section block">
-            <div class="mb-6 border-b border-gray-100 pb-4">
-              <h2 class="text-2xl font-extrabold text-gray-800">💼 我的錢包</h2>
-              <p class="text-gray-500 text-sm mt-1">管理您上架、申請與交易的所有物品紀錄。</p>
-            </div>
+            <div class="mb-6 border-b border-gray-100 pb-4"><h2 class="text-2xl font-extrabold text-gray-800">💼 我的錢包</h2><p class="text-gray-500 text-sm mt-1">管理您上架、申請與交易的所有物品紀錄。</p></div>
             <div class="flex gap-4 mb-6 border-b border-gray-200">
               <button onclick="switchWalletTab('listed')" id="wallet-tab-listed" class="pb-2 font-bold text-skyblue border-b-2 border-skyblue px-1">我上架的</button>
               <button onclick="switchWalletTab('applied')" id="wallet-tab-applied" class="pb-2 font-bold text-gray-500 hover:text-gray-700 px-1 transition">我申請的</button>
-              <button onclick="switchWalletTab('history')" id="wallet-tab-history" class="pb-2 font-bold text-gray-500 hover:text-gray-700 px-1 transition">交易紀錄</button>
             </div>
             <div id="wallet-content-listed" class="wallet-section block"><div id="my-listed-items" class="space-y-4"></div></div>
             <div id="wallet-content-applied" class="wallet-section hidden"><div id="my-applied-items" class="space-y-4"></div></div>
-            <div id="wallet-content-history" class="wallet-section hidden"><div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前尚無已完成的交易紀錄</div></div>
           </div>
 
+          <!-- 貢獻值 -->
           <div id="profile-content-points" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">⭐ 貢獻值與等級</h2>
             <div class="bg-gradient-to-br from-skyblue to-blue-600 rounded-3xl p-8 text-white text-center shadow-md mb-8">
@@ -282,21 +241,17 @@
             </div>
           </div>
 
+          <!-- 個人設定 -->
           <div id="profile-content-settings" class="profile-content-section hidden">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-4">⚙️ 個人設定</h2>
             <div class="max-w-md space-y-5">
-              <div>
-                <label class="block text-gray-700 font-bold mb-2">顯示名稱</label>
-                <input type="text" id="setting-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-skyblue transition font-medium">
-              </div>
-              <div>
-                <label class="block text-gray-700 font-bold mb-2">聯絡 Email</label>
-                <input type="email" id="setting-email" readonly class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-gray-500 transition font-medium cursor-not-allowed">
-              </div>
+              <div><label class="block text-gray-700 font-bold mb-2">顯示名稱</label><input type="text" id="setting-name" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-skyblue transition font-medium"></div>
+              <div><label class="block text-gray-700 font-bold mb-2">聯絡 Email</label><input type="email" id="setting-email" readonly class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-gray-500 transition font-medium cursor-not-allowed"></div>
               <button onclick="saveProfileSettings()" class="mt-4 px-6 py-2.5 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-700 transition shadow">儲存設定</button>
             </div>
           </div>
 
+          <!-- 通知中心 -->
           <div id="profile-content-notifications" class="profile-content-section hidden">
             <div class="flex justify-between items-end mb-6 border-b pb-4">
               <h2 class="text-2xl font-extrabold text-gray-800">🔔 通知中心</h2>
@@ -308,26 +263,19 @@
       </div>
     </section>
 
+    <!-- 管理後台 -->
     <section id="view-admin" class="view-section hidden">
       <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100">
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
           <h2 class="text-3xl font-extrabold text-gray-800 flex items-center gap-3">🛡️ 系統管理後台</h2>
         </div>
-        
         <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
           <button onclick="switchAdminTab('stats')" id="admin-tab-stats" class="admin-tab px-5 py-2 rounded-full font-bold transition text-skyblue bg-skyblue-light shrink-0">📊 系統概況</button>
           <button onclick="switchAdminTab('users')" id="admin-tab-users" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0">👥 會員管理</button>
-          <button onclick="switchAdminTab('items')" id="admin-tab-items" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
-            📦 物品管理 <span id="admin-tab-items-badge" class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
-          </button>
-          <button onclick="switchAdminTab('reports')" id="admin-tab-reports" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
-            🚨 檢舉審核 <span id="admin-tab-reports-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
-          </button>
-          <button onclick="switchAdminTab('coop')" id="admin-tab-coop" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">
-            🤝 合作申請 <span id="admin-tab-coop-badge" class="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
-          </button>
+          <button onclick="switchAdminTab('items')" id="admin-tab-items" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">📦 物品管理 <span id="admin-tab-items-badge" class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span></button>
+          <button onclick="switchAdminTab('reports')" id="admin-tab-reports" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">🚨 檢舉審核 <span id="admin-tab-reports-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span></button>
+          <button onclick="switchAdminTab('coop')" id="admin-tab-coop" class="admin-tab px-5 py-2 rounded-full font-bold transition text-gray-600 bg-gray-50 hover:bg-gray-100 shrink-0 relative">🤝 合作申請 <span id="admin-tab-coop-badge" class="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center hidden">0</span></button>
         </div>
-
         <div id="admin-content-stats" class="admin-content-section block"></div>
         <div id="admin-content-users" class="admin-content-section hidden"></div>
         <div id="admin-content-items" class="admin-content-section hidden"></div>
@@ -344,6 +292,7 @@
 
   </main>
 
+  <!-- 頁尾 -->
   <footer class="w-full border-t border-gray-200 mt-auto py-8">
     <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
       <div class="flex items-center gap-2 mb-4 opacity-80">
@@ -361,13 +310,13 @@
     </div>
   </footer>
 
+  <!-- ==================== Modals 區塊 ==================== -->
+  
   <!-- 1. 長篇文件閱讀與表單視窗 -->
   <div id="document-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4 py-8">
     <div class="bg-white rounded-3xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl relative modal-enter">
       <button onclick="closeModal('document-modal')" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold transition z-10">✕</button>
-      <div class="p-6 border-b border-gray-100 shrink-0">
-        <h2 id="document-title" class="text-2xl font-extrabold text-gray-800 text-center">文件標題</h2>
-      </div>
+      <div class="p-6 border-b border-gray-100 shrink-0"><h2 id="document-title" class="text-2xl font-extrabold text-gray-800 text-center">文件標題</h2></div>
       <div id="document-content" class="p-6 sm:p-10 overflow-y-auto text-gray-600 leading-relaxed text-sm sm:text-base space-y-4 no-scrollbar"></div>
     </div>
   </div>
@@ -495,10 +444,7 @@
       <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2">⚙️ 調整會員權限</h2>
       <div class="space-y-4 mt-4">
         <input type="hidden" id="edit-user-id">
-        <div>
-          <label class="block text-gray-700 font-bold mb-1 text-sm">會員名稱</label>
-          <div id="edit-user-name" class="font-bold text-gray-800 px-4 py-2 bg-gray-50 rounded-xl">Name</div>
-        </div>
+        <div><label class="block text-gray-700 font-bold mb-1 text-sm">會員名稱</label><div id="edit-user-name" class="font-bold text-gray-800 px-4 py-2 bg-gray-50 rounded-xl">Name</div></div>
         <div>
           <label class="block text-gray-700 font-bold mb-1 text-sm">修改貢獻值</label>
           <input type="number" id="edit-user-points" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:border-skyblue font-bold text-lg text-skyblue">
@@ -595,129 +541,104 @@
     </div>
   </div>
 
+  <!-- 10. 聊天室對話框 -->
+  <div id="chat-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl relative modal-enter flex flex-col h-[500px]">
+      <div class="flex items-center justify-between p-4 border-b border-gray-100 shrink-0">
+        <h2 class="text-lg font-extrabold text-gray-800 flex items-center gap-2">💬 與 <span id="chat-target-name" class="text-skyblue"></span> 聊天</h2>
+        <button onclick="closeChatModal()" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold transition">✕</button>
+      </div>
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 flex flex-col"></div>
+      <div class="p-4 bg-white border-t border-gray-100 shrink-0 flex gap-2">
+        <input type="text" id="chat-input" placeholder="輸入訊息..." class="flex-1 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-skyblue transition font-medium text-sm" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()" class="px-4 py-2 bg-skyblue text-white font-bold rounded-xl hover:bg-skyblue-hover transition shadow-sm">傳送</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JavaScript 區塊 ==================== -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAgFm7Ub_Ap0AvQoxgLPZhVm9oS3zOc3HY",
-      authDomain: "change-536b7.firebaseapp.com",
-      projectId: "change-536b7",
-      storageBucket: "change-536b7.firebasestorage.app",
-      messagingSenderId: "390235402158",
-      appId: "1:390235402158:web:c42ac04c4ff7866205623f"
-    };
-    
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-    let fbUser = null;
-    const appId = 'tradeup-app';
-    const getPublicRef = (colName) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    // --- 假資料準備區 ---
+    const MOCK_USERS=[{id:"admin",email:"admin@example.com",password:"123",name:"最高管理員",role:"admin",points:9999,level:"💎 鑽石",phone:"",birth:"",createdAt:Date.now()},{id:"u1",email:"u1@example.com",password:"123",name:"王小明",role:"user",points:120,level:"🥈 白銀",phone:"0912345678",birth:"1995",createdAt:Date.now()},{id:"u2",email:"u2@example.com",password:"123",name:"陳小華",role:"user",points:30,level:"🥉 青銅",phone:"",birth:"2000",createdAt:Date.now()}];
+    const MOCK_ITEMS=[{id:"1",title:"Sony 藍牙耳機",desc:"買來只用過兩次，想換露營用品。",owner:"王小明",type:"3C與數位",status:"active",createdAt:Date.now()-1E4},{id:"2",title:"IKEA 實木邊桌",desc:"搬家帶不走。",owner:"陳小華",type:"居家與生活",status:"active",createdAt:Date.now()-2E4},{id:"3",title:"Coleman 折疊椅",desc:"戶外露營必備，想換小帳篷。",owner:"陳小華",type:"戶外與休閒",status:"active",createdAt:Date.now()-3E4},{id:"4",title:"全新 筋膜槍",desc:"全新未拆封。",owner:"王小明",type:"居家與生活",status:"pending_approval",createdAt:Date.now()-4E4}];
+    const MOCK_REPORTS=[{id:"r1",itemTitle:"Sony 藍牙耳機",itemOwner:"王小明",reporter:"陳小華",reason:"要求金錢交易",desc:"私訊要求賣2000",status:"pending",date:new Date().toLocaleDateString(),createdAt:Date.now()}];
 
-    window.usersDB = []; window.marketItems = []; window.userTrades = []; window.reportsDB = []; window.notificationsDB = []; window.coopApplicationsDB = [];
-    window.currentUser = null; window.selectedItem = null; window.currentReportId = null; window.confirmCallback = null;
+    // --- Firebase 連線與狀態宣告 ---
+    const firebaseConfig={apiKey:"AIzaSyAgFm7Ub_Ap0AvQoxgLPZhVm9oS3zOc3HY",authDomain:"change-536b7.firebaseapp.com",projectId:"change-536b7",storageBucket:"change-536b7.firebasestorage.app",messagingSenderId:"390235402158",appId:"1:390235402158:web:c42ac04c4ff7866205623f"};
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    const db=firebase.firestore(),auth=firebase.auth();
+    const appId='tradeup-app';
+    const getPublicRef=col=>db.collection('artifacts').doc(appId).collection('public').doc('data').collection(col);
 
-    const dbMap = { users: () => window.usersDB, marketItems: () => window.marketItems, userTrades: () => window.userTrades, reports: () => window.reportsDB, notifications: () => window.notificationsDB, coops: () => window.coopApplicationsDB };
+    let fbUser=null, useLocalFallback=false;
+    window.usersDB=[]; window.marketItems=[]; window.userTrades=[]; window.reportsDB=[]; window.notificationsDB=[]; window.coopApplicationsDB=[]; window.chatDB=[];
+    window.currentUser=null; window.selectedItem=null; window.currentReportId=null; window.confirmCallback=null; window.currentChatTarget=null;
 
-    window.fbSet = async (col, id, data) => { 
-        if (fbUser) { try { await getPublicRef(col).doc(id.toString()).set(data); } catch(e) { fallbackSet(col, id, data); } } else fallbackSet(col, id, data);
-    };
-    window.fbUpdate = async (col, id, data) => { 
-        if (fbUser) { try { await getPublicRef(col).doc(id.toString()).update(data); } catch(e) { fallbackUpdate(col, id, data); } } else fallbackUpdate(col, id, data);
-    };
-    window.fbDelete = async (col, id) => { if (fbUser) { try { await getPublicRef(col).doc(id.toString()).delete(); } catch(e) {} } };
+    const dbMap={users:()=>window.usersDB,marketItems:()=>window.marketItems,userTrades:()=>window.userTrades,reports:()=>window.reportsDB,notifications:()=>window.notificationsDB,coops:()=>window.coopApplicationsDB,chats:()=>window.chatDB};
+
+    // 雲端資料寫入封裝函數 (加入自動降級邏輯)
+    window.fbSet = async (col, id, data) => { if(useLocalFallback) { fallbackSet(col, id, data); return; } if(fbUser){try{await getPublicRef(col).doc(id.toString()).set(data);}catch(e){console.warn("FB Set Error:",e); fallbackSet(col,id,data);}}else fallbackSet(col,id,data); };
+    window.fbUpdate = async (col, id, data) => { if(useLocalFallback) { fallbackUpdate(col, id, data); return; } if(fbUser){try{await getPublicRef(col).doc(id.toString()).update(data);}catch(e){console.warn("FB Update Error:",e); fallbackUpdate(col,id,data);}}else fallbackUpdate(col,id,data); };
+    window.fbDelete = async (col, id) => { if(fbUser && !useLocalFallback){try{await getPublicRef(col).doc(id.toString()).delete();}catch(e){console.warn("FB Delete Error:",e);}} };
 
     function fallbackSet(col, id, data) { dbMap[col]().unshift(data); triggerLocalRender(col); }
     function fallbackUpdate(col, id, data) {
-        let arr = dbMap[col](), idx = arr.findIndex(i => i.id === id);
-        if (idx !== -1) arr[idx] = { ...arr[idx], ...data };
+        let arr=dbMap[col](),idx=arr.findIndex(i=>i.id===id);
+        if(idx!==-1)arr[idx]={...arr[idx],...data};
         triggerLocalRender(col);
     }
 
     function triggerLocalRender(col) {
-        let cV = id => !document.getElementById('view-' + id).classList.contains('hidden');
-        if (col === 'users') { if (window.currentUser) { let u = window.usersDB.find(u => u.id === window.currentUser.id); if (u) window.currentUser = { ...u }; window.updateNavUser(); if (cV('profile')) window.renderProfile(); } if (cV('admin')) window.renderAdminUsers(); }
-        else if (col === 'marketItems') { if (cV('home')) window.renderHome(); if (cV('profile')) window.renderWallet(); if (cV('admin')) window.renderAdminItems(); window.updateAdminBadges(); }
-        else if (col === 'userTrades') { if (cV('profile')) window.renderWallet(); window.updateAdminBadges(); }
-        else if (col === 'reports') { if (cV('admin')) window.renderAdminReports(); window.updateAdminBadges(); }
-        else if (col === 'notifications') { window.updateNotificationBadges(); if (cV('profile')) window.renderNotifications(); }
-        else if (col === 'coops') { if (cV('admin')) window.renderAdminCoop(); window.updateAdminBadges(); }
+        const cV=id=>!document.getElementById('view-'+id).classList.contains('hidden');
+        if(col==='users'){if(window.currentUser){let u=window.usersDB.find(u=>u.id===window.currentUser.id);if(u)window.currentUser={...u};window.updateNavUser();if(cV('profile'))window.renderProfile();}if(cV('admin'))window.renderAdminUsers();}
+        else if(col==='marketItems'){if(cV('home'))window.renderHome();if(cV('profile'))window.renderWallet();if(cV('admin'))window.renderAdminItems();window.updateAdminBadges();}
+        else if(col==='userTrades'){if(cV('profile'))window.renderWallet();window.updateAdminBadges();}
+        else if(col==='reports'){if(cV('admin'))window.renderAdminReports();window.updateAdminBadges();}
+        else if(col==='notifications'){window.updateNotificationBadges();if(cV('profile'))window.renderNotifications();}
+        else if(col==='coops'){if(cV('admin'))window.renderAdminCoop();window.updateAdminBadges();}
+        else if(col==='chats'){if(!document.getElementById('chat-modal').classList.contains('hidden')) window.renderChatMessages();}
     }
 
-    const MOCK_USERS = [
-        { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
-        { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
-        { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
-    ];
-    const MOCK_ITEMS = [
-        { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
-        { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
-        { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
-        { id: '4', title: '全新 筋膜槍', desc: '全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
-    ];
-    const MOCK_REPORTS = [{ id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '私訊要求賣2000', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() }];
-
+    // 初始化身分驗證與雲端連線 (加入自動降級邏輯)
     async function initFirebase() {
-        try { await auth.signInAnonymously(); fbUser = auth.currentUser; setupRealtimeSync(); } 
-        catch (e) { setupLocalMode(); }
+        try {
+            await auth.signInAnonymously();
+            fbUser = auth.currentUser;
+            setupRealtimeSync();
+        } catch (e) {
+            console.warn("Firebase Auth Error (Switching to Local Fallback Mode):", e.message);
+            useLocalFallback = true;
+            setupLocalMode();
+        }
     }
 
     function setupLocalMode() {
-        window.usersDB = [...MOCK_USERS]; window.marketItems = [...MOCK_ITEMS]; window.reportsDB = [...MOCK_REPORTS];
+        window.usersDB=[...MOCK_USERS]; window.marketItems=[...MOCK_ITEMS]; window.reportsDB=[...MOCK_REPORTS]; window.chatDB=[];
         window.renderHome(); window.updateAdminBadges();
     }
 
     function setupRealtimeSync() {
-        const s = (col, cb) => getPublicRef(col).onSnapshot(snap => { window[col+'DB'] = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); cb(snap); triggerLocalRender(col); });
-        
-        getPublicRef('users').onSnapshot(snap => { if(snap.empty) { MOCK_USERS.forEach(u=>window.fbSet('users', u.id, u)); return; } window.usersDB = snap.docs.map(d=>d.data()); triggerLocalRender('users'); });
-        getPublicRef('marketItems').onSnapshot(snap => { if(snap.empty) { MOCK_ITEMS.forEach(i=>window.fbSet('marketItems', i.id, i)); return; } window.marketItems = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); triggerLocalRender('marketItems'); });
-        getPublicRef('reports').onSnapshot(snap => { if(snap.empty) { MOCK_REPORTS.forEach(r=>window.fbSet('reports', r.id, r)); return; } window.reportsDB = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); triggerLocalRender('reports'); });
-        s('userTrades', ()=>{}); s('notifications', ()=>{}); s('coops', ()=>{});
+        const s=(col,cb)=>getPublicRef(col).onSnapshot(snap=>{window[col+'DB']=snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt);cb(snap);triggerLocalRender(col);}, err=>{console.warn("Sync err:",err);});
+        getPublicRef('users').onSnapshot(snap=>{if(snap.empty){MOCK_USERS.forEach(u=>window.fbSet('users',u.id,u));return;}window.usersDB=snap.docs.map(d=>d.data());triggerLocalRender('users');});
+        getPublicRef('marketItems').onSnapshot(snap=>{if(snap.empty){MOCK_ITEMS.forEach(i=>window.fbSet('marketItems',i.id,i));return;}window.marketItems=snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt);triggerLocalRender('marketItems');});
+        getPublicRef('reports').onSnapshot(snap=>{if(snap.empty){MOCK_REPORTS.forEach(r=>window.fbSet('reports',r.id,r));return;}window.reportsDB=snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt);triggerLocalRender('reports');});
+        s('userTrades',()=>{}); s('notifications',()=>{}); s('coops',()=>{});
+        // 聊天紀錄正向排序
+        getPublicRef('chats').onSnapshot(snap=>{window.chatDB=snap.docs.map(d=>d.data()).sort((a,b)=>a.createdAt-b.createdAt);triggerLocalRender('chats');});
     }
 
-    window.switchView = function(viewId) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById('view-' + viewId).classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (viewId === 'home') window.renderHome();
-      if (viewId === 'profile') window.renderProfile();
-      if (viewId === 'admin' && window.currentUser?.role === 'admin') window.renderAdmin();
-    }
+    // --- 共用 UI 控制 ---
+    window.switchView=function(vId){document.querySelectorAll('.view-section').forEach(e=>e.classList.add('hidden'));document.getElementById('view-'+vId).classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(vId==='home')window.renderHome();if(vId==='profile')window.renderProfile();if(vId==='admin'&&window.currentUser?.role==='admin')window.renderAdmin();}
+    window.openModal=function(id){document.getElementById(id).classList.remove('hidden');}
+    window.closeModal=function(id){document.getElementById(id).classList.add('hidden');}
+    window.customConfirm=function(t,m,i,bTxt,bCls,cb){document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-message').textContent=m;document.getElementById('confirm-icon').textContent=i;const btn=document.getElementById('confirm-btn-yes');btn.textContent=bTxt;btn.className=`flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${bCls}`;window.confirmCallback=cb;window.openModal('custom-confirm-modal');}
+    window.closeConfirmModal=function(r){window.closeModal('custom-confirm-modal');if(r&&typeof window.confirmCallback==='function')window.confirmCallback();window.confirmCallback=null;}
+    window.sendNotification=async function(u,t,c){const id=Date.now().toString();await window.fbSet('notifications',id,{id,user:u,title:t,content:c,date:new Date().toLocaleDateString(),isRead:false,createdAt:Date.now()});}
+    window.updateNotificationBadges=function(){if(!window.currentUser)return;const c=window.notificationsDB.filter(n=>n.user===window.currentUser.name&&!n.isRead).length;const t=e=>c>0?e.classList.remove('hidden'):e.classList.add('hidden');t(document.getElementById('nav-notif-badge'));t(document.getElementById('sidebar-notif-badge'));}
+    window.clearNotifications=function(){if(!window.currentUser)return;window.notificationsDB.forEach(n=>{if(n.user===window.currentUser.name&&!n.isRead)window.fbUpdate('notifications',n.id,{isRead:true});});window.customConfirm("通知已清除","所有通知已標示為已讀。","🧹","確認","bg-gray-800");}
+    window.getLevelByPoints=function(p){return p>=500?'💎 鑽石':p>=200?'🥇 黃金':p>=100?'🥈 白銀':'🥉 青銅';};
 
-    window.openModal = function(id) { document.getElementById(id).classList.remove('hidden'); }
-    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
-
-    window.customConfirm = function(title, message, icon, btnText, btnClass, callback) {
-      document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-message').textContent = message; document.getElementById('confirm-icon').textContent = icon;
-      const yesBtn = document.getElementById('confirm-btn-yes'); yesBtn.textContent = btnText; yesBtn.className = `flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${btnClass}`;
-      window.confirmCallback = callback; window.openModal('custom-confirm-modal');
-    }
-
-    window.closeConfirmModal = function(result) {
-      window.closeModal('custom-confirm-modal');
-      if (result && typeof window.confirmCallback === 'function') window.confirmCallback();
-      window.confirmCallback = null;
-    }
-
-    window.sendNotification = async function(targetUser, title, content) {
-      const nId = Date.now().toString();
-      await window.fbSet('notifications', nId, { id: nId, user: targetUser, title: title, content: content, date: new Date().toLocaleDateString(), isRead: false, createdAt: Date.now() });
-    }
-
-    window.updateNotificationBadges = function() {
-      if (!window.currentUser) return;
-      const count = window.notificationsDB.filter(n => n.user === window.currentUser.name && !n.isRead).length;
-      const t = el => count > 0 ? el.classList.remove('hidden') : el.classList.add('hidden');
-      t(document.getElementById('nav-notif-badge')); t(document.getElementById('sidebar-notif-badge'));
-    }
-
-    window.clearNotifications = function() {
-      if (!window.currentUser) return;
-      window.notificationsDB.forEach(n => { if (n.user === window.currentUser.name && !n.isRead) window.fbUpdate('notifications', n.id, { isRead: true }); });
-      window.customConfirm("通知已清除", "所有通知已標示為已讀。", "🧹", "確認", "bg-gray-800");
-    }
-
-    window.getLevelByPoints = function(points) { return points >= 500 ? '💎 鑽石' : points >= 200 ? '🥇 黃金' : points >= 100 ? '🥈 白銀' : '🥉 青銅'; };
-
+    // --- 文件與彈出視窗 (Modal) ---
     window.showDocument = function(type) {
       const titleEl = document.getElementById('document-title'); const contentEl = document.getElementById('document-content');
       if (type === 'privacy') {
@@ -731,343 +652,85 @@
       window.openModal('document-modal');
     };
 
-    window.submitCoopForm = async function(e, form) {
-      e.preventDefault(); const formData = new FormData(form); const dataId = 'C' + Date.now();
-      await window.fbSet('coops', dataId, {
-          id: dataId, plan: formData.get('plan') || '未選擇', brandName: formData.get('brandName'), contactName: formData.get('contactName'),
-          email: formData.get('email'), jobTitle: formData.get('jobTitle') || '', phone: formData.get('phone') || '', lineId: formData.get('lineId') || '',
-          goals: formData.getAll('goal').join(', ') || '未選擇', categories: formData.getAll('category').join(', ') || '未選擇', date: new Date().toLocaleDateString(), status: '未處理', createdAt: Date.now()
-      });
-      form.innerHTML = `<div class='text-center py-16'><div class='text-5xl mb-4'>🎉</div><h4 class='text-2xl font-extrabold text-gray-800 mb-2'>表單已送出！</h4><p class='text-gray-600'>我們將盡快聯繫您。</p><button type='button' onclick='closeModal("document-modal")' class='mt-8 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition'>關閉視窗</button></div>`;
-    }
+    window.submitCoopForm=async function(e,f){e.preventDefault();const d=new FormData(f),id='C'+Date.now();await window.fbSet('coops',id,{id:id,plan:d.get('plan')||'未選擇',brandName:d.get('brandName'),contactName:d.get('contactName'),email:d.get('email'),jobTitle:d.get('jobTitle')||'',phone:d.get('phone')||'',lineId:d.get('lineId')||'',goals:d.getAll('goal').join(', ')||'未選擇',date:new Date().toLocaleDateString(),status:'未處理',createdAt:Date.now()});f.innerHTML=`<div class='text-center py-16'><div class='text-5xl mb-4'>🎉</div><h4 class='text-2xl font-extrabold text-gray-800 mb-2'>表單已送出！</h4><p class='text-gray-600'>我們將盡快聯繫您。</p><button type='button' onclick='closeModal("document-modal")' class='mt-8 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition'>關閉視窗</button></div>`;}
 
-    window.switchAuthMode = function(mode) {
-      document.getElementById('auth-login-form').classList.toggle('hidden', mode !== 'login');
-      document.getElementById('auth-register-form').classList.toggle('hidden', mode !== 'register');
-      document.getElementById('auth-tab-login').className = mode === 'login' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
-      document.getElementById('auth-tab-register').className = mode === 'register' ? 'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition' : 'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';
-    };
-
-    window.fastLogin = function(userId) {
-      const user = window.usersDB.find(u => u.id === userId);
-      if (user) { window.currentUser = { ...user }; window.updateNavUser(); window.switchView('home'); window.customConfirm("歡迎回來", "快速登入成功！", "👋", "開始", "bg-skyblue"); }
-    };
-
-    window.submitAuth = async function(mode) {
-      if (mode === 'login') {
-        const email = document.getElementById('login-email').value.trim(), pwd = document.getElementById('login-password').value.trim();
-        if (!email || !pwd) return window.customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
-        const user = window.usersDB.find(u => u.email === email && u.password === pwd);
-        if (!user) {
-          const namePrefix = email.split('@')[0], nId = 'u' + Date.now();
-          const newUser = { id: nId, email: email, password: pwd, name: namePrefix, phone: '', birth: '', role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
-          await window.fbSet('users', nId, newUser); window.currentUser = { ...newUser };
-          window.customConfirm("自動註冊成功", `已為您以「${namePrefix}」註冊並登入，贈送 10 點新手貢獻值！`, "🎉", "開始", "bg-skyblue");
-        } else { window.currentUser = { ...user }; window.customConfirm("歡迎回來", "登入成功！", "👋", "開始", "bg-skyblue"); }
-      } else {
-        const email = document.getElementById('reg-email').value.trim(), pwd = document.getElementById('reg-password').value.trim(), name = document.getElementById('reg-name').value.trim();
-        if (!email || !pwd || !name) return window.customConfirm("資訊不完整", "請填寫必填欄位！", "⚠️", "確認", "bg-gray-800");
-        if (window.usersDB.find(u => u.email === email)) return window.customConfirm("註冊失敗", "此 Email 已經被註冊過囉！", "❌", "確認", "bg-red-500");
-        const nId = 'u' + Date.now();
-        const newUser = { id: nId, email: email, password: pwd, name: name, phone: document.getElementById('reg-phone').value.trim(), birth: document.getElementById('reg-birth').value.trim(), role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
-        await window.fbSet('users', nId, newUser); window.currentUser = { ...newUser };
-        window.customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始", "bg-skyblue");
+    // --- 登入與註冊 ---
+    window.switchAuthMode=function(m){document.getElementById('auth-login-form').classList.toggle('hidden',m!=='login');document.getElementById('auth-register-form').classList.toggle('hidden',m!=='register');document.getElementById('auth-tab-login').className=m==='login'?'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition':'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';document.getElementById('auth-tab-register').className=m==='register'?'flex-1 py-2 rounded-lg bg-white shadow-sm font-bold text-skyblue transition':'flex-1 py-2 rounded-lg font-bold text-gray-500 hover:bg-gray-200 transition';};
+    window.fastLogin=function(uId){const u=window.usersDB.find(x=>x.id===uId);if(u){window.currentUser={...u};window.updateNavUser();window.switchView('home');window.customConfirm("歡迎回來","快速登入成功！","👋","開始","bg-skyblue");}};
+    window.submitAuth=async function(m){
+      if(m==='login'){
+        const e=document.getElementById('login-email').value.trim(),p=document.getElementById('login-password').value.trim();
+        if(!e||!p)return window.customConfirm("資訊不完整","請輸入完整的電子郵件與密碼！","⚠️","確認","bg-gray-800");
+        const u=window.usersDB.find(x=>x.email===e&&x.password===p);
+        if(!u){
+          const prefix=e.split('@')[0],id='u'+Date.now(),nu={id,email:e,password:p,name:prefix,phone:'',birth:'',role:'user',points:10,level:'🥉 青銅',createdAt:Date.now()};
+          await window.fbSet('users',id,nu);window.currentUser={...nu};window.customConfirm("自動註冊成功",`已為您以「${prefix}」註冊並登入，贈送 10 點新手貢獻值！`,"🎉","開始","bg-skyblue");
+        }else{window.currentUser={...u};window.customConfirm("歡迎回來","登入成功！","👋","開始","bg-skyblue");}
+      }else{
+        const e=document.getElementById('reg-email').value.trim(),p=document.getElementById('reg-password').value.trim(),n=document.getElementById('reg-name').value.trim();
+        if(!e||!p||!n)return window.customConfirm("資訊不完整","請填寫必填欄位！","⚠️","確認","bg-gray-800");
+        if(window.usersDB.find(x=>x.email===e))return window.customConfirm("註冊失敗","此 Email 已經被註冊過囉！","❌","確認","bg-red-500");
+        const id='u'+Date.now(),nu={id,email:e,password:p,name:n,phone:document.getElementById('reg-phone').value.trim(),birth:document.getElementById('reg-birth').value.trim(),role:'user',points:10,level:'🥉 青銅',createdAt:Date.now()};
+        await window.fbSet('users',id,nu);window.currentUser={...nu};window.customConfirm("註冊成功",`歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`,"🎉","開始","bg-skyblue");
       }
-      window.updateNavUser(); window.switchView('home');
-      ['login-email', 'login-password', 'reg-email', 'reg-password', 'reg-name', 'reg-phone', 'reg-birth'].forEach(id => document.getElementById(id).value = '');
+      window.updateNavUser();window.switchView('home');['login-email','login-password','reg-email','reg-password','reg-name','reg-phone','reg-birth'].forEach(id=>document.getElementById(id).value='');
     };
+    window.forgotPassword=function(){const e=document.getElementById('login-email').value.trim();if(!e)return window.customConfirm("請輸入電子郵件","請先於上方輸入您的電子郵件！","💡","確認","bg-gray-800");window.customConfirm("重設信已寄出",`密碼重設連結已寄至 ${e}`,"✉️","我知道了","bg-skyblue");};
+    window.updateNavUser=function(){const ds=document.getElementById("user-display"),lb=document.getElementById("btn-login-nav"),ab=document.getElementById("btn-admin-nav"),pb=document.getElementById("btn-user-profile"),nb=document.getElementById("btn-nav-notif");if(window.currentUser){ds.textContent=`👤 ${window.currentUser.name}`;ds.classList.remove('hidden');lb.textContent="登出";lb.onclick=window.logout;lb.classList.replace('bg-skyblue','bg-gray-200');lb.classList.replace('text-white','text-gray-800');nb.style.display="flex";if(window.currentUser.role==="admin"){ab.style.display="inline-flex";pb.style.display="none";window.updateAdminBadges();}else{ab.style.display="none";pb.style.display="inline-flex";document.getElementById('setting-name').value=window.currentUser.name;document.getElementById('setting-email').value=window.currentUser.email;document.getElementById('profile-name').textContent=window.currentUser.name;document.getElementById('profile-level-badge').textContent=window.currentUser.level;}window.updateNotificationBadges();}else{ds.classList.add('hidden');lb.textContent="登入 / 註冊";lb.onclick=()=>window.switchView('login');lb.classList.replace('bg-gray-200','bg-skyblue');lb.classList.replace('text-gray-800','text-white');ab.style.display="none";pb.style.display="none";nb.style.display="none";}};
+    window.logout=function(){window.customConfirm("確認登出","您確定要登出目前的帳號嗎？","🚪","確認","bg-red-500",()=>{window.currentUser=null;window.updateNavUser();window.switchView('home');});};
 
-    window.forgotPassword = function() {
-      const email = document.getElementById('login-email').value.trim();
-      if (!email) return window.customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件！", "💡", "確認", "bg-gray-800");
-      window.customConfirm("重設信已寄出", `密碼重設連結已寄至 ${email}`, "✉️", "我知道了", "bg-skyblue");
-    };
+    // --- 物品瀏覽與上架 ---
+    window.renderHome=function(){const g=document.getElementById('items-grid');g.innerHTML='';window.marketItems.filter(i=>i.status==='active').forEach(i=>{const c=document.createElement('div');c.className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";c.onclick=()=>{window.selectedItem=i;window.renderDetail();window.switchView('detail');};c.innerHTML=`<div class="flex-1"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${i.type}</div><h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${i.title}</h3><p class="text-gray-500 text-sm line-clamp-2 mb-6">${i.desc}</p></div><div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50"><span class="text-sm font-bold text-gray-400">👤 ${i.owner}</span><span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span></div>`;g.appendChild(c);});};
+    window.renderDetail=function(){const c=document.getElementById('detail-content');if(!window.selectedItem)return;c.innerHTML=`<div class="mb-8"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${window.selectedItem.type}</div><h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${window.selectedItem.title}</h2><div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">${window.selectedItem.owner.charAt(0)}</div><span class="text-gray-600 font-bold">${window.selectedItem.owner}</span></div></div><div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100"><h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4><p class="text-gray-600 leading-relaxed">${window.selectedItem.desc}</p></div><div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8"><button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl shadow-md transition flex items-center justify-center gap-2"><span>🎁</span> 提出交換申請</button><button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">🚨 檢舉此物品</button></div>`;document.getElementById('btn-request-trade').onclick=()=>{if(!window.currentUser)return window.switchView('login');if(window.currentUser.name===window.selectedItem.owner)return window.customConfirm("無法申請","不能對自己的物品提出申請喔！","💡","我知道了","bg-gray-800");document.getElementById('trade-offer-desc').value='';document.getElementById('trade-method').value='面交';window.toggleShippingFee();window.openModal('trade-modal');};};
+    window.submitUpload=async function(){if(!window.currentUser)return window.switchView('login');const t=document.getElementById('upload-title').value.trim(),ty=document.getElementById('upload-type').value,d=document.getElementById('upload-desc').value.trim();if(!t||!d)return window.customConfirm("提示","請完整填寫物品名稱與描述！","⚠️","確認","bg-gray-800");const id=Date.now().toString();await window.fbSet('marketItems',id,{id,title:t,desc:d,owner:window.currentUser.name,type:ty,status:'pending_approval',createdAt:Date.now()});document.getElementById('upload-title').value='';document.getElementById('upload-desc').value='';window.customConfirm("已送出審核！","物品已同步送交審核。","⏳","前往我的錢包","bg-skyblue",()=>{window.switchView('profile');window.switchProfileSidebar('wallet');window.switchWalletTab('listed');});};
 
-    window.updateNavUser = function() {
-      const dSpan = document.getElementById("user-display"), lBtn = document.getElementById("btn-login-nav"), aBtn = document.getElementById("btn-admin-nav"), pBtn = document.getElementById("btn-user-profile"), nBtn = document.getElementById("btn-nav-notif");
-      if (window.currentUser) {
-        dSpan.textContent = `👤 ${window.currentUser.name}`; dSpan.classList.remove('hidden');
-        lBtn.textContent = "登出"; lBtn.onclick = window.logout; lBtn.classList.replace('bg-skyblue', 'bg-gray-200'); lBtn.classList.replace('text-white', 'text-gray-800');
-        nBtn.style.display = "flex";
-        if (window.currentUser.role === "admin") { aBtn.style.display = "inline-flex"; pBtn.style.display = "none"; window.updateAdminBadges(); } 
-        else { aBtn.style.display = "none"; pBtn.style.display = "inline-flex"; document.getElementById('setting-name').value = window.currentUser.name; document.getElementById('setting-email').value = window.currentUser.email; document.getElementById('profile-name').textContent = window.currentUser.name; document.getElementById('profile-level-badge').textContent = window.currentUser.level; }
-        window.updateNotificationBadges();
-      } else {
-        dSpan.classList.add('hidden'); lBtn.textContent = "登入 / 註冊"; lBtn.onclick = () => window.switchView('login'); lBtn.classList.replace('bg-gray-200', 'bg-skyblue'); lBtn.classList.replace('text-gray-800', 'text-white');
-        aBtn.style.display = "none"; pBtn.style.display = "none"; nBtn.style.display = "none";
-      }
-    };
+    // --- 申請交換與檢舉 ---
+    window.toggleShippingFee=function(){document.getElementById('shipping-fee-container').classList.toggle('hidden',document.getElementById('trade-method').value!=='寄送');};
+    window.submitTradeOffer=async function(){const d=document.getElementById('trade-offer-desc').value.trim();if(!d)return window.customConfirm("提示","請填寫想用來交換的物品內容！","⚠️","確認","bg-gray-800");const m=document.getElementById('trade-method').value,sI=m==='寄送'?` (運費: ${document.getElementById('trade-shipping-fee').value})`:"",id=Date.now().toString();await window.fbSet('userTrades',id,{id,itemTitle:window.selectedItem.title,itemOwner:window.selectedItem.owner,applicant:window.currentUser.name,offerDesc:`${d} [${m}${sI}]`,status:'待審核',type:'applied',createdAt:Date.now()});await window.sendNotification(window.selectedItem.owner,'有人對您的物品提出交換',`${window.currentUser.name} 想要用物品和您交換「${window.selectedItem.title}」。`);window.closeModal('trade-modal');window.customConfirm("申請已送出！","已通知物品主人。","🎉","前往錢包","bg-skyblue",()=>{window.switchView('profile');window.switchProfileSidebar('wallet');window.switchWalletTab('applied');});};
+    window.openReportModal=function(){if(!window.currentUser)return window.switchView('login');document.getElementById('report-reason').value='';document.getElementById('report-desc').value='';document.getElementById('report-agree').checked=false;window.openModal('report-modal');};
+    window.submitReport=async function(){const r=document.getElementById('report-reason').value,d=document.getElementById('report-desc').value,a=document.getElementById('report-agree').checked;if(!r||!d||!a)return window.customConfirm("提示","請填寫必填欄位並同意。","⚠️","確認","bg-gray-800");const id='r'+Date.now().toString();await window.fbSet('reports',id,{id,itemTitle:window.selectedItem.title,itemOwner:window.selectedItem.owner,reporter:window.currentUser.name,reason:r,desc:d,status:'pending',date:new Date().toLocaleDateString(),createdAt:Date.now()});window.closeModal('report-modal');window.customConfirm("檢舉已送出","管理員會盡快審查此物品。","✅","確認","bg-skyblue");};
 
-    window.logout = function() { window.customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認", "bg-red-500", () => { window.currentUser = null; window.updateNavUser(); window.switchView('home'); }); };
+    // --- 聊天室功能 ---
+    window.contactUser=function(targetName){window.currentChatTarget=targetName;document.getElementById('chat-target-name').textContent=targetName;document.getElementById('chat-input').value='';window.openModal('chat-modal');window.renderChatMessages();};
+    window.closeChatModal=function(){window.currentChatTarget=null;window.closeModal('chat-modal');};
+    window.renderChatMessages=function(){const c=document.getElementById('chat-messages');if(!window.currentUser||!window.currentChatTarget)return;const msgs=window.chatDB.filter(m=>(m.sender===window.currentUser.name&&m.receiver===window.currentChatTarget)||(m.receiver===window.currentUser.name&&m.sender===window.currentChatTarget));if(!msgs.length){c.innerHTML='<div class="text-center text-gray-400 font-bold text-sm my-auto">👋 說聲嗨，開始你們的對話吧！</div>';return;}c.innerHTML=msgs.map(m=>{const isMe=m.sender===window.currentUser.name;return `<div class="flex ${isMe?'justify-end':'justify-start'}"><div class="max-w-[75%] rounded-2xl px-4 py-2 text-sm ${isMe?'bg-skyblue text-white rounded-tr-sm':'bg-white text-gray-700 border border-gray-100 shadow-sm rounded-tl-sm'}">${m.text}<div class="text-[10px] mt-1 ${isMe?'text-blue-100':'text-gray-400'} text-right">${new Date(m.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div></div>`;}).join('');c.scrollTop=c.scrollHeight;};
+    window.sendChatMessage=async function(){const i=document.getElementById('chat-input'),txt=i.value.trim();if(!txt||!window.currentUser||!window.currentChatTarget)return;const id='msg_'+Date.now();await window.fbSet('chats',id,{id,sender:window.currentUser.name,receiver:window.currentChatTarget,text:txt,createdAt:Date.now()});i.value='';await window.sendNotification(window.currentChatTarget,`💬 來自 ${window.currentUser.name} 的新訊息`,txt);};
 
-    window.renderHome = function() {
-      const grid = document.getElementById('items-grid'); grid.innerHTML = '';
-      window.marketItems.filter(item => item.status === 'active').forEach(item => {
-        const card = document.createElement('div'); card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
-        card.onclick = () => { window.selectedItem = item; window.renderDetail(); window.switchView('detail'); };
-        card.innerHTML = `<div class="flex-1"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${item.type}</div><h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3><p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p></div><div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50"><span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span><span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span></div>`;
-        grid.appendChild(card);
-      });
-    }
+    // --- 個人中心與錢包 ---
+    window.switchProfileSidebar=function(tab){document.querySelectorAll('.profile-content-section').forEach(e=>e.classList.add('hidden'));document.getElementById(`profile-content-${tab}`).classList.remove('hidden');document.querySelectorAll('.profile-tab').forEach(e=>{e.classList.remove('text-skyblue','bg-skyblue-light');e.classList.add('text-gray-600','hover:bg-gray-50');});const aTab=document.getElementById(`tab-${tab}`);aTab.classList.remove('text-gray-600','hover:bg-gray-50');aTab.classList.add('text-skyblue','bg-skyblue-light');if(tab==='wallet')window.renderWallet();if(tab==='notifications')window.renderNotifications();if(tab==='points')window.renderPoints();};
+    window.saveProfileSettings=async function(){const nn=document.getElementById('setting-name').value.trim();if(!nn)return window.customConfirm("提示","名稱不能為空！","⚠️","確認","bg-gray-800");const o=window.currentUser.name;window.currentUser.name=nn;await window.fbUpdate('users',window.currentUser.id,{name:nn});window.marketItems.forEach(i=>{if(i.owner===o)window.fbUpdate('marketItems',i.id,{owner:nn});});window.userTrades.forEach(t=>{let u={};if(t.applicant===o)u.applicant=nn;if(t.itemOwner===o)u.itemOwner=nn;if(Object.keys(u).length)window.fbUpdate('userTrades',t.id,u);});window.reportsDB.forEach(r=>{let u={};if(r.reporter===o)u.reporter=nn;if(r.itemOwner===o)u.itemOwner=nn;if(Object.keys(u).length)window.fbUpdate('reports',r.id,u);});window.chatDB.forEach(c=>{let u={};if(c.sender===o)u.sender=nn;if(c.receiver===o)u.receiver=nn;if(Object.keys(u).length)window.fbUpdate('chats',c.id,u);});window.updateNavUser();window.renderProfile();window.customConfirm("儲存成功","設定已更新。","✅","確認","bg-gray-800");};
+    window.switchWalletTab=function(ty){document.querySelectorAll('.wallet-section').forEach(e=>e.classList.add('hidden'));document.getElementById(`wallet-content-${ty}`).classList.remove('hidden');document.querySelectorAll('[id^="wallet-tab-"]').forEach(e=>{e.classList.remove('text-skyblue','border-b-2','border-skyblue');e.classList.add('text-gray-500');});const aTab=document.getElementById(`wallet-tab-${ty}`);aTab.classList.remove('text-gray-500');aTab.classList.add('text-skyblue','border-b-2','border-skyblue');window.renderWallet();};
+    window.renderWallet=function(){const lC=document.getElementById('my-listed-items');lC.innerHTML='';const myI=window.marketItems.filter(i=>i.owner===window.currentUser.name&&i.status!=='banned');if(!myI.length)lC.innerHTML='<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';else myI.forEach(i=>{const apps=window.userTrades.filter(t=>t.itemTitle===i.title&&t.itemOwner===window.currentUser.name);let aH=apps.length?`<div class="mt-4 border-t border-gray-100 pt-3"><p class="text-sm font-bold text-gray-700 mb-2">🎁 ${apps.length} 個交換提案：</p>${apps.map(a=>`<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2"><div><span class="font-bold text-gray-800 text-sm">${a.applicant}</span><p class="text-xs text-gray-500 mt-1">${a.offerDesc}</p><span class="text-[10px] font-bold ${a.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border inline-block mt-1">${a.status}</span></div>${a.status==='待審核'?`<button onclick="acceptTrade('${a.id}')" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg shadow-sm">✅ 選擇他</button>`:''}</div>`).join('')}</div>`:'';let tB=(i.status==='active'||i.status==='pending_approval')?`<button onclick="openTakedownModal('${i.id}')" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 transition">🗑️ 下架</button>`:'';let sT=i.status==='active'?'刊登中':(i.status==='pending_approval'?'⏳ 待審核':i.status);lC.innerHTML+=`<div class="bg-white border rounded-2xl p-5 shadow-sm"><div class="flex justify-between items-start"><div><div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${i.type}</div><h4 class="font-bold text-lg text-gray-800 leading-tight">${i.title}</h4><p class="text-xs text-gray-400 font-bold mt-1">狀態: ${sT}</p></div>${tB}</div>${aH}</div>`;});
+    const aC=document.getElementById('my-applied-items');aC.innerHTML='';const myA=window.userTrades.filter(t=>t.applicant===window.currentUser.name);if(!myA.length)aC.innerHTML='<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';else myA.forEach(a=>{let sc=a.status==='已成交'?'text-green-500':'text-orange-500',bc=a.status==='已成交'?'bg-skyblue text-white cursor-pointer hover:bg-skyblue-hover':'bg-gray-100 text-gray-400 cursor-not-allowed',bt=a.status==='已成交'?'💬 聯絡對方':(a.status==='已關閉'?'🔒 已關閉':'⏳ 待審核');if(a.status==='已關閉')sc='text-gray-400';let oc=a.status==='已成交'?`onclick="contactUser('${a.itemOwner}')"`:'disabled';aC.innerHTML+=`<div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${a.itemOwner}</span> 的</p><h4 class="font-bold text-lg text-gray-800 leading-tight">${a.itemTitle}</h4><p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${a.offerDesc}</p><div class="mt-2 text-xs font-bold ${sc}">${a.status}</div></div><button ${oc} class="px-4 py-2 ${bc} text-sm font-bold rounded-xl w-full sm:w-auto transition">${bt}</button></div>`;});};
+    window.openTakedownModal=function(id){document.getElementById('takedown-item-id').value=id;document.getElementById('takedown-reason').value='';document.getElementById('takedown-reason-desc').value='';window.openModal('takedown-modal');};
+    window.confirmTakedown=async function(){const id=document.getElementById('takedown-item-id').value,r=document.getElementById('takedown-reason').value,d=document.getElementById('takedown-reason-desc').value.trim();if(!r)return window.customConfirm("提示","請選擇下架原因！","⚠️","確認","bg-gray-800");const i=window.marketItems.find(x=>x.id===id);if(i){await window.fbUpdate('marketItems',i.id,{status:`已下架 (${d?r+' ('+d+')':r})`});for(let t of window.userTrades)if(t.itemTitle===i.title&&t.itemOwner===i.owner&&t.status==='待審核'){await window.fbUpdate('userTrades',t.id,{status:'已關閉'});await window.sendNotification(t.applicant,'😔 物品已下架',`您申請交換的「${i.title}」已被主人下架。`);}window.closeModal('takedown-modal');window.customConfirm("下架完成","物品已移除。","✅","確認","bg-gray-800");}};
+    window.acceptTrade=function(id){window.customConfirm("確認選擇","選擇後其他申請將自動關閉。確定交換嗎？","🤝","確定交換","bg-green-500",async()=>{const tr=window.userTrades.find(t=>t.id===id);if(tr){await window.fbUpdate('userTrades',tr.id,{status:'已成交'});for(let t of window.userTrades)if(t.itemTitle===tr.itemTitle&&t.id!==id)await window.fbUpdate('userTrades',t.id,{status:'已關閉'});const i=window.marketItems.find(x=>x.title===tr.itemTitle&&x.owner===window.currentUser.name);if(i)await window.fbUpdate('marketItems',i.id,{status:'已換出'});const nP=window.currentUser.points+50;await window.fbUpdate('users',window.currentUser.id,{points:nP,level:window.getLevelByPoints(nP)});await window.sendNotification(tr.applicant,'🎉 提案被接受了！',`「${tr.itemOwner}」同意了您對「${tr.itemTitle}」的提案！現在可以聯絡對方囉！`);}});};
+    window.renderPoints=function(){document.getElementById('points-display').textContent=window.currentUser.points;document.getElementById('level-display-box').textContent=window.currentUser.level;};
+    window.renderNotifications=function(){const c=document.getElementById('notification-list');c.innerHTML='';const myN=window.notificationsDB.filter(n=>n.user===window.currentUser.name);if(!myN.length)c.innerHTML='<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">沒有新通知</div>';else myN.forEach(n=>c.innerHTML+=`<div class="p-4 rounded-xl border ${n.isRead?'bg-white':'bg-blue-50'}"><div class="flex justify-between items-start mb-1"><h5 class="font-bold text-gray-800 text-sm">${n.title}</h5><span class="text-[10px] text-gray-400">${n.date}</span></div><p class="text-xs text-gray-600">${n.content}</p></div>`);};
+    window.renderProfile=function(){if(!window.currentUser)return window.switchView('login');document.getElementById('profile-name').textContent=window.currentUser.name;document.getElementById('profile-avatar-letter').textContent=window.currentUser.name.charAt(0);document.getElementById('profile-level-badge').textContent=window.currentUser.level;window.renderPoints();window.renderWallet();window.renderNotifications();};
 
-    window.renderDetail = function() {
-      const c = document.getElementById('detail-content'); if (!window.selectedItem) return;
-      c.innerHTML = `<div class="mb-8"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${window.selectedItem.type}</div><h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${window.selectedItem.title}</h2><div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">${window.selectedItem.owner.charAt(0)}</div><span class="text-gray-600 font-bold">${window.selectedItem.owner}</span></div></div><div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100"><h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4><p class="text-gray-600 leading-relaxed">${window.selectedItem.desc}</p></div><div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8"><button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl shadow-md transition flex items-center justify-center gap-2"><span>🎁</span> 提出交換申請</button><button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">🚨 檢舉此物品</button></div>`;
-      document.getElementById('btn-request-trade').onclick = () => {
-        if (!window.currentUser) return window.switchView('login');
-        if (window.currentUser.name === window.selectedItem.owner) return window.customConfirm("無法申請", "不能對自己的物品提出申請喔！", "💡", "我知道了", "bg-gray-800");
-        document.getElementById('trade-offer-desc').value = ''; document.getElementById('trade-method').value = '面交'; window.toggleShippingFee(); window.openModal('trade-modal');
-      };
-    }
+    // --- 管理員後台 ---
+    window.switchAdminTab=function(t){document.querySelectorAll('.admin-content-section').forEach(e=>e.classList.add('hidden'));document.getElementById(`admin-content-${t}`).classList.remove('hidden');document.querySelectorAll('.admin-tab').forEach(e=>{e.classList.remove('text-skyblue','bg-skyblue-light');e.classList.add('text-gray-600','bg-gray-50');});const aT=document.getElementById(`admin-tab-${t}`);aT.classList.remove('text-gray-600','bg-gray-50');aT.classList.add('text-skyblue','bg-skyblue-light');if(t==='stats')window.renderAdminStats();if(t==='users')window.renderAdminUsers();if(t==='items')window.renderAdminItems();if(t==='reports')window.renderAdminReports();if(t==='coop')window.renderAdminCoop();};
+    window.updateAdminBadges=function(){const pI=window.marketItems.filter(i=>i.status==='pending_approval').length,pR=window.reportsDB.filter(r=>r.status==='pending').length,pC=window.coopApplicationsDB.filter(c=>c.status==='未處理').length;const mB=document.getElementById('admin-badge'),iB=document.getElementById('admin-tab-items-badge'),rB=document.getElementById('admin-tab-reports-badge'),cB=document.getElementById('admin-tab-coop-badge');(pI+pR+pC>0)?(mB.textContent=pI+pR+pC,mB.classList.remove('hidden')):mB.classList.add('hidden');pI>0?(iB.textContent=pI,iB.classList.remove('hidden')):iB.classList.add('hidden');pR>0?(rB.textContent=pR,rB.classList.remove('hidden')):rB.classList.add('hidden');pC>0?(cB.textContent=pC,cB.classList.remove('hidden')):cB.classList.add('hidden');};
+    window.renderAdmin=function(){window.updateAdminBadges();window.switchAdminTab('stats');};
+    window.renderAdminStats=function(){document.getElementById('admin-content-stats').innerHTML=`<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-blue-50 rounded-2xl p-6 border"><p class="text-blue-500 font-bold mb-1">總註冊會員</p><div class="text-4xl font-extrabold text-blue-900">${window.usersDB.length}</div></div><div class="bg-green-50 rounded-2xl p-6 border"><p class="text-green-500 font-bold mb-1">平台總物品</p><div class="text-4xl font-extrabold text-green-900">${window.marketItems.length}</div></div><div class="bg-purple-50 rounded-2xl p-6 border"><p class="text-purple-500 font-bold mb-1">已完成交易</p><div class="text-4xl font-extrabold text-purple-900">${window.userTrades.filter(t=>t.status==='已成交').length}</div></div></div>`;};
+    window.renderAdminUsers=function(){document.getElementById('admin-content-users').innerHTML='<div class="space-y-3">'+window.usersDB.map(u=>`<div class="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm"><div><div class="font-bold text-gray-800 flex items-center gap-2">${u.name} ${u.role==='admin'?'<span class="bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded-full">管理員</span>':''}</div><div class="text-xs text-gray-500 mt-1">${u.email} | 分數: ${u.points} | 等級: ${u.level}</div></div><button onclick="openAdminEditUserModal('${u.id}')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-lg transition">調整</button></div>`).join('')+'</div>';};
+    window.openAdminEditUserModal=function(uid){const u=window.usersDB.find(x=>x.id===uid);if(u){document.getElementById('edit-user-id').value=u.id;document.getElementById('edit-user-name').textContent=u.name;document.getElementById('edit-user-points').value=u.points;window.openModal('admin-edit-user-modal');}};
+    window.saveAdminUserEdit=async function(){const uid=document.getElementById('edit-user-id').value,nP=parseInt(document.getElementById('edit-user-points').value);if(isNaN(nP)||nP<0)return window.customConfirm("錯誤","請輸入有效正整數！","⚠️","確認","bg-gray-800");await window.fbUpdate('users',uid,{points:nP,level:window.getLevelByPoints(nP)});window.closeModal('admin-edit-user-modal');window.customConfirm("調整成功","會員資料已更新。","✅","確認","bg-skyblue");};
+    window.renderAdminItems=function(){const c=document.getElementById('admin-content-items'),pI=window.marketItems.filter(i=>i.status==='pending_approval'),oI=window.marketItems.filter(i=>i.status!=='pending_approval'),sI=[...pI,...oI];if(!sI.length)return c.innerHTML='<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">尚無物品</div>';c.innerHTML='<div class="space-y-4">'+sI.map(i=>{let aB=i.status==='pending_approval'?`<button onclick="approveItem('${i.id}')" class="px-3 py-1.5 bg-green-500 text-white font-bold text-xs rounded-lg">✅ 通過</button><button onclick="openRejectItemModal('${i.id}')" class="px-3 py-1.5 bg-red-500 text-white font-bold text-xs rounded-lg">❌ 駁回</button>`:(i.status==='active'?`<button onclick="openForceTakedownModal('${i.id}')" class="px-3 py-1.5 bg-gray-200 text-red-500 font-bold text-xs rounded-lg hover:bg-red-100 transition">🚨 強制下架</button>`:'');let sT=i.status==='active'?'刊登中':(i.status==='pending_approval'?'⏳ 待審核':i.status),sC=i.status==='pending_approval'?'bg-orange-100 text-orange-600':'bg-gray-100 text-gray-500';return `<div class="bg-white p-5 rounded-2xl border shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${sC}">${sT}</span><span class="text-xs text-gray-400">擁有者: ${i.owner}</span></div><h4 class="font-bold text-gray-800 text-lg">${i.title}</h4><p class="text-sm text-gray-500 mt-1 max-w-xl">${i.desc}</p></div><div class="flex items-center gap-2 shrink-0">${aB}</div></div>`;}).join('')+'</div>';};
+    window.approveItem=async function(id){await window.fbUpdate('marketItems',id,{status:'active'});const i=window.marketItems.find(x=>x.id===id);if(i)await window.sendNotification(i.owner,'✅ 審核通過',`物品「${i.title}」已正式上架！`);window.customConfirm("審核通過","物品已上架。","✅","確認","bg-green-500");};
+    window.openRejectItemModal=function(id){document.getElementById('reject-item-id').value=id;window.openModal('admin-reject-item-modal');};
+    window.confirmRejectItem=async function(){const id=document.getElementById('reject-item-id').value,s=document.getElementById('reject-item-reason-select').value,d=document.getElementById('reject-item-reason').value.trim();if(!s)return window.customConfirm("錯誤","請選擇原因！","⚠️","確認","bg-gray-800");const r=d?`${s} (${d})`:s;await window.fbUpdate('marketItems',id,{status:`已駁回 (${r})`});const i=window.marketItems.find(x=>x.id===id);if(i)await window.sendNotification(i.owner,'❌ 審核未通過',`「${i.title}」未通過。原因：${r}`);window.closeModal('admin-reject-item-modal');window.customConfirm("已駁回","已通知使用者。","✅","確認","bg-gray-800");};
+    window.openForceTakedownModal=function(id){document.getElementById('force-takedown-item-id').value=id;document.getElementById('force-takedown-reason-select').value='';document.getElementById('force-takedown-reason').value='';window.openModal('admin-force-takedown-modal');};
+    window.confirmForceTakedown=async function(){const id=document.getElementById('force-takedown-item-id').value,s=document.getElementById('force-takedown-reason-select').value,d=document.getElementById('force-takedown-reason').value.trim();if(!s)return window.customConfirm("錯誤","請選擇原因！","⚠️","確認","bg-gray-800");const r=d?`${s} (${d})`:s,i=window.marketItems.find(x=>x.id===id);if(i){await window.fbUpdate('marketItems',i.id,{status:`banned (${r})`});for(let t of window.userTrades)if(t.itemTitle===i.title&&t.itemOwner===i.owner&&t.status==='待審核'){await window.fbUpdate('userTrades',t.id,{status:'已關閉'});await window.sendNotification(t.applicant,'😔 申請取消',`您申請的「${i.title}」因違規已下架。`);}await window.sendNotification(i.owner,'🚨 強制下架',`「${i.title}」因違規已下架。原因：${r}`);window.closeModal('admin-force-takedown-modal');window.customConfirm("下架完成","已發送警告。","✅","確認","bg-red-500");}};
+    window.renderAdminReports=function(){const pR=window.reportsDB.filter(r=>r.status==='pending');document.getElementById('admin-reports-list').innerHTML=!pR.length?'<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">無待處理檢舉。</div>':pR.map(r=>`<div class="bg-white p-5 rounded-2xl border border-red-100 shadow-sm"><div class="flex justify-between items-start mb-3"><div><span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border">檢舉單</span><h4 class="font-bold text-gray-800 mt-1">物品：${r.itemTitle} (擁有者: ${r.itemOwner})</h4></div><span class="text-xs text-gray-400">${r.date}</span></div><div class="bg-gray-50 p-3 rounded-lg text-sm mb-4"><p><span class="font-bold">檢舉人：</span>${r.reporter}</p><p><span class="font-bold">原因：</span>${r.reason}</p><p><span class="font-bold">說明：</span>${r.desc}</p></div><button onclick="openAdminReportModal('${r.id}')" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl">審核</button></div>`).join('');};
+    window.openAdminReportModal=function(rid){window.currentReportId=rid;const r=window.reportsDB.find(x=>x.id===rid);if(r){document.getElementById('admin-report-details').innerHTML=`<p><strong>物品：</strong>${r.itemTitle}</p><p><strong>原因：</strong>${r.reason}</p>`;window.openModal('admin-report-modal');}};
+    window.processReport=async function(a){const s=document.getElementById('admin-report-reason-select').value,n=document.getElementById('admin-report-note').value.trim();if(!s)return window.customConfirm("錯誤","請選擇處理結果！","⚠️","確認","bg-gray-800");const fR=n?`${s} (${n})`:s,r=window.reportsDB.find(x=>x.id===window.currentReportId);if(r){await window.fbUpdate('reports',r.id,{status:a,adminNote:fR});if(a==='ban'){const i=window.marketItems.find(x=>x.title===r.itemTitle&&x.owner===r.itemOwner);if(i){await window.fbUpdate('marketItems',i.id,{status:'banned'});for(let t of window.userTrades)if(t.itemTitle===i.title&&t.itemOwner===i.owner&&t.status==='待審核'){await window.fbUpdate('userTrades',t.id,{status:'已關閉'});await window.sendNotification(t.applicant,'😔 申請取消',`「${i.title}」已下架。`);}await window.sendNotification(i.owner,'🚨 違規下架',`「${i.title}」違規下架。備註：${fR}`);await window.sendNotification(r.reporter,'✅ 處理結果',`檢舉屬實已下架，獲得 5 點貢獻值！`);const rp=window.usersDB.find(u=>u.name===r.reporter);if(rp)await window.fbUpdate('users',rp.id,{points:rp.points+5,level:window.getLevelByPoints(rp.points+5)});}}else await window.sendNotification(r.reporter,'ℹ️ 處理結果',`檢舉未違規已駁回。備註：${fR}`);}window.closeModal('admin-report-modal');window.customConfirm("處理完成","已結案。","✅","確認","bg-gray-800");};
+    window.renderAdminCoop=function(){const pC=window.coopApplicationsDB.filter(x=>x.status==='未處理');document.getElementById('admin-coop-list').innerHTML=!pC.length?'<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">沒有新合作申請。</div>':pC.map(c=>`<div class="bg-white p-5 rounded-2xl border shadow-sm"><div class="flex justify-between items-start mb-3"><h4 class="font-bold text-gray-800 text-lg">${c.brandName} - ${c.plan}</h4><span class="text-xs text-gray-400">${c.date}</span></div><div class="bg-gray-50 p-4 rounded-xl text-sm mb-4"><span class="text-gray-500">聯絡人：</span> <span class="font-bold">${c.contactName} (${c.email})</span></div><button onclick="markCoopDone('${c.id}')" class="w-full py-2 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition">標示為已處理</button></div>`).join('');};
+    window.markCoopDone=async function(id){await window.fbUpdate('coops',id,{status:'已處理'});window.customConfirm("已處理","已移出清單。","✅","確認","bg-gray-800");};
 
-    window.submitUpload = async function() {
-      if (!window.currentUser) return window.switchView('login');
-      const title = document.getElementById('upload-title').value.trim(), type = document.getElementById('upload-type').value, desc = document.getElementById('upload-desc').value.trim();
-      if (!title || !desc) return window.customConfirm("提示", "請完整填寫物品名稱與描述！", "⚠️", "確認", "bg-gray-800");
-      const id = Date.now().toString();
-      await window.fbSet('marketItems', id, { id: id, title: title, desc: desc, owner: window.currentUser.name, type: type, status: 'pending_approval', createdAt: Date.now() });
-      document.getElementById('upload-title').value = ''; document.getElementById('upload-desc').value = '';
-      window.customConfirm("已送出審核！", "物品已同步送交審核。", "⏳", "前往我的錢包", "bg-skyblue", () => { window.switchView('profile'); window.switchProfileSidebar('wallet'); window.switchWalletTab('listed'); });
-    };
-
-    window.toggleShippingFee = function() { document.getElementById('shipping-fee-container').classList.toggle('hidden', document.getElementById('trade-method').value !== '寄送'); }
-
-    window.submitTradeOffer = async function() {
-      const desc = document.getElementById('trade-offer-desc').value.trim();
-      if (!desc) return window.customConfirm("提示", "請填寫想用來交換的物品內容！", "⚠️", "確認", "bg-gray-800");
-      const method = document.getElementById('trade-method').value, sInfo = method === '寄送' ? ` (運費: ${document.getElementById('trade-shipping-fee').value})` : "", id = Date.now().toString();
-      await window.fbSet('userTrades', id, { id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner, applicant: window.currentUser.name, offerDesc: `${desc} [${method}${sInfo}]`, status: '待審核', type: 'applied', createdAt: Date.now() });
-      await window.sendNotification(window.selectedItem.owner, '有人對您的物品提出交換', `${window.currentUser.name} 想要用物品和您交換「${window.selectedItem.title}」。`);
-      window.closeModal('trade-modal');
-      window.customConfirm("申請已送出！", "已通知物品主人。", "🎉", "前往錢包", "bg-skyblue", () => { window.switchView('profile'); window.switchProfileSidebar('wallet'); window.switchWalletTab('applied'); });
-    }
-
-    window.openReportModal = function() {
-      if (!window.currentUser) return window.switchView('login');
-      document.getElementById('report-reason').value = ''; document.getElementById('report-desc').value = ''; document.getElementById('report-agree').checked = false; window.openModal('report-modal');
-    };
-
-    window.submitReport = async function() {
-      const reason = document.getElementById('report-reason').value, desc = document.getElementById('report-desc').value, agree = document.getElementById('report-agree').checked;
-      if (!reason || !desc || !agree) return window.customConfirm("提示", "請填寫必填欄位並同意。", "⚠️", "確認", "bg-gray-800");
-      const id = 'r' + Date.now().toString();
-      await window.fbSet('reports', id, { id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner, reporter: window.currentUser.name, reason: reason, desc: desc, status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() });
-      window.closeModal('report-modal'); window.customConfirm("檢舉已送出", "管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
-    };
-
-    window.switchProfileSidebar = function(tab) {
-      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden')); document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
-      document.querySelectorAll('.profile-tab').forEach(el => { el.classList.remove('text-skyblue', 'bg-skyblue-light'); el.classList.add('text-gray-600', 'hover:bg-gray-50'); });
-      const aTab = document.getElementById(`tab-${tab}`); aTab.classList.remove('text-gray-600', 'hover:bg-gray-50'); aTab.classList.add('text-skyblue', 'bg-skyblue-light');
-      if (tab === 'wallet') window.renderWallet(); if (tab === 'notifications') window.renderNotifications(); if (tab === 'points') window.renderPoints();
-    };
-
-    window.saveProfileSettings = async function() {
-      const newName = document.getElementById('setting-name').value.trim();
-      if (!newName) return window.customConfirm("提示", "名稱不能為空！", "⚠️", "確認", "bg-gray-800");
-      const oldName = window.currentUser.name; window.currentUser.name = newName;
-      await window.fbUpdate('users', window.currentUser.id, { name: newName });
-      window.marketItems.forEach(i => { if(i.owner === oldName) window.fbUpdate('marketItems', i.id, { owner: newName }); });
-      window.userTrades.forEach(t => { let up = {}; if(t.applicant === oldName) up.applicant = newName; if(t.itemOwner === oldName) up.itemOwner = newName; if(Object.keys(up).length) window.fbUpdate('userTrades', t.id, up); });
-      window.reportsDB.forEach(r => { let up = {}; if(r.reporter === oldName) up.reporter = newName; if(r.itemOwner === oldName) up.itemOwner = newName; if(Object.keys(up).length) window.fbUpdate('reports', r.id, up); });
-      window.updateNavUser(); window.renderProfile(); window.customConfirm("儲存成功", "設定已更新。", "✅", "確認", "bg-gray-800");
-    };
-
-    window.switchWalletTab = function(type) {
-      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden')); document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
-      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => { el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue'); el.classList.add('text-gray-500'); });
-      const aTab = document.getElementById(`wallet-tab-${type}`); aTab.classList.remove('text-gray-500'); aTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
-      window.renderWallet();
-    };
-
-    window.renderWallet = function() {
-      const lC = document.getElementById('my-listed-items'); lC.innerHTML = '';
-      const myItems = window.marketItems.filter(item => item.owner === window.currentUser.name && item.status !== 'banned');
-      if (!myItems.length) lC.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
-      else myItems.forEach(item => {
-        const apps = window.userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === window.currentUser.name);
-        let appHtml = apps.length ? `<div class="mt-4 border-t border-gray-100 pt-3"><p class="text-sm font-bold text-gray-700 mb-2">🎁 ${apps.length} 個交換提案：</p>${apps.map(app => `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2"><div><span class="font-bold text-gray-800 text-sm">${app.applicant}</span><p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p><span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border inline-block mt-1">${app.status}</span></div>${app.status === '待審核' ? `<button onclick="acceptTrade('${app.id}')" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg shadow-sm">✅ 選擇他</button>` : ''}</div>`).join('')}</div>` : '';
-        let tBtn = (item.status === 'active' || item.status === 'pending_approval') ? `<button onclick="openTakedownModal('${item.id}')" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 transition">🗑️ 下架</button>` : '';
-        let sTxt = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
-        lC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm"><div class="flex justify-between items-start"><div><div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div><h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4><p class="text-xs text-gray-400 font-bold mt-1">狀態: ${sTxt}</p></div>${tBtn}</div>${appHtml}</div>`;
-      });
-
-      const aC = document.getElementById('my-applied-items'); aC.innerHTML = '';
-      const myApps = window.userTrades.filter(t => t.applicant === window.currentUser.name);
-      if (!myApps.length) aC.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
-      else myApps.forEach(app => {
-        let sc = app.status === '已成交' ? 'text-green-500' : 'text-orange-500', bc = app.status === '已成交' ? 'bg-skyblue text-white' : 'bg-gray-100 text-gray-400', bt = app.status === '已成交' ? '💬 聯絡對方' : (app.status === '已關閉' ? '🔒 已關閉' : '⏳ 待審核');
-        if (app.status === '已關閉') sc = 'text-gray-400';
-        let onClickHandler = app.status === '已成交' ? `onclick="contactUser('${app.itemOwner}')"` : '';
-        aC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p><h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4><p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p><div class="mt-2 text-xs font-bold ${sc}">${app.status}</div></div><button ${onClickHandler} class="px-4 py-2 ${bc} text-sm font-bold rounded-xl w-full sm:w-auto">${bt}</button></div>`;
-      });
-    }
-
-    window.contactUser = function(userName) {
-      window.customConfirm(
-        "💬 聯絡對方", 
-        `即將開啟與 ${userName} 的聊天室。由於此為展示版本，暫時無法傳送真實訊息，請見諒！`, 
-        "📬", 
-        "我知道了", 
-        "bg-skyblue"
-      );
-    };
-
-    window.openTakedownModal = function(itemId) { document.getElementById('takedown-item-id').value = itemId; document.getElementById('takedown-reason').value = ''; document.getElementById('takedown-reason-desc').value = ''; window.openModal('takedown-modal'); }
-
-    window.confirmTakedown = async function() {
-      const itemId = document.getElementById('takedown-item-id').value, reason = document.getElementById('takedown-reason').value, desc = document.getElementById('takedown-reason-desc').value.trim();
-      if (!reason) return window.customConfirm("提示", "請選擇下架原因！", "⚠️", "確認", "bg-gray-800");
-      const item = window.marketItems.find(i => i.id === itemId);
-      if (item) {
-        await window.fbUpdate('marketItems', item.id, { status: `已下架 (${desc ? reason+' ('+desc+')' : reason})` });
-        for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架。`); }
-        window.closeModal('takedown-modal'); window.customConfirm("下架完成", "物品已移除。", "✅", "確認", "bg-gray-800");
-      }
-    }
-
-    window.acceptTrade = function(tradeId) {
-      window.customConfirm("確認選擇", "選擇後其他申請將自動關閉。確定交換嗎？", "🤝", "確定交換", "bg-green-500", async () => {
-        const trade = window.userTrades.find(t => t.id === tradeId);
-        if (trade) {
-          await window.fbUpdate('userTrades', trade.id, { status: '已成交' });
-          for (let t of window.userTrades) if (t.itemTitle === trade.itemTitle && t.id !== tradeId) await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
-          const item = window.marketItems.find(i => i.title === trade.itemTitle && i.owner === window.currentUser.name);
-          if (item) await window.fbUpdate('marketItems', item.id, { status: '已換出' });
-          const newPoints = window.currentUser.points + 50; await window.fbUpdate('users', window.currentUser.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
-          await window.sendNotification(trade.applicant, '🎉 提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的提案！`);
-        }
-      });
-    }
-
-    window.renderPoints = function() { document.getElementById('points-display').textContent = window.currentUser.points; document.getElementById('level-display-box').textContent = window.currentUser.level; }
-
-    window.renderNotifications = function() {
-      const c = document.getElementById('notification-list'); c.innerHTML = '';
-      const myNotifs = window.notificationsDB.filter(n => n.user === window.currentUser.name);
-      if (!myNotifs.length) c.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">沒有新通知</div>';
-      else myNotifs.forEach(n => c.innerHTML += `<div class="p-4 rounded-xl border ${n.isRead ? 'bg-white' : 'bg-blue-50'}"><div class="flex justify-between items-start mb-1"><h5 class="font-bold text-gray-800 text-sm">${n.title}</h5><span class="text-[10px] text-gray-400">${n.date}</span></div><p class="text-xs text-gray-600">${n.content}</p></div>`);
-    }
-
-    window.renderProfile = function() {
-      if (!window.currentUser) return window.switchView('login');
-      document.getElementById('profile-name').textContent = window.currentUser.name; document.getElementById('profile-avatar-letter').textContent = window.currentUser.name.charAt(0); document.getElementById('profile-level-badge').textContent = window.currentUser.level;
-      window.renderPoints(); window.renderWallet(); window.renderNotifications();
-    };
-
-    window.switchAdminTab = function(tab) {
-      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden')); document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
-      document.querySelectorAll('.admin-tab').forEach(el => { el.classList.remove('text-skyblue', 'bg-skyblue-light'); el.classList.add('text-gray-600', 'bg-gray-50'); });
-      const aTab = document.getElementById(`admin-tab-${tab}`); aTab.classList.remove('text-gray-600', 'bg-gray-50'); aTab.classList.add('text-skyblue', 'bg-skyblue-light');
-      if (tab === 'stats') window.renderAdminStats(); if (tab === 'users') window.renderAdminUsers(); if (tab === 'items') window.renderAdminItems(); if (tab === 'reports') window.renderAdminReports(); if (tab === 'coop') window.renderAdminCoop();
-    };
-
-    window.updateAdminBadges = function() {
-      const pI = window.marketItems.filter(i => i.status === 'pending_approval').length, pR = window.reportsDB.filter(r => r.status === 'pending').length, pC = window.coopApplicationsDB.filter(c => c.status === '未處理').length;
-      const mB = document.getElementById('admin-badge'), iB = document.getElementById('admin-tab-items-badge'), rB = document.getElementById('admin-tab-reports-badge'), cB = document.getElementById('admin-tab-coop-badge');
-      (pI+pR+pC > 0) ? (mB.textContent = pI+pR+pC, mB.classList.remove('hidden')) : mB.classList.add('hidden');
-      pI > 0 ? (iB.textContent = pI, iB.classList.remove('hidden')) : iB.classList.add('hidden');
-      pR > 0 ? (rB.textContent = pR, rB.classList.remove('hidden')) : rB.classList.add('hidden');
-      pC > 0 ? (cB.textContent = pC, cB.classList.remove('hidden')) : cB.classList.add('hidden');
-    };
-
-    window.renderAdmin = function() { window.updateAdminBadges(); window.switchAdminTab('stats'); };
-
-    window.renderAdminStats = function() {
-      document.getElementById('admin-content-stats').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-blue-50 rounded-2xl p-6 border"><p class="text-blue-500 font-bold mb-1">總註冊會員</p><div class="text-4xl font-extrabold text-blue-900">${window.usersDB.length}</div></div><div class="bg-green-50 rounded-2xl p-6 border"><p class="text-green-500 font-bold mb-1">平台總物品</p><div class="text-4xl font-extrabold text-green-900">${window.marketItems.length}</div></div><div class="bg-purple-50 rounded-2xl p-6 border"><p class="text-purple-500 font-bold mb-1">已完成交易</p><div class="text-4xl font-extrabold text-purple-900">${window.userTrades.filter(t => t.status === '已成交').length}</div></div></div>`;
-    };
-
-    window.renderAdminUsers = function() {
-      document.getElementById('admin-content-users').innerHTML = '<div class="space-y-3">' + window.usersDB.map(u => `<div class="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm"><div><div class="font-bold text-gray-800 flex items-center gap-2">${u.name} ${u.role === 'admin' ? '<span class="bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded-full">管理員</span>' : ''}</div><div class="text-xs text-gray-500 mt-1">${u.email} | 分數: ${u.points} | 等級: ${u.level}</div></div><button onclick="openAdminEditUserModal('${u.id}')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-lg transition">調整</button></div>`).join('') + '</div>';
-    };
-
-    window.openAdminEditUserModal = function(uid) {
-      const u = window.usersDB.find(user => user.id === uid);
-      if (u) { document.getElementById('edit-user-id').value = u.id; document.getElementById('edit-user-name').textContent = u.name; document.getElementById('edit-user-points').value = u.points; window.openModal('admin-edit-user-modal'); }
-    };
-
-    window.saveAdminUserEdit = async function() {
-      const uid = document.getElementById('edit-user-id').value, nP = parseInt(document.getElementById('edit-user-points').value);
-      if (isNaN(nP) || nP < 0) return window.customConfirm("錯誤", "請輸入有效正整數！", "⚠️", "確認", "bg-gray-800");
-      await window.fbUpdate('users', uid, { points: nP, level: window.getLevelByPoints(nP) });
-      window.closeModal('admin-edit-user-modal'); window.customConfirm("調整成功", "會員資料已更新。", "✅", "確認", "bg-skyblue");
-    };
-
-    window.renderAdminItems = function() {
-      const c = document.getElementById('admin-content-items'), pI = window.marketItems.filter(i => i.status === 'pending_approval'), oI = window.marketItems.filter(i => i.status !== 'pending_approval'), sI = [...pI, ...oI];
-      if (!sI.length) return c.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">尚無物品</div>';
-      c.innerHTML = '<div class="space-y-4">' + sI.map(item => {
-        let aBtns = item.status === 'pending_approval' ? `<button onclick="approveItem('${item.id}')" class="px-3 py-1.5 bg-green-500 text-white font-bold text-xs rounded-lg">✅ 通過</button><button onclick="openRejectItemModal('${item.id}')" class="px-3 py-1.5 bg-red-500 text-white font-bold text-xs rounded-lg">❌ 駁回</button>` : (item.status === 'active' ? `<button onclick="openForceTakedownModal('${item.id}')" class="px-3 py-1.5 bg-gray-200 text-red-500 font-bold text-xs rounded-lg">🚨 強制下架</button>` : '');
-        let sTxt = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status), sCol = item.status === 'pending_approval' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500';
-        return `<div class="bg-white p-5 rounded-2xl border shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${sCol}">${sTxt}</span><span class="text-xs text-gray-400">擁有者: ${item.owner}</span></div><h4 class="font-bold text-gray-800 text-lg">${item.title}</h4><p class="text-sm text-gray-500 mt-1 max-w-xl">${item.desc}</p></div><div class="flex items-center gap-2 shrink-0">${aBtns}</div></div>`;
-      }).join('') + '</div>';
-    };
-
-    window.approveItem = async function(itemId) {
-      await window.fbUpdate('marketItems', itemId, { status: 'active' }); const item = window.marketItems.find(i => i.id === itemId);
-      if(item) await window.sendNotification(item.owner, '✅ 審核通過', `物品「${item.title}」已正式上架！`);
-      window.customConfirm("審核通過", "物品已上架。", "✅", "確認", "bg-green-500");
-    };
-
-    window.openRejectItemModal = function(id) { document.getElementById('reject-item-id').value = id; window.openModal('admin-reject-item-modal'); };
-    window.confirmRejectItem = async function() {
-      const id = document.getElementById('reject-item-id').value, s = document.getElementById('reject-item-reason-select').value, d = document.getElementById('reject-item-reason').value.trim();
-      if (!s) return window.customConfirm("錯誤", "請選擇原因！", "⚠️", "確認", "bg-gray-800");
-      const r = d ? `${s} (${d})` : s; await window.fbUpdate('marketItems', id, { status: `已駁回 (${r})` });
-      const item = window.marketItems.find(i => i.id === id); if(item) await window.sendNotification(item.owner, '❌ 審核未通過', `「${item.title}」未通過。原因：${r}`);
-      window.closeModal('admin-reject-item-modal'); window.customConfirm("已駁回", "已通知使用者。", "✅", "確認", "bg-gray-800");
-    };
-
-    window.openForceTakedownModal = function(id) { document.getElementById('force-takedown-item-id').value = id; window.openModal('admin-force-takedown-modal'); };
-    window.confirmForceTakedown = async function() {
-      const id = document.getElementById('force-takedown-item-id').value, s = document.getElementById('force-takedown-reason-select').value, d = document.getElementById('force-takedown-reason').value.trim();
-      if (!s) return window.customConfirm("錯誤", "請選擇原因！", "⚠️", "確認", "bg-gray-800");
-      const r = d ? `${s} (${d})` : s, item = window.marketItems.find(i => i.id === id);
-      if (item) {
-        await window.fbUpdate('marketItems', item.id, { status: 'banned' });
-        for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 申請取消', `「${item.title}」因違規已下架。`); }
-        await window.sendNotification(item.owner, '🚨 強制下架', `「${item.title}」因違規已下架。原因：${r}`);
-        window.closeModal('admin-force-takedown-modal'); window.customConfirm("下架完成", "已發送警告。", "✅", "確認", "bg-red-500");
-      }
-    };
-
-    window.renderAdminReports = function() {
-      const pR = window.reportsDB.filter(r => r.status === 'pending');
-      document.getElementById('admin-reports-list').innerHTML = !pR.length ? '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">無待處理檢舉。</div>' : pR.map(r => `<div class="bg-white p-5 rounded-2xl border border-red-100 shadow-sm"><div class="flex justify-between items-start mb-3"><div><span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border">檢舉單</span><h4 class="font-bold text-gray-800 mt-1">物品：${r.itemTitle} (擁有者: ${r.itemOwner})</h4></div><span class="text-xs text-gray-400">${r.date}</span></div><div class="bg-gray-50 p-3 rounded-lg text-sm mb-4"><p><span class="font-bold">檢舉人：</span>${r.reporter}</p><p><span class="font-bold">原因：</span>${r.reason}</p><p><span class="font-bold">說明：</span>${r.desc}</p></div><button onclick="openAdminReportModal('${r.id}')" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl">審核</button></div>`).join('');
-    };
-
-    window.openAdminReportModal = function(rid) {
-      window.currentReportId = rid; const r = window.reportsDB.find(x => x.id === rid);
-      if (r) { document.getElementById('admin-report-details').innerHTML = `<p><strong>物品：</strong>${r.itemTitle}</p><p><strong>原因：</strong>${r.reason}</p>`; window.openModal('admin-report-modal'); }
-    };
-
-    window.processReport = async function(action) {
-      const s = document.getElementById('admin-report-reason-select').value, n = document.getElementById('admin-report-note').value.trim();
-      if (!s) return window.customConfirm("錯誤", "請選擇處理結果！", "⚠️", "確認", "bg-gray-800");
-      const fR = n ? `${s} (${n})` : s, r = window.reportsDB.find(x => x.id === window.currentReportId);
-      if (r) {
-        await window.fbUpdate('reports', r.id, { status: action, adminNote: fR });
-        if (action === 'ban') {
-          const item = window.marketItems.find(i => i.title === r.itemTitle && i.owner === r.itemOwner);
-          if (item) {
-            await window.fbUpdate('marketItems', item.id, { status: 'banned' });
-            for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 申請取消', `「${item.title}」已下架。`); }
-            await window.sendNotification(item.owner, '🚨 違規下架', `「${item.title}」違規下架。備註：${fR}`); await window.sendNotification(r.reporter, '✅ 處理結果', `檢舉屬實已下架，獲得 5 點貢獻值！`);
-            const rp = window.usersDB.find(u => u.name === r.reporter); if (rp) await window.fbUpdate('users', rp.id, { points: rp.points+5, level: window.getLevelByPoints(rp.points+5) });
-          }
-        } else await window.sendNotification(r.reporter, 'ℹ️ 處理結果', `檢舉未違規已駁回。備註：${fR}`);
-      }
-      window.closeModal('admin-report-modal'); window.customConfirm("處理完成", "已結案。", "✅", "確認", "bg-gray-800");
-    };
-
-    window.renderAdminCoop = function() {
-      const pC = window.coopApplicationsDB.filter(x => x.status === '未處理');
-      document.getElementById('admin-coop-list').innerHTML = !pC.length ? '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">沒有新合作申請。</div>' : pC.map(c => `<div class="bg-white p-5 rounded-2xl border shadow-sm"><div class="flex justify-between items-start mb-3"><h4 class="font-bold text-gray-800 text-lg">${c.brandName} - ${c.plan}</h4><span class="text-xs text-gray-400">${c.date}</span></div><div class="bg-gray-50 p-4 rounded-xl text-sm mb-4"><span class="text-gray-500">聯絡人：</span> <span class="font-bold">${c.contactName} (${c.email})</span></div><button onclick="markCoopDone('${c.id}')" class="w-full py-2 bg-blue-500 text-white font-bold rounded-xl">標示為已處理</button></div>`).join('');
-    };
-
-    window.markCoopDone = async function(id) { await window.fbUpdate('coops', id, { status: '已處理' }); window.customConfirm("已處理", "已移除。", "✅", "確認", "bg-gray-800"); };
-
-    window.onload = initFirebase;
+    // 啟動與連線 Firebase
+    window.onload=initFirebase;
   </script>
 </body>
 </html>
