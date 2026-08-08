@@ -18,6 +18,9 @@
   </script>
 
   <style>
+    /* 確保隱藏區塊絕對不會被意外顯示 */
+    .hidden { display: none !important; }
+    
     body { background-color: #ebe3db; color: #333; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
     .card-hover { transition: all 0.2s ease; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); border-color: #0ea5e9; }
@@ -57,6 +60,7 @@
 
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
     
+    <!-- 探索首頁 -->
     <section id="view-home" class="view-section">
       <div class="flex justify-between items-end mb-6">
         <div>
@@ -226,7 +230,7 @@
     </div>
   </footer>
 
-  <!-- Modals -->
+  <!-- 彈出視窗群 -->
   <div id="document-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-900/40 backdrop-blur-sm px-4 py-8">
     <div class="bg-white rounded-3xl w-full max-w-4xl max-h-full flex flex-col shadow-2xl relative modal-enter">
       <button onclick="closeModal('document-modal')" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold transition z-10">✕</button>
@@ -331,6 +335,7 @@
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // 使用系統注入的 Firebase Config
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'tradeup-app';
     const fbConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
       apiKey: "fake-key", authDomain: "test.firebaseapp.com", projectId: "test-project"
@@ -344,9 +349,11 @@
     window.currentUser=null; window.selectedItem=null; window.currentReportId=null; window.confirmCallback=null; window.currentChatTarget=null;
     let fbUser=null, useLocalFallback=false;
 
+    // 嚴格遵守系統路徑規範： `/artifacts/{appId}/public/data/{collectionName}`
     const getPublicCol = (colName) => collection(db, 'artifacts', appId, 'public', 'data', colName);
     const getPublicDoc = (colName, docId) => doc(db, 'artifacts', appId, 'public', 'data', colName, String(docId));
 
+    // 雲端資料寫入封裝函數 (支援本地降級模式)
     window.fbSet = async (col, id, data) => {
       if(useLocalFallback) { fallbackSet(col, id, data); return; }
       if(!fbUser) return;
@@ -364,6 +371,7 @@
       try { await deleteDoc(getPublicDoc(col, id)); } catch(e) {}
     };
 
+    // 本地降級儲存庫
     const dbMap = {users:()=>window.usersDB, marketItems:()=>window.marketItems, userTrades:()=>window.userTrades, reports:()=>window.reportsDB, notifications:()=>window.notificationsDB, coops:()=>window.coopApplicationsDB, chats:()=>window.chatDB};
     function fallbackSet(col, id, data) { dbMap[col]().unshift(data); triggerLocalRender(col); }
     function fallbackUpdate(col, id, data) {
@@ -372,6 +380,7 @@
       triggerLocalRender(col);
     }
 
+    // 視圖重新渲染觸發器
     function triggerLocalRender(col) {
       const cV=id=>!document.getElementById('view-'+id).classList.contains('hidden');
       if(col==='users'){if(window.currentUser){let u=window.usersDB.find(u=>u.id===window.currentUser.id);if(u)window.currentUser={...u};window.updateNavUser();if(cV('profile'))window.renderProfile();}if(cV('admin'))window.renderAdminUsers();}
@@ -386,6 +395,7 @@
     const MOCK_USERS=[{id:"admin",email:"admin@example.com",password:"123",name:"最高管理員",role:"admin",points:9999,level:"💎 鑽石",phone:"",birth:"",createdAt:Date.now()},{id:"u1",email:"u1@example.com",password:"123",name:"王小明",role:"user",points:120,level:"🥈 白銀",phone:"0912345678",birth:"1995",createdAt:Date.now()},{id:"u2",email:"u2@example.com",password:"123",name:"陳小華",role:"user",points:30,level:"🥉 青銅",phone:"",birth:"2000",createdAt:Date.now()}];
     const MOCK_ITEMS=[{id:"1",title:"Sony 藍牙耳機",desc:"想換露營用品。",owner:"王小明",type:"3C與數位",status:"active",createdAt:Date.now()-1E4},{id:"2",title:"IKEA 實木邊桌",desc:"搬家帶不走。",owner:"陳小華",type:"居家與生活",status:"active",createdAt:Date.now()-2E4}];
 
+    // 初始化身分驗證與雲端連線
     async function initFirebase() {
       try {
         if (typeof __initial_auth_token !== 'undefined') {
@@ -396,13 +406,14 @@
         fbUser = auth.currentUser;
         setupRealtimeSync();
       } catch (e) {
-        console.warn("Auth Fallback:", e.message);
+        console.warn("Auth Fallback (進入單機體驗模式):", e.message);
         useLocalFallback = true;
         window.usersDB=[...MOCK_USERS]; window.marketItems=[...MOCK_ITEMS];
         window.renderHome(); window.updateAdminBadges();
       }
     }
 
+    // 設定即時同步監聽 (禁用複雜查詢)
     function setupRealtimeSync() {
       const s = (col, cb) => onSnapshot(getPublicCol(col), snap => {
         window[col+'DB'] = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt);
@@ -412,15 +423,18 @@
       onSnapshot(getPublicCol('users'), snap => {
         if(snap.empty){ MOCK_USERS.forEach(u => window.fbSet('users', u.id, u)); return; }
         window.usersDB=snap.docs.map(d=>d.data()); triggerLocalRender('users');
-      });
+      }, err => console.warn(err));
+      
       onSnapshot(getPublicCol('marketItems'), snap => {
         if(snap.empty){ MOCK_ITEMS.forEach(i => window.fbSet('marketItems', i.id, i)); return; }
         window.marketItems=snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); triggerLocalRender('marketItems');
-      });
+      }, err => console.warn(err));
+      
       s('userTrades'); s('reports'); s('notifications'); s('coops');
+      
       onSnapshot(getPublicCol('chats'), snap => {
         window.chatDB = snap.docs.map(d=>d.data()).sort((a,b)=>a.createdAt-b.createdAt); triggerLocalRender('chats');
-      });
+      }, err => console.warn(err));
     }
 
     window.switchView = function(vId) {
@@ -433,6 +447,8 @@
     }
     window.openModal = function(id) { document.getElementById(id).classList.remove('hidden'); }
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+    
+    // 自訂對話框
     window.customConfirm = function(t,m,i,bTxt,bCls,cb) {
       document.getElementById('confirm-title').textContent=t;
       document.getElementById('confirm-message').textContent=m;
@@ -441,7 +457,12 @@
       btn.textContent=bTxt; btn.className=`flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${bCls}`;
       window.confirmCallback=cb; window.openModal('custom-confirm-modal');
     }
-    window.closeConfirmModal = function(r) { window.closeModal('custom-confirm-modal'); if(r && typeof window.confirmCallback==='function') window.confirmCallback(); window.confirmCallback=null; }
+    window.closeConfirmModal = function(r) { 
+      window.closeModal('custom-confirm-modal'); 
+      if(r && typeof window.confirmCallback==='function') window.confirmCallback(); 
+      window.confirmCallback=null; 
+    }
+    
     window.sendNotification = async function(u,t,c) { const id=Date.now().toString(); await window.fbSet('notifications',id,{id,user:u,title:t,content:c,date:new Date().toLocaleDateString(),isRead:false,createdAt:Date.now()}); }
     window.updateNotificationBadges = function() {
       if(!window.currentUser) return;
@@ -500,27 +521,50 @@
       } else {
         const e=document.getElementById('reg-email').value.trim(), p=document.getElementById('reg-password').value.trim(), n=document.getElementById('reg-name').value.trim();
         if(!e||!p||!n) return window.customConfirm("錯誤","請填寫必填欄位","⚠️","確認","bg-gray-800");
+        const checkEmail = window.usersDB.find(x=>x.email===e);
+        if(checkEmail) return window.customConfirm("註冊失敗","此 Email 已被註冊。","⚠️","確認","bg-red-500");
+        
         const id='u'+Date.now(), nu={id,email:e,password:p,name:n,role:'user',points:10,level:'🥉 青銅',createdAt:Date.now()};
-        await window.fbSet('users',id,nu); window.currentUser={...nu}; window.customConfirm("註冊成功","歡迎加入","🎉","開始","bg-skyblue");
+        await window.fbSet('users',id,nu); window.currentUser={...nu}; window.customConfirm("註冊成功","歡迎加入 TradeUp","🎉","開始","bg-skyblue");
       }
       window.updateNavUser(); window.switchView('home');
     };
     window.forgotPassword = function(){ window.customConfirm("重設信已寄出","請檢查信箱","✉️","確定","bg-skyblue"); };
+    
+    window.logout = function() { 
+      window.customConfirm("確認登出","您確定要登出嗎？","🚪","確認","bg-red-500",()=>{
+        window.currentUser=null;
+        window.updateNavUser();
+        window.switchView('home');
+      }); 
+    };
+
     window.updateNavUser = function() {
       const ds=document.getElementById("user-display"), lb=document.getElementById("btn-login-nav"), ab=document.getElementById("btn-admin-nav"), pb=document.getElementById("btn-user-profile"), nb=document.getElementById("btn-nav-notif");
       if(window.currentUser){
         ds.textContent=`👤 ${window.currentUser.name}`; ds.classList.remove('hidden');
         lb.textContent="登出"; lb.onclick=window.logout; lb.classList.replace('bg-skyblue','bg-gray-200'); lb.classList.replace('text-white','text-gray-800');
-        nb.style.display="flex";
-        if(window.currentUser.role==="admin"){ ab.style.display="inline-flex"; pb.style.display="none"; window.updateAdminBadges(); }
-        else { ab.style.display="none"; pb.style.display="inline-flex"; document.getElementById('profile-name').textContent=window.currentUser.name; document.getElementById('profile-level-badge').textContent=window.currentUser.level; }
+        nb.classList.remove('hidden');
+        if(window.currentUser.role==="admin"){ 
+          ab.classList.remove('hidden'); ab.classList.add('flex');
+          pb.classList.add('hidden'); 
+          window.updateAdminBadges(); 
+        } else { 
+          ab.classList.add('hidden'); 
+          pb.classList.remove('hidden'); pb.classList.add('flex');
+          document.getElementById('profile-name').textContent=window.currentUser.name; 
+          document.getElementById('profile-level-badge').textContent=window.currentUser.level; 
+        }
         window.updateNotificationBadges();
       } else {
-        ds.classList.add('hidden'); lb.textContent="登入 / 註冊"; lb.onclick=()=>window.switchView('login'); lb.classList.replace('bg-gray-200','bg-skyblue'); lb.classList.replace('text-gray-800','text-white');
-        ab.style.display="none"; pb.style.display="none"; nb.style.display="none";
+        ds.classList.add('hidden'); 
+        lb.textContent="登入 / 註冊"; 
+        lb.onclick=()=>window.switchView('login'); 
+        lb.classList.replace('bg-gray-200','bg-skyblue'); 
+        lb.classList.replace('text-gray-800','text-white');
+        ab.classList.add('hidden'); pb.classList.add('hidden'); nb.classList.add('hidden');
       }
     };
-    window.logout = function() { window.customConfirm("確認登出","您確定要登出嗎？","🚪","確認","bg-red-500",()=>{window.currentUser=null;window.updateNavUser();window.switchView('home');}); };
 
     window.renderHome = function() {
       const g=document.getElementById('items-grid'); g.innerHTML='';
@@ -531,6 +575,7 @@
         g.appendChild(c);
       });
     };
+    
     window.renderDetail = function() {
       const c=document.getElementById('detail-content'); if(!window.selectedItem) return;
       c.innerHTML=`<div class="mb-8"><div class="inline-block px-3 py-1 bg-gray-100 text-xs font-bold rounded-full mb-4">${window.selectedItem.type}</div><h2 class="text-3xl font-extrabold mb-4">${window.selectedItem.title}</h2><div class="font-bold text-gray-600">👤 ${window.selectedItem.owner}</div></div><div class="bg-gray-50 p-6 rounded-xl mb-8">${window.selectedItem.desc}</div><div class="flex gap-4 border-t pt-6"><button id="btn-request-trade" class="flex-1 py-4 bg-skyblue text-white font-bold rounded-xl">提出交換申請</button><button onclick="openReportModal()" class="py-4 px-6 bg-red-50 text-red-500 font-bold rounded-xl">檢舉</button></div>`;
@@ -540,6 +585,7 @@
         document.getElementById('trade-offer-desc').value=''; window.openModal('trade-modal');
       };
     };
+    
     window.submitUpload = async function() {
       if(!window.currentUser) return window.switchView('login');
       const t=document.getElementById('upload-title').value.trim(), ty=document.getElementById('upload-type').value, d=document.getElementById('upload-desc').value.trim();
@@ -556,6 +602,7 @@
       await window.sendNotification(window.selectedItem.owner,'新交換申請',`${window.currentUser.name} 想與您交換 ${window.selectedItem.title}`);
       window.closeModal('trade-modal'); window.customConfirm("申請已送出","已通知主人","🎉","確認","bg-skyblue",()=>{window.switchView('profile');window.switchProfileSidebar('wallet');window.switchWalletTab('applied')});
     };
+    
     window.openReportModal = function() { if(!window.currentUser) return window.switchView('login'); window.openModal('report-modal'); };
     window.submitReport = async function() {
       const r=document.getElementById('report-reason').value, d=document.getElementById('report-desc').value, a=document.getElementById('report-agree').checked;
@@ -643,19 +690,28 @@
     };
     window.renderProfile = function() { if(!window.currentUser) return window.switchView('login'); document.getElementById('profile-name').textContent=window.currentUser.name; window.renderWallet(); window.renderNotifications(); };
 
-    window.switchAdminTab = function(t) { document.querySelectorAll('.admin-content-section').forEach(e=>e.classList.add('hidden')); document.getElementById(`admin-content-${t}`).classList.remove('hidden'); if(t==='stats') window.renderAdminStats(); if(t==='users') window.renderAdminUsers(); if(t==='items') window.renderAdminItems(); if(t==='reports') window.renderAdminReports(); if(t==='coop') window.renderAdminCoop(); };
+    window.switchAdminTab = function(t) { 
+      document.querySelectorAll('.admin-content-section').forEach(e=>e.classList.add('hidden')); 
+      document.getElementById(`admin-content-${t}`).classList.remove('hidden'); 
+      if(t==='stats') window.renderAdminStats(); 
+      if(t==='users') window.renderAdminUsers(); 
+      if(t==='items') window.renderAdminItems(); 
+      if(t==='reports') window.renderAdminReports(); 
+      if(t==='coop') window.renderAdminCoop(); 
+    };
     window.updateAdminBadges = function() {
       const pI=window.marketItems.filter(i=>i.status==='pending_approval').length, pR=window.reportsDB.filter(r=>r.status==='pending').length, pC=window.coopApplicationsDB.filter(c=>c.status==='未處理').length;
-      const t=e=>e.classList.toggle('hidden', e.textContent==0);
+      const t=e=>pI+pR+pC>0?e.classList.remove('hidden'):e.classList.add('hidden');
       document.getElementById('admin-badge').textContent=pI+pR+pC; t(document.getElementById('admin-badge'));
-      document.getElementById('admin-tab-items-badge').textContent=pI; t(document.getElementById('admin-tab-items-badge'));
-      document.getElementById('admin-tab-reports-badge').textContent=pR; t(document.getElementById('admin-tab-reports-badge'));
+      document.getElementById('admin-tab-items-badge').textContent=pI; pI>0?document.getElementById('admin-tab-items-badge').classList.remove('hidden'):document.getElementById('admin-tab-items-badge').classList.add('hidden');
+      document.getElementById('admin-tab-reports-badge').textContent=pR; pR>0?document.getElementById('admin-tab-reports-badge').classList.remove('hidden'):document.getElementById('admin-tab-reports-badge').classList.add('hidden');
     };
     window.renderAdmin = function() { window.updateAdminBadges(); window.switchAdminTab('stats'); };
     window.renderAdminStats = function() { document.getElementById('admin-content-stats').innerHTML=`<div class="flex gap-4"><div class="p-6 bg-gray-50 rounded-2xl shadow-sm border border-gray-100 flex-1 text-center"><p class="text-sm font-bold text-gray-500 mb-1">會員數</p><p class="text-3xl font-extrabold text-skyblue">${window.usersDB.length}</p></div><div class="p-6 bg-gray-50 rounded-2xl shadow-sm border border-gray-100 flex-1 text-center"><p class="text-sm font-bold text-gray-500 mb-1">物品數</p><p class="text-3xl font-extrabold text-skyblue">${window.marketItems.length}</p></div></div>`; };
     window.renderAdminUsers = function() { document.getElementById('admin-content-users').innerHTML=window.usersDB.map(u=>`<div class="flex justify-between items-center p-4 border rounded-xl mb-2 bg-white shadow-sm"><div><p class="font-bold text-gray-800">${u.name}</p><p class="text-xs text-gray-500 mt-1">貢獻: ${u.points} | ${u.level}</p></div><button onclick="openAdminEditUserModal('${u.id}')" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 font-bold text-sm transition">調整</button></div>`).join(''); };
     window.openAdminEditUserModal = function(uid){ const u=window.usersDB.find(x=>x.id===uid); if(u){ document.getElementById('edit-user-id').value=u.id; document.getElementById('edit-user-points').value=u.points; window.openModal('admin-edit-user-modal'); }};
     window.saveAdminUserEdit = async function(){ const uid=document.getElementById('edit-user-id').value, p=parseInt(document.getElementById('edit-user-points').value); if(isNaN(p))return; await window.fbUpdate('users',uid,{points:p,level:window.getLevelByPoints(p)}); window.closeModal('admin-edit-user-modal'); };
+    
     window.renderAdminItems = function() {
       const c=document.getElementById('admin-content-items'), pI=window.marketItems.filter(i=>i.status==='pending_approval'), oI=window.marketItems.filter(i=>i.status!=='pending_approval');
       c.innerHTML=[...pI,...oI].map(i=>`<div class="p-4 border rounded-xl mb-3 flex justify-between items-center bg-white shadow-sm"><div><h4 class="font-bold text-gray-800">${i.title}</h4><p class="text-xs text-gray-500 mt-1">狀態: ${i.status} | 擁有者: ${i.owner}</p></div><div>${i.status==='pending_approval'?`<button onclick="approveItem('${i.id}')" class="text-green-600 bg-green-50 px-3 py-1 rounded-full font-bold text-sm mr-2 hover:bg-green-100 transition">✅ 核准</button><button onclick="openRejectItemModal('${i.id}')" class="text-red-500 bg-red-50 px-3 py-1 rounded-full font-bold text-sm hover:bg-red-100 transition">❌ 駁回</button>`:`<button onclick="openForceTakedownModal('${i.id}')" class="text-red-500 font-bold text-sm px-3 py-1 hover:bg-red-50 rounded-full transition border border-transparent hover:border-red-200">🚨 強制下架</button>`}</div></div>`).join('');
@@ -665,6 +721,7 @@
     window.confirmRejectItem = async function() { const id=document.getElementById('reject-item-id').value, r=document.getElementById('reject-item-reason-select').value; if(!r) return window.customConfirm("錯誤","請選擇駁回原因","⚠️","確認","bg-gray-800"); await window.fbUpdate('marketItems',id,{status:`已駁回 (${r})`}); window.closeModal('admin-reject-item-modal'); };
     window.openForceTakedownModal = function(id) { document.getElementById('force-takedown-item-id').value=id; window.openModal('admin-force-takedown-modal'); };
     window.confirmForceTakedown = async function() { const id=document.getElementById('force-takedown-item-id').value, r=document.getElementById('force-takedown-reason-select').value; if(!r) return window.customConfirm("錯誤","請選擇下架原因","⚠️","確認","bg-gray-800"); await window.fbUpdate('marketItems',id,{status:`banned (${r})`}); window.closeModal('admin-force-takedown-modal'); };
+    
     window.renderAdminReports = function() { document.getElementById('admin-reports-list').innerHTML=window.reportsDB.filter(r=>r.status==='pending').map(r=>`<div class="p-4 border rounded-xl mb-3 flex justify-between items-center bg-white shadow-sm"><div><p class="font-bold text-gray-800">檢舉物品：${r.itemTitle}</p><p class="text-xs text-red-500 mt-1 font-bold">原因: ${r.reason}</p></div><button onclick="openAdminReportModal('${r.id}')" class="text-white bg-red-500 px-4 py-1.5 rounded-full font-bold text-sm shadow-sm hover:bg-red-600 transition">處理審核</button></div>`).join(''); };
     window.openAdminReportModal = function(rid){ window.currentReportId=rid; const r = window.reportsDB.find(x=>x.id===rid); if(r) document.getElementById('admin-report-details').innerHTML=`<b>檢舉人：</b>${r.reporter}<br><b>物品主人：</b>${r.itemOwner}<br><b>詳細說明：</b><p class="mt-1">${r.desc}</p>`; window.openModal('admin-report-modal'); };
     window.processReport = async function(a) { 
@@ -681,6 +738,7 @@
         window.closeModal('admin-report-modal'); 
         window.customConfirm("處理完畢", "檢舉案件已歸檔更新。", "✅", "確認", "bg-gray-800");
     };
+    
     window.renderAdminCoop = function() { document.getElementById('admin-coop-list').innerHTML=window.coopApplicationsDB.filter(c=>c.status==='未處理').map(c=>`<div class="p-5 border rounded-xl mb-3 bg-white shadow-sm"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-gray-800">${c.brandName} <span class="text-xs text-gray-500 font-normal">(${c.contactName})</span></h4><button onclick="markCoopDone('${c.id}')" class="text-blue-600 bg-blue-50 px-3 py-1 rounded-full font-bold text-xs hover:bg-blue-100 transition">標示已處理</button></div><p class="text-sm text-gray-600 mb-1"><b>方案:</b> ${c.plan} | <b>Email:</b> ${c.email}</p><p class="text-sm text-gray-600"><b>目標:</b> ${c.goal}</p></div>`).join(''); };
     window.markCoopDone = async function(id) { await window.fbUpdate('coops',id,{status:'已處理'}); window.customConfirm("更新成功", "此合作申請已結案。", "✅", "確認", "bg-gray-800"); };
 
