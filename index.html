@@ -602,200 +602,82 @@
       projectId: "change-536b7",
       storageBucket: "change-536b7.firebasestorage.app",
       messagingSenderId: "390235402158",
-      appId: "1:390235402158:web:c42ac04c4ff7866205623f",
-      measurementId: "G-1ZNCXSV5V6"
+      appId: "1:390235402158:web:c42ac04c4ff7866205623f"
     };
     
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
     let fbUser = null;
-
     const appId = 'tradeup-app';
     const getPublicRef = (colName) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
 
-    window.usersDB = [];
-    window.marketItems = [];
-    window.userTrades = [];
-    window.reportsDB = [];
-    window.notificationsDB = [];
-    window.coopApplicationsDB = [];
-    
-    window.currentUser = null;
-    window.selectedItem = null;
-    window.currentReportId = null;
-    window.confirmCallback = null;
+    window.usersDB = []; window.marketItems = []; window.userTrades = []; window.reportsDB = []; window.notificationsDB = []; window.coopApplicationsDB = [];
+    window.currentUser = null; window.selectedItem = null; window.currentReportId = null; window.confirmCallback = null;
+
+    const dbMap = { users: () => window.usersDB, marketItems: () => window.marketItems, userTrades: () => window.userTrades, reports: () => window.reportsDB, notifications: () => window.notificationsDB, coops: () => window.coopApplicationsDB };
 
     window.fbSet = async (col, id, data) => { 
-        if (fbUser) {
-            try { await getPublicRef(col).doc(id.toString()).set(data); } catch(e) { console.warn("Firebase set error", e); fallbackSet(col, id, data); }
-        } else fallbackSet(col, id, data);
+        if (fbUser) { try { await getPublicRef(col).doc(id.toString()).set(data); } catch(e) { fallbackSet(col, id, data); } } else fallbackSet(col, id, data);
     };
-    
     window.fbUpdate = async (col, id, data) => { 
-        if (fbUser) {
-            try { await getPublicRef(col).doc(id.toString()).update(data); } catch(e) { console.warn("Firebase update error", e); fallbackUpdate(col, id, data); }
-        } else fallbackUpdate(col, id, data);
+        if (fbUser) { try { await getPublicRef(col).doc(id.toString()).update(data); } catch(e) { fallbackUpdate(col, id, data); } } else fallbackUpdate(col, id, data);
     };
-    
-    window.fbDelete = async (col, id) => { 
-        if (fbUser) {
-            try { await getPublicRef(col).doc(id.toString()).delete(); } catch(e) { console.warn("Firebase delete error", e); }
-        }
-    };
+    window.fbDelete = async (col, id) => { if (fbUser) { try { await getPublicRef(col).doc(id.toString()).delete(); } catch(e) {} } };
 
-    function fallbackSet(col, id, data) {
-        if (col === 'users') window.usersDB.push(data);
-        else if (col === 'marketItems') window.marketItems.unshift(data);
-        else if (col === 'userTrades') window.userTrades.unshift(data);
-        else if (col === 'reports') window.reportsDB.unshift(data);
-        else if (col === 'notifications') window.notificationsDB.unshift(data);
-        else if (col === 'coops') window.coopApplicationsDB.unshift(data);
-        triggerLocalRender(col);
-    }
-
+    function fallbackSet(col, id, data) { dbMap[col]().unshift(data); triggerLocalRender(col); }
     function fallbackUpdate(col, id, data) {
-        let targetArray = null;
-        if (col === 'users') targetArray = window.usersDB;
-        else if (col === 'marketItems') targetArray = window.marketItems;
-        else if (col === 'userTrades') targetArray = window.userTrades;
-        else if (col === 'reports') targetArray = window.reportsDB;
-        else if (col === 'notifications') targetArray = window.notificationsDB;
-        else if (col === 'coops') targetArray = window.coopApplicationsDB;
-
-        if (targetArray) {
-            const idx = targetArray.findIndex(item => item.id === id);
-            if (idx !== -1) targetArray[idx] = { ...targetArray[idx], ...data };
-        }
+        let arr = dbMap[col](), idx = arr.findIndex(i => i.id === id);
+        if (idx !== -1) arr[idx] = { ...arr[idx], ...data };
         triggerLocalRender(col);
     }
 
     function triggerLocalRender(col) {
-        if (col === 'users') {
-            if (window.currentUser) {
-                const updatedMe = window.usersDB.find(u => u.id === window.currentUser.id);
-                if (updatedMe) window.currentUser = { ...updatedMe };
-                window.updateNavUser();
-                if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderProfile();
-            }
-            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminUsers();
-        } else if (col === 'marketItems') {
-            if (!document.getElementById('view-home').classList.contains('hidden')) window.renderHome();
-            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderWallet();
-            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminItems();
-            window.updateAdminBadges();
-        } else if (col === 'userTrades') {
-            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderWallet();
-            window.updateAdminBadges();
-        } else if (col === 'reports') {
-            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminReports();
-            window.updateAdminBadges();
-        } else if (col === 'notifications') {
-            window.updateNotificationBadges();
-            if (!document.getElementById('view-profile').classList.contains('hidden')) window.renderNotifications();
-        } else if (col === 'coops') {
-            if (!document.getElementById('view-admin').classList.contains('hidden')) window.renderAdminCoop();
-            window.updateAdminBadges();
-        }
+        let cV = id => !document.getElementById('view-' + id).classList.contains('hidden');
+        if (col === 'users') { if (window.currentUser) { let u = window.usersDB.find(u => u.id === window.currentUser.id); if (u) window.currentUser = { ...u }; window.updateNavUser(); if (cV('profile')) window.renderProfile(); } if (cV('admin')) window.renderAdminUsers(); }
+        else if (col === 'marketItems') { if (cV('home')) window.renderHome(); if (cV('profile')) window.renderWallet(); if (cV('admin')) window.renderAdminItems(); window.updateAdminBadges(); }
+        else if (col === 'userTrades') { if (cV('profile')) window.renderWallet(); window.updateAdminBadges(); }
+        else if (col === 'reports') { if (cV('admin')) window.renderAdminReports(); window.updateAdminBadges(); }
+        else if (col === 'notifications') { window.updateNotificationBadges(); if (cV('profile')) window.renderNotifications(); }
+        else if (col === 'coops') { if (cV('admin')) window.renderAdminCoop(); window.updateAdminBadges(); }
     }
 
+    const MOCK_USERS = [
+        { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
+        { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
+        { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
+    ];
+    const MOCK_ITEMS = [
+        { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
+        { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
+        { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
+        { id: '4', title: '全新 筋膜槍', desc: '全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
+    ];
+    const MOCK_REPORTS = [{ id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '私訊要求賣2000', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() }];
+
     async function initFirebase() {
-        try {
-            await auth.signInAnonymously();
-            fbUser = auth.currentUser;
-            setupRealtimeSync();
-        } catch (e) {
-            console.warn("Firebase 未啟用，切換至單機模式:", e.message);
-            setupLocalMode();
-        }
+        try { await auth.signInAnonymously(); fbUser = auth.currentUser; setupRealtimeSync(); } 
+        catch (e) { setupLocalMode(); }
     }
 
     function setupLocalMode() {
-        window.usersDB = [
-            { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
-            { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
-            { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
-        ];
-        window.marketItems = [
-            { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
-            { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
-            { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
-            { id: '4', title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
-        ];
-        window.reportsDB = [
-            { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() }
-        ];
-        window.renderHome();
-        window.updateAdminBadges();
+        window.usersDB = [...MOCK_USERS]; window.marketItems = [...MOCK_ITEMS]; window.reportsDB = [...MOCK_REPORTS];
+        window.renderHome(); window.updateAdminBadges();
     }
 
     function setupRealtimeSync() {
-        getPublicRef('users').onSnapshot(snap => {
-            if (snap.empty) { seedMockUsers(); return; }
-            window.usersDB = snap.docs.map(d => d.data());
-            triggerLocalRender('users');
-        }, e => console.warn(e));
-
-        getPublicRef('marketItems').onSnapshot(snap => {
-            if (snap.empty) { seedMockItems(); return; }
-            window.marketItems = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
-            triggerLocalRender('marketItems');
-        }, e => console.warn(e));
-
-        getPublicRef('userTrades').onSnapshot(snap => {
-            window.userTrades = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
-            triggerLocalRender('userTrades');
-        }, e => console.warn(e));
-
-        getPublicRef('reports').onSnapshot(snap => {
-            if (snap.empty) { seedMockReports(); return; }
-            window.reportsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
-            triggerLocalRender('reports');
-        }, e => console.warn(e));
-
-        getPublicRef('notifications').onSnapshot(snap => {
-            window.notificationsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
-            triggerLocalRender('notifications');
-        }, e => console.warn(e));
-
-        getPublicRef('coops').onSnapshot(snap => {
-            window.coopApplicationsDB = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt - a.createdAt);
-            triggerLocalRender('coops');
-        }, e => console.warn(e));
-    }
-
-    async function seedMockUsers() {
-        const mockUsers = [
-            { id: 'admin', email: 'admin@example.com', password: '123', name: '最高管理員', role: 'admin', points: 9999, level: '💎 鑽石', phone: '', birth: '', createdAt: Date.now() },
-            { id: 'user1', email: 'user1@example.com', password: '123', name: '王小明', role: 'user', points: 120, level: '🥈 白銀', phone: '0912345678', birth: '1995', createdAt: Date.now() },
-            { id: 'user2', email: 'user2@example.com', password: '123', name: '陳小華', role: 'user', points: 30, level: '🥉 青銅', phone: '', birth: '2000', createdAt: Date.now() }
-        ];
-        mockUsers.forEach(u => window.fbSet('users', u.id, u));
-    }
-
-    async function seedMockItems() {
-        const mockItems = [
-            { id: '1', title: 'Sony 藍牙耳機', desc: '買來只用過兩次，外觀極新，附充電盒。想換露營用品。', owner: '王小明', type: '3C與數位', status: 'active', createdAt: Date.now() - 10000 },
-            { id: '2', title: 'IKEA 實木邊桌', desc: '搬家帶不走，桌面有一處小刮傷但不影響使用。', owner: '陳小華', type: '居家與生活', status: 'active', createdAt: Date.now() - 20000 },
-            { id: '3', title: 'Coleman 折疊椅', desc: '戶外露營必備，坐起來很舒服，想換小帳篷。', owner: '陳小華', type: '戶外與休閒', status: 'active', createdAt: Date.now() - 30000 },
-            { id: '4', title: '全新 筋膜槍', desc: '尾牙抽中用不到，全新未拆封。', owner: '王小明', type: '居家與生活', status: 'pending_approval', createdAt: Date.now() - 40000 }
-        ];
-        mockItems.forEach(i => window.fbSet('marketItems', i.id, i));
-    }
-
-    async function seedMockReports() {
-        const mockReport = { id: 'r1', itemTitle: 'Sony 藍牙耳機', itemOwner: '王小明', reporter: '陳小華', reason: '要求金錢交易', desc: '他私訊我說耳機要賣 2000，不接受交換。', status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() };
-        window.fbSet('reports', mockReport.id, mockReport);
+        const s = (col, cb) => getPublicRef(col).onSnapshot(snap => { window[col+'DB'] = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); cb(snap); triggerLocalRender(col); });
+        
+        getPublicRef('users').onSnapshot(snap => { if(snap.empty) { MOCK_USERS.forEach(u=>window.fbSet('users', u.id, u)); return; } window.usersDB = snap.docs.map(d=>d.data()); triggerLocalRender('users'); });
+        getPublicRef('marketItems').onSnapshot(snap => { if(snap.empty) { MOCK_ITEMS.forEach(i=>window.fbSet('marketItems', i.id, i)); return; } window.marketItems = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); triggerLocalRender('marketItems'); });
+        getPublicRef('reports').onSnapshot(snap => { if(snap.empty) { MOCK_REPORTS.forEach(r=>window.fbSet('reports', r.id, r)); return; } window.reportsDB = snap.docs.map(d=>d.data()).sort((a,b)=>b.createdAt-a.createdAt); triggerLocalRender('reports'); });
+        s('userTrades', ()=>{}); s('notifications', ()=>{}); s('coops', ()=>{});
     }
 
     window.switchView = function(viewId) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById('view-' + viewId).classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
       if (viewId === 'home') window.renderHome();
       if (viewId === 'profile') window.renderProfile();
       if (viewId === 'admin' && window.currentUser?.role === 'admin') window.renderAdmin();
@@ -805,172 +687,57 @@
     window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
     window.customConfirm = function(title, message, icon, btnText, btnClass, callback) {
-      document.getElementById('confirm-title').textContent = title;
-      document.getElementById('confirm-message').textContent = message;
-      document.getElementById('confirm-icon').textContent = icon;
-      
-      const yesBtn = document.getElementById('confirm-btn-yes');
-      yesBtn.textContent = btnText;
-      yesBtn.className = `flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${btnClass}`;
-      
-      window.confirmCallback = callback;
-      window.openModal('custom-confirm-modal');
+      document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-message').textContent = message; document.getElementById('confirm-icon').textContent = icon;
+      const yesBtn = document.getElementById('confirm-btn-yes'); yesBtn.textContent = btnText; yesBtn.className = `flex-1 py-3 rounded-xl font-bold text-white transition shadow-md ${btnClass}`;
+      window.confirmCallback = callback; window.openModal('custom-confirm-modal');
     }
 
     window.closeConfirmModal = function(result) {
       window.closeModal('custom-confirm-modal');
-      if (result && typeof window.confirmCallback === 'function') {
-        window.confirmCallback();
-      }
+      if (result && typeof window.confirmCallback === 'function') window.confirmCallback();
       window.confirmCallback = null;
     }
 
     window.sendNotification = async function(targetUser, title, content) {
       const nId = Date.now().toString();
-      await window.fbSet('notifications', nId, {
-        id: nId,
-        user: targetUser,
-        title: title,
-        content: content,
-        date: new Date().toLocaleDateString(),
-        isRead: false,
-        createdAt: Date.now()
-      });
+      await window.fbSet('notifications', nId, { id: nId, user: targetUser, title: title, content: content, date: new Date().toLocaleDateString(), isRead: false, createdAt: Date.now() });
     }
 
     window.updateNotificationBadges = function() {
       if (!window.currentUser) return;
-      const myNotifs = window.notificationsDB.filter(n => n.user === window.currentUser.name && !n.isRead);
-      const count = myNotifs.length;
-      
-      const navBadge = document.getElementById('nav-notif-badge');
-      const sidebarBadge = document.getElementById('sidebar-notif-badge');
-      
-      if (count > 0) {
-        navBadge.classList.remove('hidden');
-        sidebarBadge.classList.remove('hidden');
-      } else {
-        navBadge.classList.add('hidden');
-        sidebarBadge.classList.add('hidden');
-      }
+      const count = window.notificationsDB.filter(n => n.user === window.currentUser.name && !n.isRead).length;
+      const t = el => count > 0 ? el.classList.remove('hidden') : el.classList.add('hidden');
+      t(document.getElementById('nav-notif-badge')); t(document.getElementById('sidebar-notif-badge'));
     }
 
     window.clearNotifications = function() {
       if (!window.currentUser) return;
-      window.notificationsDB.forEach(n => {
-        if (n.user === window.currentUser.name && !n.isRead) {
-            window.fbUpdate('notifications', n.id, { isRead: true });
-        }
-      });
+      window.notificationsDB.forEach(n => { if (n.user === window.currentUser.name && !n.isRead) window.fbUpdate('notifications', n.id, { isRead: true }); });
       window.customConfirm("通知已清除", "所有通知已標示為已讀。", "🧹", "確認", "bg-gray-800");
     }
 
-    window.getLevelByPoints = function(points) {
-      if (points >= 500) return '💎 鑽石';
-      if (points >= 200) return '🥇 黃金';
-      if (points >= 100) return '🥈 白銀';
-      return '🥉 青銅';
-    };
+    window.getLevelByPoints = function(points) { return points >= 500 ? '💎 鑽石' : points >= 200 ? '🥇 黃金' : points >= 100 ? '🥈 白銀' : '🥉 青銅'; };
 
     window.showDocument = function(type) {
-      const titleEl = document.getElementById('document-title');
-      const contentEl = document.getElementById('document-content');
-      
+      const titleEl = document.getElementById('document-title'); const contentEl = document.getElementById('document-content');
       if (type === 'privacy') {
-        titleEl.innerHTML = "🔒 隱私權政策";
-        contentEl.innerHTML = `
-          <p class="mb-4 text-gray-500 font-bold">生效日期：2026 年 7 月 1 日</p>
-          <p>本隱私權政策說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務時， 如何蒐集、處理、利用及保護您的個人資料。當您使用本服務，即表示您已閱讀並同意本政策之內容。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、蒐集之個人資料類別</h4>
-          <p>帳戶資料：包含您的顯示名稱、聯絡資訊與使用之資料。</p>
-          <p>內容資料：您上傳之物品說明， 以及您於申請、交換、評價、檢舉或申訴時所填寫之文字。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、資料安全</h4>
-          <p>本平台採取合理之技術與管理措施保護您的個人資料，確保無任何明文密碼被儲存。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、您的權利與聯絡方式</h4>
-          <p>如對本政策有疑問，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>
-        `;
+        titleEl.innerHTML = "🔒 隱私權政策"; contentEl.innerHTML = `<p class="mb-4 text-gray-500 font-bold">生效日期：2026 年 7 月 1 日</p><p>本隱私權政策說明 TradeUp 小換大（下稱「本平台」）於您使用本平台服務時， 如何蒐集、處理、利用及保護您的個人資料。當您使用本服務，即表示您已閱讀並同意本政策之內容。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、蒐集之個人資料類別</h4><p>帳戶資料：包含您的顯示名稱、聯絡資訊與使用之資料。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、資料安全</h4><p>本平台採取合理之技術與管理措施保護您的個人資料，確保無任何明文密碼被儲存。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、您的權利與聯絡方式</h4><p>如對本政策有疑問，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>`;
       } else if (type === 'terms') {
-        titleEl.innerHTML = "📜 使用條款";
-        contentEl.innerHTML = `
-          <p class="mb-4">當您註冊、存取或使用本服務時，即表示您已詳細閱讀、瞭解並同意接受本條款之全部內容。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、服務性質</h4>
-          <p>本平台為提供使用者間交換閒置物品之網路媒合平台。本平台僅提供資訊揭露與媒合之技術服務。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、無償分享與交換原則</h4>
-          <p>本服務僅供使用者交換或贈與物品。使用者不得藉本服務以任何形式向他人收取金錢對價（運費除外）。禁止刊登違禁品。</p>
-          <h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、聯絡方式</h4>
-          <p>如需檢舉不當內容、洽談品牌合作，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>
-        `;
+        titleEl.innerHTML = "📜 使用條款"; contentEl.innerHTML = `<p class="mb-4">當您註冊、存取或使用本服務時，即表示您已詳細閱讀、瞭解並同意接受本條款之全部內容。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">一、服務性質</h4><p>本平台為提供使用者間交換閒置物品之網路媒合平台。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">二、無償分享與交換原則</h4><p>本服務僅供使用者交換或贈與物品。使用者不得藉本服務以任何形式向他人收取金錢對價（運費除外）。禁止刊登違禁品。</p><h4 class="font-bold text-gray-800 text-base mt-6 mb-2">三、聯絡方式</h4><p>如需檢舉不當內容、洽談品牌合作，請來信： <a href="mailto:rexofgod2@gmail.com" class="text-skyblue hover:underline font-bold">rexofgod2@gmail.com</a></p>`;
       } else if (type === 'coop') {
         titleEl.innerHTML = "🤝 企業合作與交流";
-        contentEl.innerHTML = `
-          <div class="text-left py-2 px-2 sm:px-6 max-w-3xl mx-auto">
-            <div class="text-center mb-8">
-              <h3 class="text-3xl font-extrabold text-gray-800 mb-2">Get in touch</h3>
-              <p class="text-gray-800 font-bold text-lg">留 Email，我寄你完整方案與範例報表</p>
-              <p class="text-gray-500 text-sm mt-2 max-w-xl mx-auto">填品牌與合作目標即可，一分鐘完成。我會依你的產業與目標，把量身的方案、報價與範例報表寄到你的信箱。</p>
-            </div>
-            <form onsubmit="window.submitCoopForm(event, this)" class="space-y-6">
-              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-                <label class="block text-gray-800 font-bold mb-3">你想了解的方案 <span class="text-gray-400 text-sm font-normal">（選填）</span></label>
-                <div class="flex flex-wrap gap-4">
-                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="早鳥試用" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">早鳥試用</span></label>
-                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="標準導流" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">標準導流</span></label>
-                  <label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="品牌專案" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">品牌專案</span></label>
-                </div>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div><label class="block text-gray-800 font-bold mb-1">公司 / 品牌名稱 <span class="text-red-500">*</span></label><input type="text" name="brandName" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-                <div><label class="block text-gray-800 font-bold mb-1">姓名 <span class="text-red-500">*</span></label><input type="text" name="contactName" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-              </div>
-              <div><label class="block text-gray-800 font-bold mb-1">Email <span class="text-red-500">*</span></label><input type="email" name="email" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div><label class="block text-gray-800 font-bold mb-1">職稱</label><input type="text" name="jobTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-                <div><label class="block text-gray-800 font-bold mb-1">電話</label><input type="tel" name="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-                <div><label class="block text-gray-800 font-bold mb-1">LINE ID</label><input type="text" name="lineId" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div>
-              </div>
-              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-                <label class="block text-gray-800 font-bold mb-3">合作目標 <span class="text-red-500">*</span></label>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="品牌曝光" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">品牌曝光</span></label>
-                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="導流" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">導流</span></label>
-                  <label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="試用" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">試用</span></label>
-                </div>
-              </div>
-              <div class="text-center pt-4">
-                <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-xl transition shadow-lg transform hover:-translate-y-1 mb-3">送出表單，索取方案</button>
-              </div>
-            </form>
-            <div class="text-center mt-12 border-t border-gray-200 pt-8 pb-4">
-              <p class="text-gray-600 mb-4 font-bold">或直接寫信與我們聯繫：</p>
-              <a href="mailto:rexofgod2@gmail.com" class="inline-block px-8 py-3 bg-white text-skyblue border-2 border-skyblue font-extrabold rounded-xl hover:bg-blue-50 transition shadow-sm">✉️ rexofgod2@gmail.com</a>
-            </div>
-          </div>
-        `;
+        contentEl.innerHTML = `<div class="text-left py-2 px-2 sm:px-6 max-w-3xl mx-auto"><div class="text-center mb-8"><h3 class="text-3xl font-extrabold text-gray-800 mb-2">Get in touch</h3><p class="text-gray-800 font-bold text-lg">留 Email，我寄你完整方案與範例報表</p><p class="text-gray-500 text-sm mt-2 max-w-xl mx-auto">填品牌與合作目標即可，一分鐘完成。我會依你的產業與目標，把量身的方案、報價與範例報表寄到你的信箱。</p></div><form onsubmit="window.submitCoopForm(event, this)" class="space-y-6"><div class="bg-gray-50 p-5 rounded-2xl border border-gray-100"><label class="block text-gray-800 font-bold mb-3">你想了解的方案 <span class="text-gray-400 text-sm font-normal">（選填）</span></label><div class="flex flex-wrap gap-4"><label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="早鳥試用" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">早鳥試用</span></label><label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="標準導流" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">標準導流</span></label><label class="inline-flex items-center cursor-pointer"><input type="radio" name="plan" value="品牌專案" class="w-4 h-4 text-skyblue focus:ring-skyblue border-gray-300"> <span class="ml-2 text-gray-700 font-medium">品牌專案</span></label></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><div><label class="block text-gray-800 font-bold mb-1">公司 / 品牌名稱 <span class="text-red-500">*</span></label><input type="text" name="brandName" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div><div><label class="block text-gray-800 font-bold mb-1">姓名 <span class="text-red-500">*</span></label><input type="text" name="contactName" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div></div><div><label class="block text-gray-800 font-bold mb-1">Email <span class="text-red-500">*</span></label><input type="email" name="email" required class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div><div class="grid grid-cols-1 md:grid-cols-3 gap-5"><div><label class="block text-gray-800 font-bold mb-1">職稱</label><input type="text" name="jobTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div><div><label class="block text-gray-800 font-bold mb-1">電話</label><input type="tel" name="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div><div><label class="block text-gray-800 font-bold mb-1">LINE ID</label><input type="text" name="lineId" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-skyblue bg-white transition"></div></div><div class="bg-gray-50 p-5 rounded-2xl border border-gray-100"><label class="block text-gray-800 font-bold mb-3">合作目標 <span class="text-red-500">*</span></label><div class="grid grid-cols-2 md:grid-cols-3 gap-3"><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="品牌曝光" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">品牌曝光</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="導流" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">導流</span></label><label class="inline-flex items-center cursor-pointer"><input type="checkbox" name="goal" value="試用" class="w-4 h-4 text-skyblue rounded border-gray-300"> <span class="ml-2 text-sm text-gray-700 font-medium">試用</span></label></div></div><div class="text-center pt-4"><button type="submit" class="w-full sm:w-auto px-10 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-xl transition shadow-lg transform hover:-translate-y-1 mb-3">送出表單，索取方案</button></div></form><div class="text-center mt-12 border-t border-gray-200 pt-8 pb-4"><p class="text-gray-600 mb-4 font-bold">或直接寫信與我們聯繫：</p><a href="mailto:rexofgod2@gmail.com" class="inline-block px-8 py-3 bg-white text-skyblue border-2 border-skyblue font-extrabold rounded-xl hover:bg-blue-50 transition shadow-sm">✉️ rexofgod2@gmail.com</a></div></div>`;
       }
       window.openModal('document-modal');
     };
 
     window.submitCoopForm = async function(e, form) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const dataId = 'C' + Date.now();
-      const data = {
-          id: dataId,
-          plan: formData.get('plan') || '未選擇',
-          brandName: formData.get('brandName'),
-          contactName: formData.get('contactName'),
-          email: formData.get('email'),
-          jobTitle: formData.get('jobTitle') || '',
-          phone: formData.get('phone') || '',
-          lineId: formData.get('lineId') || '',
-          goals: formData.getAll('goal').join(', ') || '未選擇',
-          categories: formData.getAll('category').join(', ') || '未選擇',
-          date: new Date().toLocaleDateString(),
-          status: '未處理',
-          createdAt: Date.now()
-      };
-      
-      await window.fbSet('coops', dataId, data);
+      e.preventDefault(); const formData = new FormData(form); const dataId = 'C' + Date.now();
+      await window.fbSet('coops', dataId, {
+          id: dataId, plan: formData.get('plan') || '未選擇', brandName: formData.get('brandName'), contactName: formData.get('contactName'),
+          email: formData.get('email'), jobTitle: formData.get('jobTitle') || '', phone: formData.get('phone') || '', lineId: formData.get('lineId') || '',
+          goals: formData.getAll('goal').join(', ') || '未選擇', categories: formData.getAll('category').join(', ') || '未選擇', date: new Date().toLocaleDateString(), status: '未處理', createdAt: Date.now()
+      });
       form.innerHTML = `<div class='text-center py-16'><div class='text-5xl mb-4'>🎉</div><h4 class='text-2xl font-extrabold text-gray-800 mb-2'>表單已送出！</h4><p class='text-gray-600'>我們將盡快聯繫您。</p><button type='button' onclick='closeModal("document-modal")' class='mt-8 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-xl transition'>關閉視窗</button></div>`;
     }
 
@@ -983,856 +750,313 @@
 
     window.fastLogin = function(userId) {
       const user = window.usersDB.find(u => u.id === userId);
-      if (user) {
-        window.currentUser = { ...user };
-        window.updateNavUser();
-        window.switchView('home');
-        window.customConfirm("歡迎回來", "快速登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
-      }
+      if (user) { window.currentUser = { ...user }; window.updateNavUser(); window.switchView('home'); window.customConfirm("歡迎回來", "快速登入成功！", "👋", "開始", "bg-skyblue"); }
     };
 
     window.submitAuth = async function(mode) {
       if (mode === 'login') {
-        const email = document.getElementById('login-email').value.trim();
-        const pwd = document.getElementById('login-password').value.trim();
-        if (!email || !pwd) {
-          window.customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
-          return;
-        }
+        const email = document.getElementById('login-email').value.trim(), pwd = document.getElementById('login-password').value.trim();
+        if (!email || !pwd) return window.customConfirm("資訊不完整", "請輸入完整的電子郵件與密碼！", "⚠️", "確認", "bg-gray-800");
         const user = window.usersDB.find(u => u.email === email && u.password === pwd);
         if (!user) {
-          const namePrefix = email.split('@')[0];
-          const nId = 'u' + Date.now();
+          const namePrefix = email.split('@')[0], nId = 'u' + Date.now();
           const newUser = { id: nId, email: email, password: pwd, name: namePrefix, phone: '', birth: '', role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
-          await window.fbSet('users', nId, newUser);
-          window.currentUser = { ...newUser };
-          window.customConfirm("自動註冊成功", `找不到該帳號，已自動為您以「${namePrefix}」註冊並登入，並贈送 10 點新手貢獻值！`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
-        } else {
-          window.currentUser = { ...user };
-          window.customConfirm("歡迎回來", "登入成功，開始您的換物之旅吧！", "👋", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
-        }
-      } else if (mode === 'register') {
-        const email = document.getElementById('reg-email').value.trim();
-        const pwd = document.getElementById('reg-password').value.trim();
-        const name = document.getElementById('reg-name').value.trim();
-        const phone = document.getElementById('reg-phone').value.trim();
-        const birth = document.getElementById('reg-birth').value.trim();
-
-        if (!email || !pwd || !name) {
-          window.customConfirm("資訊不完整", "請填寫必填欄位！", "⚠️", "確認", "bg-gray-800");
-          return;
-        }
-        if (window.usersDB.find(u => u.email === email)) {
-          window.customConfirm("註冊失敗", "此 Email 已經被註冊過囉！", "❌", "確認", "bg-red-500 hover:bg-red-600");
-          return;
-        }
+          await window.fbSet('users', nId, newUser); window.currentUser = { ...newUser };
+          window.customConfirm("自動註冊成功", `已為您以「${namePrefix}」註冊並登入，贈送 10 點新手貢獻值！`, "🎉", "開始", "bg-skyblue");
+        } else { window.currentUser = { ...user }; window.customConfirm("歡迎回來", "登入成功！", "👋", "開始", "bg-skyblue"); }
+      } else {
+        const email = document.getElementById('reg-email').value.trim(), pwd = document.getElementById('reg-password').value.trim(), name = document.getElementById('reg-name').value.trim();
+        if (!email || !pwd || !name) return window.customConfirm("資訊不完整", "請填寫必填欄位！", "⚠️", "確認", "bg-gray-800");
+        if (window.usersDB.find(u => u.email === email)) return window.customConfirm("註冊失敗", "此 Email 已經被註冊過囉！", "❌", "確認", "bg-red-500");
         const nId = 'u' + Date.now();
-        const newUser = { id: nId, email: email, password: pwd, name: name, phone: phone, birth: birth, role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
-        await window.fbSet('users', nId, newUser);
-        window.currentUser = { ...newUser };
-        window.customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始探索", "bg-skyblue hover:bg-skyblue-hover");
+        const newUser = { id: nId, email: email, password: pwd, name: name, phone: document.getElementById('reg-phone').value.trim(), birth: document.getElementById('reg-birth').value.trim(), role: 'user', points: 10, level: '🥉 青銅', createdAt: Date.now() };
+        await window.fbSet('users', nId, newUser); window.currentUser = { ...newUser };
+        window.customConfirm("註冊成功", `歡迎加入 TradeUp！已為您發送 10 點新手貢獻值。`, "🎉", "開始", "bg-skyblue");
       }
-      
-      window.updateNavUser();
-      window.switchView('home');
+      window.updateNavUser(); window.switchView('home');
       ['login-email', 'login-password', 'reg-email', 'reg-password', 'reg-name', 'reg-phone', 'reg-birth'].forEach(id => document.getElementById(id).value = '');
     };
 
     window.forgotPassword = function() {
       const email = document.getElementById('login-email').value.trim();
-      if (!email) {
-        window.customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件，我們才能將密碼重設信件寄給您！", "💡", "確認", "bg-gray-800");
-        return;
-      }
-      window.customConfirm("重設信已寄出", `我們已將密碼重設連結寄至 ${email}，請至信箱收取並依指示重設密碼。`, "✉️", "我知道了", "bg-skyblue");
+      if (!email) return window.customConfirm("請輸入電子郵件", "請先於上方輸入您的電子郵件！", "💡", "確認", "bg-gray-800");
+      window.customConfirm("重設信已寄出", `密碼重設連結已寄至 ${email}`, "✉️", "我知道了", "bg-skyblue");
     };
 
     window.updateNavUser = function() {
-      const displaySpan = document.getElementById("user-display");
-      const loginBtn = document.getElementById("btn-login-nav");
-      const adminBtn = document.getElementById("btn-admin-nav");
-      const profileBtn = document.getElementById("btn-user-profile");
-      const notifBtn = document.getElementById("btn-nav-notif");
-      
+      const dSpan = document.getElementById("user-display"), lBtn = document.getElementById("btn-login-nav"), aBtn = document.getElementById("btn-admin-nav"), pBtn = document.getElementById("btn-user-profile"), nBtn = document.getElementById("btn-nav-notif");
       if (window.currentUser) {
-        displaySpan.textContent = `👤 ${window.currentUser.name}`;
-        displaySpan.classList.remove('hidden');
-        loginBtn.textContent = "登出";
-        loginBtn.onclick = window.logout;
-        loginBtn.classList.replace('bg-skyblue', 'bg-gray-200');
-        loginBtn.classList.replace('text-white', 'text-gray-800');
-        
-        notifBtn.style.display = "flex";
-        
-        if (window.currentUser.role === "admin") {
-          adminBtn.style.display = "inline-flex";
-          profileBtn.style.display = "none";
-          window.updateAdminBadges();
-        } else {
-          adminBtn.style.display = "none";
-          profileBtn.style.display = "inline-flex";
-          document.getElementById('setting-name').value = window.currentUser.name;
-          document.getElementById('setting-email').value = window.currentUser.email;
-          document.getElementById('profile-name').textContent = window.currentUser.name;
-          document.getElementById('profile-level-badge').textContent = window.currentUser.level;
-        }
+        dSpan.textContent = `👤 ${window.currentUser.name}`; dSpan.classList.remove('hidden');
+        lBtn.textContent = "登出"; lBtn.onclick = window.logout; lBtn.classList.replace('bg-skyblue', 'bg-gray-200'); lBtn.classList.replace('text-white', 'text-gray-800');
+        nBtn.style.display = "flex";
+        if (window.currentUser.role === "admin") { aBtn.style.display = "inline-flex"; pBtn.style.display = "none"; window.updateAdminBadges(); } 
+        else { aBtn.style.display = "none"; pBtn.style.display = "inline-flex"; document.getElementById('setting-name').value = window.currentUser.name; document.getElementById('setting-email').value = window.currentUser.email; document.getElementById('profile-name').textContent = window.currentUser.name; document.getElementById('profile-level-badge').textContent = window.currentUser.level; }
         window.updateNotificationBadges();
       } else {
-        displaySpan.classList.add('hidden');
-        loginBtn.textContent = "登入 / 註冊";
-        loginBtn.onclick = () => window.switchView('login');
-        loginBtn.classList.replace('bg-gray-200', 'bg-skyblue');
-        loginBtn.classList.replace('text-gray-800', 'text-white');
-        adminBtn.style.display = "none";
-        profileBtn.style.display = "none";
-        notifBtn.style.display = "none";
+        dSpan.classList.add('hidden'); lBtn.textContent = "登入 / 註冊"; lBtn.onclick = () => window.switchView('login'); lBtn.classList.replace('bg-gray-200', 'bg-skyblue'); lBtn.classList.replace('text-gray-800', 'text-white');
+        aBtn.style.display = "none"; pBtn.style.display = "none"; nBtn.style.display = "none";
       }
     };
 
-    window.logout = function() {
-      window.customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認登出", "bg-red-500 hover:bg-red-600", () => {
-        window.currentUser = null;
-        window.updateNavUser();
-        window.switchView('home');
-      });
-    };
+    window.logout = function() { window.customConfirm("確認登出", "您確定要登出目前的帳號嗎？", "🚪", "確認", "bg-red-500", () => { window.currentUser = null; window.updateNavUser(); window.switchView('home'); }); };
 
     window.renderHome = function() {
-      const grid = document.getElementById('items-grid');
-      grid.innerHTML = '';
-      
-      const activeItems = window.marketItems.filter(item => item.status === 'active');
-      activeItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
+      const grid = document.getElementById('items-grid'); grid.innerHTML = '';
+      window.marketItems.filter(item => item.status === 'active').forEach(item => {
+        const card = document.createElement('div'); card.className = "bg-white rounded-3xl p-6 border border-gray-100 shadow-sm cursor-pointer card-hover flex flex-col h-full";
         card.onclick = () => { window.selectedItem = item; window.renderDetail(); window.switchView('detail'); };
-        card.innerHTML = `
-          <div class="flex-1">
-            <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${item.type}</div>
-            <h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3>
-            <p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p>
-          </div>
-          <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-            <span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span>
-            <span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span>
-          </div>
-        `;
+        card.innerHTML = `<div class="flex-1"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${item.type}</div><h3 class="text-xl font-extrabold text-gray-800 mb-2 leading-tight">${item.title}</h3><p class="text-gray-500 text-sm line-clamp-2 mb-6">${item.desc}</p></div><div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50"><span class="text-sm font-bold text-gray-400">👤 ${item.owner}</span><span class="text-skyblue font-bold text-sm bg-skyblue-light px-3 py-1 rounded-full">提出交換</span></div>`;
         grid.appendChild(card);
       });
     }
 
     window.renderDetail = function() {
-      const c = document.getElementById('detail-content');
-      if (!window.selectedItem) return;
-
-      c.innerHTML = `
-        <div class="mb-8">
-          <div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${window.selectedItem.type}</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${window.selectedItem.title}</h2>
-          <div class="flex items-center gap-2 mb-6">
-            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">${window.selectedItem.owner.charAt(0)}</div>
-            <span class="text-gray-600 font-bold">${window.selectedItem.owner}</span>
-            <span class="text-gray-300 mx-2">|</span>
-            <span class="text-gray-400 text-sm font-medium">發布於近期</span>
-          </div>
-        </div>
-        <div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100">
-          <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4>
-          <p class="text-gray-600 leading-relaxed">${window.selectedItem.desc}</p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8">
-          <button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl transition shadow-md transform hover:-translate-y-1 flex items-center justify-center gap-2">
-            <span>🎁</span> 提出交換申請
-          </button>
-          <button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">
-            🚨 檢舉此物品
-          </button>
-        </div>
-      `;
-
+      const c = document.getElementById('detail-content'); if (!window.selectedItem) return;
+      c.innerHTML = `<div class="mb-8"><div class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full mb-4">${window.selectedItem.type}</div><h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-4">${window.selectedItem.title}</h2><div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500 text-sm">${window.selectedItem.owner.charAt(0)}</div><span class="text-gray-600 font-bold">${window.selectedItem.owner}</span></div></div><div class="bg-gray-50 rounded-2xl p-6 sm:p-8 mb-8 border border-gray-100"><h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span>📝</span> 物品狀態與描述</h4><p class="text-gray-600 leading-relaxed">${window.selectedItem.desc}</p></div><div class="flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-8"><button id="btn-request-trade" class="flex-1 py-4 bg-skyblue hover:bg-skyblue-hover text-white font-extrabold text-lg rounded-2xl shadow-md transition flex items-center justify-center gap-2"><span>🎁</span> 提出交換申請</button><button onclick="openReportModal()" class="py-4 px-6 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-2xl transition flex items-center justify-center gap-2">🚨 檢舉此物品</button></div>`;
       document.getElementById('btn-request-trade').onclick = () => {
-        if (!window.currentUser) { window.switchView('login'); return; }
-        if (window.currentUser.name === window.selectedItem.owner) {
-          window.customConfirm("無法申請", "您不能對自己刊登的物品提出交換申請喔！", "💡", "我知道了", "bg-gray-800 hover:bg-gray-700");
-          return;
-        }
-        document.getElementById('trade-offer-desc').value = '';
-        document.getElementById('trade-method').value = '面交';
-        window.toggleShippingFee();
-        window.openModal('trade-modal');
+        if (!window.currentUser) return window.switchView('login');
+        if (window.currentUser.name === window.selectedItem.owner) return window.customConfirm("無法申請", "不能對自己的物品提出申請喔！", "💡", "我知道了", "bg-gray-800");
+        document.getElementById('trade-offer-desc').value = ''; document.getElementById('trade-method').value = '面交'; window.toggleShippingFee(); window.openModal('trade-modal');
       };
     }
 
     window.submitUpload = async function() {
-      if (!window.currentUser) { window.switchView('login'); return; }
-      const title = document.getElementById('upload-title').value.trim();
-      const type = document.getElementById('upload-type').value;
-      const desc = document.getElementById('upload-desc').value.trim();
-      
-      if (!title || !desc) {
-        window.customConfirm("提示", "請完整填寫物品名稱與描述！", "⚠️", "確認", "bg-gray-800");
-        return;
-      }
-
+      if (!window.currentUser) return window.switchView('login');
+      const title = document.getElementById('upload-title').value.trim(), type = document.getElementById('upload-type').value, desc = document.getElementById('upload-desc').value.trim();
+      if (!title || !desc) return window.customConfirm("提示", "請完整填寫物品名稱與描述！", "⚠️", "確認", "bg-gray-800");
       const id = Date.now().toString();
       await window.fbSet('marketItems', id, { id: id, title: title, desc: desc, owner: window.currentUser.name, type: type, status: 'pending_approval', createdAt: Date.now() });
-      
-      document.getElementById('upload-title').value = '';
-      document.getElementById('upload-desc').value = '';
-      window.customConfirm("已送出審核！", "您的物品已同步至雲端並送交審核，審核通過後即會顯示於探索列表中。", "⏳", "前往我的錢包", "bg-skyblue hover:bg-skyblue-hover", () => {
-        window.switchView('profile');
-        window.switchProfileSidebar('wallet');
-        window.switchWalletTab('listed');
-      });
+      document.getElementById('upload-title').value = ''; document.getElementById('upload-desc').value = '';
+      window.customConfirm("已送出審核！", "物品已同步送交審核。", "⏳", "前往我的錢包", "bg-skyblue", () => { window.switchView('profile'); window.switchProfileSidebar('wallet'); window.switchWalletTab('listed'); });
     };
 
-    window.toggleShippingFee = function() {
-      const method = document.getElementById('trade-method').value;
-      const feeContainer = document.getElementById('shipping-fee-container');
-      if (method === '寄送') feeContainer.classList.remove('hidden');
-      else feeContainer.classList.add('hidden');
-    }
+    window.toggleShippingFee = function() { document.getElementById('shipping-fee-container').classList.toggle('hidden', document.getElementById('trade-method').value !== '寄送'); }
 
     window.submitTradeOffer = async function() {
       const desc = document.getElementById('trade-offer-desc').value.trim();
-      if (!desc) { window.customConfirm("提示", "請填寫您想用來交換的物品內容！", "⚠️", "確認", "bg-gray-800"); return; }
-      
-      const method = document.getElementById('trade-method').value;
-      let shippingInfo = method === '寄送' ? ` (運費: ${document.getElementById('trade-shipping-fee').value})` : "";
-
-      const id = Date.now().toString();
-      await window.fbSet('userTrades', id, {
-        id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner,
-        applicant: window.currentUser.name, offerDesc: `${desc} [${method}${shippingInfo}]`,
-        status: '待審核', type: 'applied', createdAt: Date.now()
-      });
-      
-      await window.sendNotification(window.selectedItem.owner, '有人對您的物品提出交換', `${window.currentUser.name} 想要用他的物品和您交換「${window.selectedItem.title}」，快去錢包查看吧！`);
+      if (!desc) return window.customConfirm("提示", "請填寫想用來交換的物品內容！", "⚠️", "確認", "bg-gray-800");
+      const method = document.getElementById('trade-method').value, sInfo = method === '寄送' ? ` (運費: ${document.getElementById('trade-shipping-fee').value})` : "", id = Date.now().toString();
+      await window.fbSet('userTrades', id, { id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner, applicant: window.currentUser.name, offerDesc: `${desc} [${method}${sInfo}]`, status: '待審核', type: 'applied', createdAt: Date.now() });
+      await window.sendNotification(window.selectedItem.owner, '有人對您的物品提出交換', `${window.currentUser.name} 想要用物品和您交換「${window.selectedItem.title}」。`);
       window.closeModal('trade-modal');
-      window.customConfirm("申請已送出！", "已同步至雲端並通知物品主人。", "🎉", "前往我的錢包", "bg-skyblue", () => {
-        window.switchView('profile');
-        window.switchProfileSidebar('wallet');
-        window.switchWalletTab('applied');
-      });
+      window.customConfirm("申請已送出！", "已通知物品主人。", "🎉", "前往錢包", "bg-skyblue", () => { window.switchView('profile'); window.switchProfileSidebar('wallet'); window.switchWalletTab('applied'); });
     }
 
     window.openReportModal = function() {
-      if (!window.currentUser) { window.switchView('login'); return; }
-      document.getElementById('report-reason').value = '';
-      document.getElementById('report-desc').value = '';
-      document.getElementById('report-agree').checked = false;
-      window.openModal('report-modal');
+      if (!window.currentUser) return window.switchView('login');
+      document.getElementById('report-reason').value = ''; document.getElementById('report-desc').value = ''; document.getElementById('report-agree').checked = false; window.openModal('report-modal');
     };
 
     window.submitReport = async function() {
-      const reason = document.getElementById('report-reason').value;
-      const desc = document.getElementById('report-desc').value;
-      const agree = document.getElementById('report-agree').checked;
-
-      if (!reason || !desc || !agree) {
-        window.customConfirm("提示", "請完整填寫必填欄位並勾選同意。", "⚠️", "確認", "bg-gray-800");
-        return;
-      }
-
+      const reason = document.getElementById('report-reason').value, desc = document.getElementById('report-desc').value, agree = document.getElementById('report-agree').checked;
+      if (!reason || !desc || !agree) return window.customConfirm("提示", "請填寫必填欄位並同意。", "⚠️", "確認", "bg-gray-800");
       const id = 'r' + Date.now().toString();
-      await window.fbSet('reports', id, {
-        id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner,
-        reporter: window.currentUser.name, reason: reason, desc: desc,
-        status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now()
-      });
-
-      window.closeModal('report-modal');
-      window.customConfirm("檢舉已送出", "感謝您的回報，我們的管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
+      await window.fbSet('reports', id, { id: id, itemTitle: window.selectedItem.title, itemOwner: window.selectedItem.owner, reporter: window.currentUser.name, reason: reason, desc: desc, status: 'pending', date: new Date().toLocaleDateString(), createdAt: Date.now() });
+      window.closeModal('report-modal'); window.customConfirm("檢舉已送出", "管理員會盡快審查此物品。", "✅", "確認", "bg-skyblue");
     };
 
     window.switchProfileSidebar = function(tab) {
-      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
-      
-      document.querySelectorAll('.profile-tab').forEach(el => {
-        el.classList.remove('text-skyblue', 'bg-skyblue-light');
-        el.classList.add('text-gray-600', 'hover:bg-gray-50');
-      });
-      const activeTab = document.getElementById(`tab-${tab}`);
-      activeTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
-      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
-
-      if (tab === 'wallet') window.renderWallet();
-      if (tab === 'notifications') window.renderNotifications();
-      if (tab === 'points') window.renderPoints();
+      document.querySelectorAll('.profile-content-section').forEach(el => el.classList.add('hidden')); document.getElementById(`profile-content-${tab}`).classList.remove('hidden');
+      document.querySelectorAll('.profile-tab').forEach(el => { el.classList.remove('text-skyblue', 'bg-skyblue-light'); el.classList.add('text-gray-600', 'hover:bg-gray-50'); });
+      const aTab = document.getElementById(`tab-${tab}`); aTab.classList.remove('text-gray-600', 'hover:bg-gray-50'); aTab.classList.add('text-skyblue', 'bg-skyblue-light');
+      if (tab === 'wallet') window.renderWallet(); if (tab === 'notifications') window.renderNotifications(); if (tab === 'points') window.renderPoints();
     };
 
     window.saveProfileSettings = async function() {
       const newName = document.getElementById('setting-name').value.trim();
-      if (!newName) { window.customConfirm("提示", "顯示名稱不能為空！", "⚠️", "確認", "bg-gray-800"); return; }
-      const oldName = window.currentUser.name;
-      window.currentUser.name = newName;
-      
+      if (!newName) return window.customConfirm("提示", "名稱不能為空！", "⚠️", "確認", "bg-gray-800");
+      const oldName = window.currentUser.name; window.currentUser.name = newName;
       await window.fbUpdate('users', window.currentUser.id, { name: newName });
-      
       window.marketItems.forEach(i => { if(i.owner === oldName) window.fbUpdate('marketItems', i.id, { owner: newName }); });
-      window.userTrades.forEach(t => { 
-        let updates = {};
-        if(t.applicant === oldName) updates.applicant = newName; 
-        if(t.itemOwner === oldName) updates.itemOwner = newName;
-        if(Object.keys(updates).length > 0) window.fbUpdate('userTrades', t.id, updates);
-      });
-      window.reportsDB.forEach(r => {
-        let updates = {};
-        if(r.reporter === oldName) updates.reporter = newName;
-        if(r.itemOwner === oldName) updates.itemOwner = newName;
-        if(Object.keys(updates).length > 0) window.fbUpdate('reports', r.id, updates);
-      });
-
-      window.updateNavUser();
-      window.renderProfile();
-      window.customConfirm("儲存成功", "您的個人設定已經更新至雲端並全站同步完畢。", "✅", "確認", "bg-gray-800");
+      window.userTrades.forEach(t => { let up = {}; if(t.applicant === oldName) up.applicant = newName; if(t.itemOwner === oldName) up.itemOwner = newName; if(Object.keys(up).length) window.fbUpdate('userTrades', t.id, up); });
+      window.reportsDB.forEach(r => { let up = {}; if(r.reporter === oldName) up.reporter = newName; if(r.itemOwner === oldName) up.itemOwner = newName; if(Object.keys(up).length) window.fbUpdate('reports', r.id, up); });
+      window.updateNavUser(); window.renderProfile(); window.customConfirm("儲存成功", "設定已更新。", "✅", "確認", "bg-gray-800");
     };
 
     window.switchWalletTab = function(type) {
-      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
-
-      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => {
-        el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue');
-        el.classList.add('text-gray-500');
-      });
-      const activeTab = document.getElementById(`wallet-tab-${type}`);
-      activeTab.classList.remove('text-gray-500');
-      activeTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
-      
+      document.querySelectorAll('.wallet-section').forEach(el => el.classList.add('hidden')); document.getElementById(`wallet-content-${type}`).classList.remove('hidden');
+      document.querySelectorAll('[id^="wallet-tab-"]').forEach(el => { el.classList.remove('text-skyblue', 'border-b-2', 'border-skyblue'); el.classList.add('text-gray-500'); });
+      const aTab = document.getElementById(`wallet-tab-${type}`); aTab.classList.remove('text-gray-500'); aTab.classList.add('text-skyblue', 'border-b-2', 'border-skyblue');
       window.renderWallet();
     };
 
     window.renderWallet = function() {
-      const listedContainer = document.getElementById('my-listed-items');
-      listedContainer.innerHTML = '';
+      const lC = document.getElementById('my-listed-items'); lC.innerHTML = '';
       const myItems = window.marketItems.filter(item => item.owner === window.currentUser.name && item.status !== 'banned');
-      
-      if (myItems.length === 0) {
-        listedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
-      } else {
-        myItems.forEach(item => {
-          const applicants = window.userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === window.currentUser.name);
-          let appHtml = '';
-          if (applicants.length > 0) {
-            appHtml = `<div class="mt-4 border-t border-gray-100 pt-3">
-              <p class="text-sm font-bold text-gray-700 mb-2">🎁 收到 ${applicants.length} 個交換提案：</p>
-              ${applicants.map(app => `
-                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
-                  <div>
-                    <span class="font-bold text-gray-800 text-sm">${app.applicant}</span>
-                    <p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p>
-                    <span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border border-gray-200 inline-block mt-1">${app.status}</span>
-                  </div>
-                  ${app.status === '待審核' ? `<button onclick="acceptTrade('${app.id}')" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg transition shadow-sm">✅ 選擇他</button>` : ''}
-                  ${app.status === '已成交' ? `<button class="px-3 py-1.5 bg-gray-800 text-white text-xs font-bold rounded-lg transition shadow-sm">💬 私訊</button>` : ''}
-                </div>
-              `).join('')}
-            </div>`;
-          }
+      if (!myItems.length) lC.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有刊登任何物品</div>';
+      else myItems.forEach(item => {
+        const apps = window.userTrades.filter(t => t.itemTitle === item.title && t.itemOwner === window.currentUser.name);
+        let appHtml = apps.length ? `<div class="mt-4 border-t border-gray-100 pt-3"><p class="text-sm font-bold text-gray-700 mb-2">🎁 ${apps.length} 個交換提案：</p>${apps.map(app => `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2"><div><span class="font-bold text-gray-800 text-sm">${app.applicant}</span><p class="text-xs text-gray-500 mt-1">${app.offerDesc}</p><span class="text-[10px] font-bold ${app.status==='已成交'?'text-green-500':'text-orange-500'} bg-white px-2 py-0.5 rounded-md border inline-block mt-1">${app.status}</span></div>${app.status === '待審核' ? `<button onclick="acceptTrade('${app.id}')" class="px-3 py-1.5 bg-skyblue hover:bg-skyblue-hover text-white text-xs font-bold rounded-lg shadow-sm">✅ 選擇他</button>` : ''}</div>`).join('')}</div>` : '';
+        let tBtn = (item.status === 'active' || item.status === 'pending_approval') ? `<button onclick="openTakedownModal('${item.id}')" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 transition">🗑️ 下架</button>` : '';
+        let sTxt = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
+        lC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm"><div class="flex justify-between items-start"><div><div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div><h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4><p class="text-xs text-gray-400 font-bold mt-1">狀態: ${sTxt}</p></div>${tBtn}</div>${appHtml}</div>`;
+      });
 
-          let takedownBtn = '';
-          if (item.status === 'active' || item.status === 'pending_approval') {
-             takedownBtn = `<button onclick="openTakedownModal('${item.id}')" class="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1 rounded transition">🗑️ 下架</button>`;
-          }
-          
-          let statusText = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
-          let statusColor = item.status === 'pending_approval' ? 'text-orange-500' : 'text-gray-400';
-
-          listedContainer.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <div class="flex justify-between items-start">
-                <div>
-                  <div class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md mb-1">${item.type}</div>
-                  <h4 class="font-bold text-lg text-gray-800 leading-tight">${item.title}</h4>
-                  <p class="text-xs ${statusColor} font-bold mt-1">狀態: ${statusText}</p>
-                </div>
-                ${takedownBtn}
-              </div>
-              ${appHtml}
-            </div>
-          `;
-        });
-      }
-
-      const appliedContainer = document.getElementById('my-applied-items');
-      appliedContainer.innerHTML = '';
+      const aC = document.getElementById('my-applied-items'); aC.innerHTML = '';
       const myApps = window.userTrades.filter(t => t.applicant === window.currentUser.name);
-      
-      if (myApps.length === 0) {
-        appliedContainer.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
-      } else {
-        myApps.forEach(app => {
-          let statusColor = 'text-orange-500';
-          let bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed'; 
-          let btnText = '⏳ 待審核';
-
-          if (app.status === '已成交') {
-            statusColor = 'text-green-500';
-            bgClass = 'bg-skyblue hover:bg-skyblue-hover text-white shadow-sm cursor-pointer';
-            btnText = '💬 聯絡對方';
-          } else if (app.status === '已關閉') {
-            statusColor = 'text-gray-400';
-            bgClass = 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50';
-            btnText = '🔒 已關閉';
-          }
-
-          appliedContainer.innerHTML += `
-            <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p>
-                <h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4>
-                <p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p>
-                <div class="mt-2 text-xs font-bold ${statusColor}">${app.status}</div>
-              </div>
-              <button class="px-4 py-2 ${bgClass} text-sm font-bold rounded-xl transition w-full sm:w-auto text-center shrink-0">
-                ${btnText}
-              </button>
-            </div>
-          `;
-        });
-      }
+      if (!myApps.length) aC.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-2xl">您目前沒有提出任何申請</div>';
+      else myApps.forEach(app => {
+        let sc = app.status === '已成交' ? 'text-green-500' : 'text-orange-500', bc = app.status === '已成交' ? 'bg-skyblue text-white' : 'bg-gray-100 text-gray-400', bt = app.status === '已成交' ? '💬 聯絡對方' : (app.status === '已關閉' ? '🔒 已關閉' : '⏳ 待審核');
+        if (app.status === '已關閉') sc = 'text-gray-400';
+        aC.innerHTML += `<div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><p class="text-xs text-gray-400 font-bold mb-1">想換取：<span class="text-gray-600">${app.itemOwner}</span> 的</p><h4 class="font-bold text-lg text-gray-800 leading-tight">${app.itemTitle}</h4><p class="text-xs text-gray-500 mt-1 max-w-sm truncate">我的提案: ${app.offerDesc}</p><div class="mt-2 text-xs font-bold ${sc}">${app.status}</div></div><button class="px-4 py-2 ${bc} text-sm font-bold rounded-xl w-full sm:w-auto">${bt}</button></div>`;
+      });
     }
 
-    window.openTakedownModal = function(itemId) {
-      document.getElementById('takedown-item-id').value = itemId;
-      document.getElementById('takedown-reason').value = '';
-      document.getElementById('takedown-reason-desc').value = '';
-      window.openModal('takedown-modal');
-    }
+    window.openTakedownModal = function(itemId) { document.getElementById('takedown-item-id').value = itemId; document.getElementById('takedown-reason').value = ''; document.getElementById('takedown-reason-desc').value = ''; window.openModal('takedown-modal'); }
 
     window.confirmTakedown = async function() {
-      const itemId = document.getElementById('takedown-item-id').value;
-      const reason = document.getElementById('takedown-reason').value;
-      const desc = document.getElementById('takedown-reason-desc').value.trim();
-      
-      if (!reason) { window.customConfirm("提示", "請選擇下架原因！", "⚠️", "確認", "bg-gray-800"); return; }
-      const finalReason = desc ? `${reason} (${desc})` : reason;
-
+      const itemId = document.getElementById('takedown-item-id').value, reason = document.getElementById('takedown-reason').value, desc = document.getElementById('takedown-reason-desc').value.trim();
+      if (!reason) return window.customConfirm("提示", "請選擇下架原因！", "⚠️", "確認", "bg-gray-800");
       const item = window.marketItems.find(i => i.id === itemId);
       if (item) {
-        await window.fbUpdate('marketItems', item.id, { status: '已下架 (' + finalReason + ')' });
-        for (let t of window.userTrades) {
-          if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
-            await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
-            await window.sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架 (原因: ${finalReason})，申請已自動關閉。`);
-          }
-        }
-        window.closeModal('takedown-modal');
-        window.customConfirm("下架完成", "該物品已同步從雲端列表中移除。", "✅", "確認", "bg-gray-800");
+        await window.fbUpdate('marketItems', item.id, { status: `已下架 (${desc ? reason+' ('+desc+')' : reason})` });
+        for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 物品已下架', `您申請交換的「${item.title}」已被主人下架。`); }
+        window.closeModal('takedown-modal'); window.customConfirm("下架完成", "物品已移除。", "✅", "確認", "bg-gray-800");
       }
     }
 
     window.acceptTrade = function(tradeId) {
-      window.customConfirm("確認選擇", "選擇此提案後，其他人的申請將會自動關閉，並為您雙方開啟聊天室。確定要交換嗎？", "🤝", "確定交換", "bg-green-500 hover:bg-green-600", async () => {
+      window.customConfirm("確認選擇", "選擇後其他申請將自動關閉。確定交換嗎？", "🤝", "確定交換", "bg-green-500", async () => {
         const trade = window.userTrades.find(t => t.id === tradeId);
         if (trade) {
           await window.fbUpdate('userTrades', trade.id, { status: '已成交' });
-          for (let t of window.userTrades) {
-            if (t.itemTitle === trade.itemTitle && t.id !== tradeId) {
-              await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
-            }
-          }
+          for (let t of window.userTrades) if (t.itemTitle === trade.itemTitle && t.id !== tradeId) await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
           const item = window.marketItems.find(i => i.title === trade.itemTitle && i.owner === window.currentUser.name);
           if (item) await window.fbUpdate('marketItems', item.id, { status: '已換出' });
-
-          const newPoints = window.currentUser.points + 50;
-          await window.fbUpdate('users', window.currentUser.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
-          await window.sendNotification(trade.applicant, '🎉 您的交換提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的交換提案，快去私訊他吧！`);
+          const newPoints = window.currentUser.points + 50; await window.fbUpdate('users', window.currentUser.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
+          await window.sendNotification(trade.applicant, '🎉 提案被接受了！', `「${trade.itemOwner}」同意了您對「${trade.itemTitle}」的提案！`);
         }
       });
     }
 
-    window.renderPoints = function() {
-      document.getElementById('points-display').textContent = window.currentUser.points;
-      document.getElementById('level-display-box').textContent = window.currentUser.level;
-    }
+    window.renderPoints = function() { document.getElementById('points-display').textContent = window.currentUser.points; document.getElementById('level-display-box').textContent = window.currentUser.level; }
 
     window.renderNotifications = function() {
-      const container = document.getElementById('notification-list');
-      container.innerHTML = '';
+      const c = document.getElementById('notification-list'); c.innerHTML = '';
       const myNotifs = window.notificationsDB.filter(n => n.user === window.currentUser.name);
-
-      if (myNotifs.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">目前沒有新通知</div>';
-      } else {
-        myNotifs.forEach(n => {
-          container.innerHTML += `
-            <div class="p-4 rounded-xl border ${n.isRead ? 'bg-white border-gray-100' : 'bg-blue-50 border-blue-100'}">
-              <div class="flex justify-between items-start mb-1">
-                <h5 class="font-bold text-gray-800 text-sm">${n.title}</h5>
-                <span class="text-[10px] text-gray-400">${n.date}</span>
-              </div>
-              <p class="text-xs text-gray-600">${n.content}</p>
-            </div>
-          `;
-        });
-      }
+      if (!myNotifs.length) c.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">沒有新通知</div>';
+      else myNotifs.forEach(n => c.innerHTML += `<div class="p-4 rounded-xl border ${n.isRead ? 'bg-white' : 'bg-blue-50'}"><div class="flex justify-between items-start mb-1"><h5 class="font-bold text-gray-800 text-sm">${n.title}</h5><span class="text-[10px] text-gray-400">${n.date}</span></div><p class="text-xs text-gray-600">${n.content}</p></div>`);
     }
 
     window.renderProfile = function() {
-      if (!window.currentUser) { window.switchView('login'); return; }
-      document.getElementById('profile-name').textContent = window.currentUser.name;
-      document.getElementById('profile-avatar-letter').textContent = window.currentUser.name.charAt(0);
-      document.getElementById('profile-level-badge').textContent = window.currentUser.level;
-      
-      window.renderPoints();
-      window.renderWallet();
-      window.renderNotifications();
+      if (!window.currentUser) return window.switchView('login');
+      document.getElementById('profile-name').textContent = window.currentUser.name; document.getElementById('profile-avatar-letter').textContent = window.currentUser.name.charAt(0); document.getElementById('profile-level-badge').textContent = window.currentUser.level;
+      window.renderPoints(); window.renderWallet(); window.renderNotifications();
     };
 
     window.switchAdminTab = function(tab) {
-      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
-      
-      document.querySelectorAll('.admin-tab').forEach(el => {
-        el.classList.remove('text-skyblue', 'bg-skyblue-light');
-        el.classList.add('text-gray-600', 'bg-gray-50', 'hover:bg-gray-100');
-      });
-      const activeTab = document.getElementById(`admin-tab-${tab}`);
-      activeTab.classList.remove('text-gray-600', 'bg-gray-50', 'hover:bg-gray-100');
-      activeTab.classList.add('text-skyblue', 'bg-skyblue-light');
-
-      if (tab === 'stats') window.renderAdminStats();
-      if (tab === 'users') window.renderAdminUsers();
-      if (tab === 'items') window.renderAdminItems();
-      if (tab === 'reports') window.renderAdminReports();
-      if (tab === 'coop') window.renderAdminCoop();
+      document.querySelectorAll('.admin-content-section').forEach(el => el.classList.add('hidden')); document.getElementById(`admin-content-${tab}`).classList.remove('hidden');
+      document.querySelectorAll('.admin-tab').forEach(el => { el.classList.remove('text-skyblue', 'bg-skyblue-light'); el.classList.add('text-gray-600', 'bg-gray-50'); });
+      const aTab = document.getElementById(`admin-tab-${tab}`); aTab.classList.remove('text-gray-600', 'bg-gray-50'); aTab.classList.add('text-skyblue', 'bg-skyblue-light');
+      if (tab === 'stats') window.renderAdminStats(); if (tab === 'users') window.renderAdminUsers(); if (tab === 'items') window.renderAdminItems(); if (tab === 'reports') window.renderAdminReports(); if (tab === 'coop') window.renderAdminCoop();
     };
 
     window.updateAdminBadges = function() {
-      const pendingItems = window.marketItems.filter(i => i.status === 'pending_approval').length;
-      const pendingReports = window.reportsDB.filter(r => r.status === 'pending').length;
-      const pendingCoops = window.coopApplicationsDB.filter(c => c.status === '未處理').length;
-      const totalPending = pendingItems + pendingReports + pendingCoops;
-
-      const mainBadge = document.getElementById('admin-badge');
-      if (totalPending > 0) {
-        mainBadge.textContent = totalPending;
-        mainBadge.classList.remove('hidden');
-      } else {
-        mainBadge.classList.add('hidden');
-      }
-
-      const itemsBadge = document.getElementById('admin-tab-items-badge');
-      if (pendingItems > 0) { itemsBadge.textContent = pendingItems; itemsBadge.classList.remove('hidden'); }
-      else { itemsBadge.classList.add('hidden'); }
-
-      const reportsBadge = document.getElementById('admin-tab-reports-badge');
-      if (pendingReports > 0) { reportsBadge.textContent = pendingReports; reportsBadge.classList.remove('hidden'); }
-      else { reportsBadge.classList.add('hidden'); }
-
-      const coopBadge = document.getElementById('admin-tab-coop-badge');
-      if (pendingCoops > 0) { coopBadge.textContent = pendingCoops; coopBadge.classList.remove('hidden'); }
-      else { coopBadge.classList.add('hidden'); }
+      const pI = window.marketItems.filter(i => i.status === 'pending_approval').length, pR = window.reportsDB.filter(r => r.status === 'pending').length, pC = window.coopApplicationsDB.filter(c => c.status === '未處理').length;
+      const mB = document.getElementById('admin-badge'), iB = document.getElementById('admin-tab-items-badge'), rB = document.getElementById('admin-tab-reports-badge'), cB = document.getElementById('admin-tab-coop-badge');
+      (pI+pR+pC > 0) ? (mB.textContent = pI+pR+pC, mB.classList.remove('hidden')) : mB.classList.add('hidden');
+      pI > 0 ? (iB.textContent = pI, iB.classList.remove('hidden')) : iB.classList.add('hidden');
+      pR > 0 ? (rB.textContent = pR, rB.classList.remove('hidden')) : rB.classList.add('hidden');
+      pC > 0 ? (cB.textContent = pC, cB.classList.remove('hidden')) : cB.classList.add('hidden');
     };
 
-    window.renderAdmin = function() {
-      window.updateAdminBadges();
-      window.switchAdminTab('stats');
-    };
+    window.renderAdmin = function() { window.updateAdminBadges(); window.switchAdminTab('stats'); };
 
     window.renderAdminStats = function() {
-      const c = document.getElementById('admin-content-stats');
-      const totalUsers = window.usersDB.length;
-      const totalItems = window.marketItems.length;
-      const totalTrades = window.userTrades.filter(t => t.status === '已成交').length;
-      
-      c.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100">
-            <p class="text-blue-500 font-bold mb-1">總註冊會員</p>
-            <div class="text-4xl font-extrabold text-blue-900">${totalUsers}</div>
-          </div>
-          <div class="bg-green-50 rounded-2xl p-6 border border-green-100">
-            <p class="text-green-500 font-bold mb-1">平台總物品</p>
-            <div class="text-4xl font-extrabold text-green-900">${totalItems}</div>
-          </div>
-          <div class="bg-purple-50 rounded-2xl p-6 border border-purple-100">
-            <p class="text-purple-500 font-bold mb-1">已完成交易</p>
-            <div class="text-4xl font-extrabold text-purple-900">${totalTrades}</div>
-          </div>
-        </div>
-      `;
+      document.getElementById('admin-content-stats').innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-blue-50 rounded-2xl p-6 border"><p class="text-blue-500 font-bold mb-1">總註冊會員</p><div class="text-4xl font-extrabold text-blue-900">${window.usersDB.length}</div></div><div class="bg-green-50 rounded-2xl p-6 border"><p class="text-green-500 font-bold mb-1">平台總物品</p><div class="text-4xl font-extrabold text-green-900">${window.marketItems.length}</div></div><div class="bg-purple-50 rounded-2xl p-6 border"><p class="text-purple-500 font-bold mb-1">已完成交易</p><div class="text-4xl font-extrabold text-purple-900">${window.userTrades.filter(t => t.status === '已成交').length}</div></div></div>`;
     };
 
     window.renderAdminUsers = function() {
-      const c = document.getElementById('admin-content-users');
-      let html = '<div class="space-y-3">';
-      window.usersDB.forEach(u => {
-        html += `
-          <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-            <div>
-              <div class="font-bold text-gray-800 flex items-center gap-2">
-                ${u.name} ${u.role === 'admin' ? '<span class="bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded-full">管理員</span>' : ''}
-              </div>
-              <div class="text-xs text-gray-500 mt-1">${u.email} | 分數: ${u.points} | 等級: ${u.level}</div>
-            </div>
-            <button onclick="openAdminEditUserModal('${u.id}')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-lg transition">調整</button>
-          </div>
-        `;
-      });
-      html += '</div>';
-      c.innerHTML = html;
+      document.getElementById('admin-content-users').innerHTML = '<div class="space-y-3">' + window.usersDB.map(u => `<div class="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm"><div><div class="font-bold text-gray-800 flex items-center gap-2">${u.name} ${u.role === 'admin' ? '<span class="bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded-full">管理員</span>' : ''}</div><div class="text-xs text-gray-500 mt-1">${u.email} | 分數: ${u.points} | 等級: ${u.level}</div></div><button onclick="openAdminEditUserModal('${u.id}')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-lg transition">調整</button></div>`).join('') + '</div>';
     };
 
     window.openAdminEditUserModal = function(uid) {
       const u = window.usersDB.find(user => user.id === uid);
-      if (u) {
-        document.getElementById('edit-user-id').value = u.id;
-        document.getElementById('edit-user-name').textContent = u.name;
-        document.getElementById('edit-user-points').value = u.points;
-        window.openModal('admin-edit-user-modal');
-      }
+      if (u) { document.getElementById('edit-user-id').value = u.id; document.getElementById('edit-user-name').textContent = u.name; document.getElementById('edit-user-points').value = u.points; window.openModal('admin-edit-user-modal'); }
     };
 
     window.saveAdminUserEdit = async function() {
-      const uid = document.getElementById('edit-user-id').value;
-      const newPoints = parseInt(document.getElementById('edit-user-points').value);
-      if (isNaN(newPoints) || newPoints < 0) { window.customConfirm("錯誤", "請輸入有效的正整數！", "⚠️", "確認", "bg-gray-800"); return; }
-      
-      const newLevel = window.getLevelByPoints(newPoints);
-      await window.fbUpdate('users', uid, { points: newPoints, level: newLevel });
-      
-      window.closeModal('admin-edit-user-modal');
-      window.customConfirm("調整成功", "會員資料已更新並同步至雲端。", "✅", "確認", "bg-skyblue");
+      const uid = document.getElementById('edit-user-id').value, nP = parseInt(document.getElementById('edit-user-points').value);
+      if (isNaN(nP) || nP < 0) return window.customConfirm("錯誤", "請輸入有效正整數！", "⚠️", "確認", "bg-gray-800");
+      await window.fbUpdate('users', uid, { points: nP, level: window.getLevelByPoints(nP) });
+      window.closeModal('admin-edit-user-modal'); window.customConfirm("調整成功", "會員資料已更新。", "✅", "確認", "bg-skyblue");
     };
 
     window.renderAdminItems = function() {
-      const c = document.getElementById('admin-content-items');
-      let html = '<div class="space-y-4">';
-      
-      const pendingItems = window.marketItems.filter(i => i.status === 'pending_approval');
-      const otherItems = window.marketItems.filter(i => i.status !== 'pending_approval');
-      const sortedItems = [...pendingItems, ...otherItems];
-
-      if (sortedItems.length === 0) {
-        c.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">尚無物品</div>';
-        return;
-      }
-
-      sortedItems.forEach(item => {
-        let actionBtns = '';
-        if (item.status === 'pending_approval') {
-          actionBtns = `
-            <button onclick="approveItem('${item.id}')" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white font-bold text-xs rounded-lg transition shadow-sm">✅ 通過</button>
-            <button onclick="openRejectItemModal('${item.id}')" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white font-bold text-xs rounded-lg transition shadow-sm">❌ 駁回</button>
-          `;
-        } else if (item.status === 'active') {
-          actionBtns = `<button onclick="openForceTakedownModal('${item.id}')" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-red-500 font-bold text-xs rounded-lg transition">🚨 強制下架</button>`;
-        }
-
-        let statusText = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status);
-        let statusColor = item.status === 'pending_approval' ? 'bg-orange-100 text-orange-600 border-orange-200' : 'bg-gray-100 text-gray-500 border-gray-200';
-
-        html += `
-          <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between gap-4">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${statusColor}">${statusText}</span>
-                <span class="text-xs text-gray-400">擁有者: ${item.owner}</span>
-              </div>
-              <h4 class="font-bold text-gray-800 text-lg">${item.title}</h4>
-              <p class="text-sm text-gray-500 mt-1 max-w-xl">${item.desc}</p>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              ${actionBtns}
-            </div>
-          </div>
-        `;
-      });
-      html += '</div>';
-      c.innerHTML = html;
+      const c = document.getElementById('admin-content-items'), pI = window.marketItems.filter(i => i.status === 'pending_approval'), oI = window.marketItems.filter(i => i.status !== 'pending_approval'), sI = [...pI, ...oI];
+      if (!sI.length) return c.innerHTML = '<div class="text-center py-10 text-gray-400 font-bold bg-gray-50 rounded-2xl">尚無物品</div>';
+      c.innerHTML = '<div class="space-y-4">' + sI.map(item => {
+        let aBtns = item.status === 'pending_approval' ? `<button onclick="approveItem('${item.id}')" class="px-3 py-1.5 bg-green-500 text-white font-bold text-xs rounded-lg">✅ 通過</button><button onclick="openRejectItemModal('${item.id}')" class="px-3 py-1.5 bg-red-500 text-white font-bold text-xs rounded-lg">❌ 駁回</button>` : (item.status === 'active' ? `<button onclick="openForceTakedownModal('${item.id}')" class="px-3 py-1.5 bg-gray-200 text-red-500 font-bold text-xs rounded-lg">🚨 強制下架</button>` : '');
+        let sTxt = item.status === 'active' ? '刊登中' : (item.status === 'pending_approval' ? '⏳ 待審核' : item.status), sCol = item.status === 'pending_approval' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500';
+        return `<div class="bg-white p-5 rounded-2xl border shadow-sm flex flex-col sm:flex-row justify-between gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${sCol}">${sTxt}</span><span class="text-xs text-gray-400">擁有者: ${item.owner}</span></div><h4 class="font-bold text-gray-800 text-lg">${item.title}</h4><p class="text-sm text-gray-500 mt-1 max-w-xl">${item.desc}</p></div><div class="flex items-center gap-2 shrink-0">${aBtns}</div></div>`;
+      }).join('') + '</div>';
     };
 
     window.approveItem = async function(itemId) {
-      await window.fbUpdate('marketItems', itemId, { status: 'active' });
-      const item = window.marketItems.find(i => i.id === itemId);
-      if(item) await window.sendNotification(item.owner, '✅ 物品審核通過', `您的物品「${item.title}」已經通過審核，正式上架囉！`);
-      window.customConfirm("審核通過", "物品已成功上架。", "✅", "確認", "bg-green-500");
+      await window.fbUpdate('marketItems', itemId, { status: 'active' }); const item = window.marketItems.find(i => i.id === itemId);
+      if(item) await window.sendNotification(item.owner, '✅ 審核通過', `物品「${item.title}」已正式上架！`);
+      window.customConfirm("審核通過", "物品已上架。", "✅", "確認", "bg-green-500");
     };
 
-    window.openRejectItemModal = function(itemId) {
-      document.getElementById('reject-item-id').value = itemId;
-      document.getElementById('reject-item-reason-select').value = '';
-      document.getElementById('reject-item-reason').value = '';
-      window.openModal('admin-reject-item-modal');
-    };
-
+    window.openRejectItemModal = function(id) { document.getElementById('reject-item-id').value = id; window.openModal('admin-reject-item-modal'); };
     window.confirmRejectItem = async function() {
-      const itemId = document.getElementById('reject-item-id').value;
-      const reasonSelect = document.getElementById('reject-item-reason-select').value;
-      const reasonDesc = document.getElementById('reject-item-reason').value.trim();
-      
-      if (!reasonSelect) { window.customConfirm("錯誤", "請選擇駁回原因！", "⚠️", "確認", "bg-gray-800"); return; }
-      const finalReason = reasonDesc ? `${reasonSelect} (${reasonDesc})` : reasonSelect;
-
-      await window.fbUpdate('marketItems', itemId, { status: '已駁回 (' + finalReason + ')' });
-      const item = window.marketItems.find(i => i.id === itemId);
-      if(item) await window.sendNotification(item.owner, '❌ 物品審核未通過', `您的物品「${item.title}」未通過審核。原因：${finalReason}。請修改後重新刊登。`);
-      
-      window.closeModal('admin-reject-item-modal');
-      window.customConfirm("已駁回", "該物品已標記為駁回並通知使用者。", "✅", "確認", "bg-gray-800");
+      const id = document.getElementById('reject-item-id').value, s = document.getElementById('reject-item-reason-select').value, d = document.getElementById('reject-item-reason').value.trim();
+      if (!s) return window.customConfirm("錯誤", "請選擇原因！", "⚠️", "確認", "bg-gray-800");
+      const r = d ? `${s} (${d})` : s; await window.fbUpdate('marketItems', id, { status: `已駁回 (${r})` });
+      const item = window.marketItems.find(i => i.id === id); if(item) await window.sendNotification(item.owner, '❌ 審核未通過', `「${item.title}」未通過。原因：${r}`);
+      window.closeModal('admin-reject-item-modal'); window.customConfirm("已駁回", "已通知使用者。", "✅", "確認", "bg-gray-800");
     };
 
-    window.openForceTakedownModal = function(itemId) {
-      document.getElementById('force-takedown-item-id').value = itemId;
-      document.getElementById('force-takedown-reason-select').value = '';
-      document.getElementById('force-takedown-reason').value = '';
-      window.openModal('admin-force-takedown-modal');
-    };
-
+    window.openForceTakedownModal = function(id) { document.getElementById('force-takedown-item-id').value = id; window.openModal('admin-force-takedown-modal'); };
     window.confirmForceTakedown = async function() {
-      const itemId = document.getElementById('force-takedown-item-id').value;
-      const reasonSelect = document.getElementById('force-takedown-reason-select').value;
-      const reasonDesc = document.getElementById('force-takedown-reason').value.trim();
-      
-      if (!reasonSelect) { window.customConfirm("錯誤", "請選擇強制下架原因！", "⚠️", "確認", "bg-gray-800"); return; }
-      const finalReason = reasonDesc ? `${reasonSelect} (${reasonDesc})` : reasonSelect;
-
-      const item = window.marketItems.find(i => i.id === itemId);
+      const id = document.getElementById('force-takedown-item-id').value, s = document.getElementById('force-takedown-reason-select').value, d = document.getElementById('force-takedown-reason').value.trim();
+      if (!s) return window.customConfirm("錯誤", "請選擇原因！", "⚠️", "確認", "bg-gray-800");
+      const r = d ? `${s} (${d})` : s, item = window.marketItems.find(i => i.id === id);
       if (item) {
         await window.fbUpdate('marketItems', item.id, { status: 'banned' });
-        for (let t of window.userTrades) {
-          if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
-            await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
-            await window.sendNotification(t.applicant, '😔 申請已取消', `您申請的「${item.title}」因違規已被管理員強制下架，申請自動關閉。`);
-          }
-        }
-        await window.sendNotification(item.owner, '🚨 物品強制下架通知', `您的物品「${item.title}」因違規已被強制下架。原因：${finalReason}。請遵守平台規範。`);
-        
-        window.closeModal('admin-force-takedown-modal');
-        window.customConfirm("強制下架完成", "物品已下架並寄出警告通知。", "✅", "確認", "bg-red-500");
+        for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 申請取消', `「${item.title}」因違規已下架。`); }
+        await window.sendNotification(item.owner, '🚨 強制下架', `「${item.title}」因違規已下架。原因：${r}`);
+        window.closeModal('admin-force-takedown-modal'); window.customConfirm("下架完成", "已發送警告。", "✅", "確認", "bg-red-500");
       }
     };
 
     window.renderAdminReports = function() {
-      const c = document.getElementById('admin-reports-list');
-      const pendingReports = window.reportsDB.filter(r => r.status === 'pending');
-      
-      if (pendingReports.length === 0) {
-        c.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">太棒了！目前沒有待處理的檢舉。</div>';
-        return;
-      }
-
-      let html = '';
-      pendingReports.forEach(r => {
-        html += `
-          <div class="bg-white p-5 rounded-2xl border border-red-100 shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <div>
-                <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200">檢舉單</span>
-                <h4 class="font-bold text-gray-800 mt-1">被檢舉物品：${r.itemTitle} (擁有者: ${r.itemOwner})</h4>
-              </div>
-              <span class="text-xs text-gray-400">${r.date}</span>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-lg text-sm mb-4">
-              <p><span class="font-bold text-gray-700">檢舉人：</span>${r.reporter}</p>
-              <p><span class="font-bold text-gray-700">檢舉原因：</span>${r.reason}</p>
-              <p><span class="font-bold text-gray-700">詳細說明：</span>${r.desc}</p>
-            </div>
-            <button onclick="openAdminReportModal('${r.id}')" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-700 transition">開始審核</button>
-          </div>
-        `;
-      });
-      c.innerHTML = html;
+      const pR = window.reportsDB.filter(r => r.status === 'pending');
+      document.getElementById('admin-reports-list').innerHTML = !pR.length ? '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">無待處理檢舉。</div>' : pR.map(r => `<div class="bg-white p-5 rounded-2xl border border-red-100 shadow-sm"><div class="flex justify-between items-start mb-3"><div><span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded border">檢舉單</span><h4 class="font-bold text-gray-800 mt-1">物品：${r.itemTitle} (擁有者: ${r.itemOwner})</h4></div><span class="text-xs text-gray-400">${r.date}</span></div><div class="bg-gray-50 p-3 rounded-lg text-sm mb-4"><p><span class="font-bold">檢舉人：</span>${r.reporter}</p><p><span class="font-bold">原因：</span>${r.reason}</p><p><span class="font-bold">說明：</span>${r.desc}</p></div><button onclick="openAdminReportModal('${r.id}')" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl">審核</button></div>`).join('');
     };
 
     window.openAdminReportModal = function(rid) {
-      window.currentReportId = rid;
-      const r = window.reportsDB.find(x => x.id === rid);
-      if (r) {
-        document.getElementById('admin-report-details').innerHTML = `
-          <p><strong>物品：</strong>${r.itemTitle}</p>
-          <p><strong>檢舉人：</strong>${r.reporter} <strong>被檢舉人：</strong>${r.itemOwner}</p>
-          <p><strong>原因：</strong>${r.reason}</p>
-          <p><strong>說明：</strong>${r.desc}</p>
-        `;
-        document.getElementById('admin-report-reason-select').value = '';
-        document.getElementById('admin-report-note').value = '';
-        window.openModal('admin-report-modal');
-      }
+      window.currentReportId = rid; const r = window.reportsDB.find(x => x.id === rid);
+      if (r) { document.getElementById('admin-report-details').innerHTML = `<p><strong>物品：</strong>${r.itemTitle}</p><p><strong>原因：</strong>${r.reason}</p>`; window.openModal('admin-report-modal'); }
     };
 
     window.processReport = async function(action) {
-      const reasonSelect = document.getElementById('admin-report-reason-select').value;
-      const note = document.getElementById('admin-report-note').value.trim();
-      
-      if (!reasonSelect) { window.customConfirm("錯誤", "請選擇處理結果！", "⚠️", "確認", "bg-gray-800"); return; }
-      const finalReason = note ? `${reasonSelect} (${note})` : reasonSelect;
-
-      const r = window.reportsDB.find(x => x.id === window.currentReportId);
+      const s = document.getElementById('admin-report-reason-select').value, n = document.getElementById('admin-report-note').value.trim();
+      if (!s) return window.customConfirm("錯誤", "請選擇處理結果！", "⚠️", "確認", "bg-gray-800");
+      const fR = n ? `${s} (${n})` : s, r = window.reportsDB.find(x => x.id === window.currentReportId);
       if (r) {
-        await window.fbUpdate('reports', r.id, { status: action, adminNote: finalReason });
-        
+        await window.fbUpdate('reports', r.id, { status: action, adminNote: fR });
         if (action === 'ban') {
           const item = window.marketItems.find(i => i.title === r.itemTitle && i.owner === r.itemOwner);
           if (item) {
             await window.fbUpdate('marketItems', item.id, { status: 'banned' });
-            for (let t of window.userTrades) {
-              if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') {
-                await window.fbUpdate('userTrades', t.id, { status: '已關閉' });
-                await window.sendNotification(t.applicant, '😔 申請已取消', `您申請的「${item.title}」因違規已被強制下架。`);
-              }
-            }
-            await window.sendNotification(item.owner, '🚨 違規下架警告', `您的物品「${item.title}」經檢舉查證違規，已強制下架。處理備註：${finalReason}`);
-            await window.sendNotification(r.reporter, '✅ 檢舉處理結果', `您檢舉的「${item.title}」已查證屬實並強制下架，感謝您協助維護平台環境！(獲得 5 點貢獻值)`);
-            
-            const reporterObj = window.usersDB.find(u => u.name === r.reporter);
-            if (reporterObj) {
-              const newPoints = reporterObj.points + 5;
-              await window.fbUpdate('users', reporterObj.id, { points: newPoints, level: window.getLevelByPoints(newPoints) });
-            }
+            for (let t of window.userTrades) if (t.itemTitle === item.title && t.itemOwner === item.owner && t.status === '待審核') { await window.fbUpdate('userTrades', t.id, { status: '已關閉' }); await window.sendNotification(t.applicant, '😔 申請取消', `「${item.title}」已下架。`); }
+            await window.sendNotification(item.owner, '🚨 違規下架', `「${item.title}」違規下架。備註：${fR}`); await window.sendNotification(r.reporter, '✅ 處理結果', `檢舉屬實已下架，獲得 5 點貢獻值！`);
+            const rp = window.usersDB.find(u => u.name === r.reporter); if (rp) await window.fbUpdate('users', rp.id, { points: rp.points+5, level: window.getLevelByPoints(rp.points+5) });
           }
-        } else {
-          await window.sendNotification(r.reporter, 'ℹ️ 檢舉處理結果', `您檢舉的「${r.itemTitle}」經查證未違反平台規範，因此已駁回檢舉。處理備註：${finalReason}`);
-        }
+        } else await window.sendNotification(r.reporter, 'ℹ️ 處理結果', `檢舉未違規已駁回。備註：${fR}`);
       }
-      window.closeModal('admin-report-modal');
-      window.customConfirm("處理完成", "檢舉單已結案並發送相關通知。", "✅", "確認", "bg-gray-800");
+      window.closeModal('admin-report-modal'); window.customConfirm("處理完成", "已結案。", "✅", "確認", "bg-gray-800");
     };
 
     window.renderAdminCoop = function() {
-      const c = document.getElementById('admin-coop-list');
-      const pendingCoops = window.coopApplicationsDB.filter(x => x.status === '未處理');
-      
-      if (pendingCoops.length === 0) {
-        c.innerHTML = '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">目前沒有新的合作申請。</div>';
-        return;
-      }
-
-      let html = '';
-      pendingCoops.forEach(coop => {
-        html += `
-          <div class="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <h4 class="font-bold text-gray-800 text-lg">${coop.brandName} - ${coop.plan}</h4>
-              <span class="text-xs text-gray-400">${coop.date}</span>
-            </div>
-            <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl text-sm mb-4">
-              <div><span class="text-gray-500">聯絡人：</span> <span class="font-bold text-gray-700">${coop.contactName} (${coop.jobTitle})</span></div>
-              <div><span class="text-gray-500">Email：</span> <span class="font-bold text-gray-700">${coop.email}</span></div>
-              <div><span class="text-gray-500">電話：</span> <span class="font-bold text-gray-700">${coop.phone || '未提供'}</span></div>
-              <div><span class="text-gray-500">LINE：</span> <span class="font-bold text-gray-700">${coop.lineId || '未提供'}</span></div>
-              <div class="col-span-2"><span class="text-gray-500">合作目標：</span> <span class="font-bold text-gray-700">${coop.goals}</span></div>
-              <div class="col-span-2"><span class="text-gray-500">產品分類：</span> <span class="font-bold text-gray-700">${coop.categories}</span></div>
-            </div>
-            <button onclick="markCoopDone('${coop.id}')" class="w-full py-2 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition shadow-sm">標示為已處理</button>
-          </div>
-        `;
-      });
-      c.innerHTML = html;
+      const pC = window.coopApplicationsDB.filter(x => x.status === '未處理');
+      document.getElementById('admin-coop-list').innerHTML = !pC.length ? '<div class="text-center py-8 text-gray-400 font-bold bg-gray-50 rounded-xl">沒有新合作申請。</div>' : pC.map(c => `<div class="bg-white p-5 rounded-2xl border shadow-sm"><div class="flex justify-between items-start mb-3"><h4 class="font-bold text-gray-800 text-lg">${c.brandName} - ${c.plan}</h4><span class="text-xs text-gray-400">${c.date}</span></div><div class="bg-gray-50 p-4 rounded-xl text-sm mb-4"><span class="text-gray-500">聯絡人：</span> <span class="font-bold">${c.contactName} (${c.email})</span></div><button onclick="markCoopDone('${c.id}')" class="w-full py-2 bg-blue-500 text-white font-bold rounded-xl">標示為已處理</button></div>`).join('');
     };
 
-    window.markCoopDone = async function(id) {
-      await window.fbUpdate('coops', id, { status: '已處理' });
-      window.customConfirm("已處理", "該筆合作申請已從待處理清單中移除。", "✅", "確認", "bg-gray-800");
-    };
+    window.markCoopDone = async function(id) { await window.fbUpdate('coops', id, { status: '已處理' }); window.customConfirm("已處理", "已移除。", "✅", "確認", "bg-gray-800"); };
 
-    window.onload = function() {
-      initFirebase();
-    };
+    window.onload = initFirebase;
   </script>
 </body>
 </html>
